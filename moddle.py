@@ -1,6 +1,7 @@
 import urllib.request
 import subprocess
 import platform
+import getpass
 import zipfile
 import tarfile
 import shutil
@@ -427,261 +428,264 @@ def build_forge(name, packconfig, verbose):
 
 
 if __name__ == "__main__":
+    try:
 
-    if not os.path.isdir(ppath("./cache/")):
-        print("No cache found.  Making one...")
-        downloadfile("https://dl.dropbox.com/s/05pj49fdimgyr4i/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
-        tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
-        tarball.extractall(".")
+        if not os.path.isdir(ppath("./cache/")):
+            print("No cache found.  Making one...")
+            downloadfile("https://dl.dropbox.com/s/05pj49fdimgyr4i/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
+            tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
+            tarball.extractall(".")
 
-    if not os.path.isdir(ppath("./packs/")):
-        print("No packs found.  Making some...")
-        downloadfile("https://dl.dropbox.com/s/jhkvwaekdygh27n/packs.tar.gz?dl=1", ppath("./packs.tar.gz"))
-        tarball = tarfile.open(ppath("./packs.tar.gz"), "r:gz")
-        tarball.extractall(".")
+        if not os.path.isdir(ppath("./packs/")):
+            print("No packs found.  Making some...")
+            downloadfile("https://dl.dropbox.com/s/jhkvwaekdygh27n/packs.tar.gz?dl=1", ppath("./packs.tar.gz"))
+            tarball = tarfile.open(ppath("./packs.tar.gz"), "r:gz")
+            tarball.extractall(".")
 
-    if not os.path.isfile(ppath("./ModdleFrontend.exe")):
-        print("No Windows Launcher found.  Making one...")
-        downloadfile("https://dl.dropbox.com/s/up8ezqyqy6yz7le/winlauncher.tar.gz?dl=1", ppath("./winlauncher.tar.gz"))
-        tarball = tarfile.open(ppath("./winlauncher.tar.gz"), "r:gz")
-        tarball.extractall(".")
+        if not os.path.isfile(ppath("./ModdleFrontend.exe")):
+            print("No Windows Launcher found.  Making one...")
+            downloadfile("https://dl.dropbox.com/s/up8ezqyqy6yz7le/winlauncher.tar.gz?dl=1", ppath("./winlauncher.tar.gz"))
+            tarball = tarfile.open(ppath("./winlauncher.tar.gz"), "r:gz")
+            tarball.extractall(".")
 
-    if not os.path.isfile(ppath("./config.vn")):
-        print("No config file found.  Making one...")
-        with open(ppath("./config.vn"), "w") as f:
-            f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\Program Files\Java\jre7\bin\n\nVerbose=false")
+        if not os.path.isfile(ppath("./config.vn")):
+            print("No config file found.  Making one...")
+            with open(ppath("./config.vn"), "w") as f:
+                f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\Program Files\Java\jre7\bin\n\nVerbose=false")
 
-    dotminecraft = ""
+        dotminecraft = ""
 
-    if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-        print("No assets found!  Making some...")
-        if dotminecraft == "":
-            print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
-            dotminecraft = input()
-        os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/"))
-        compressdir(os.path.join(dotminecraft, ppath("/assets/")), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"), False)
-        with open(ppath("./cache/__MinecraftAssets/1.6.4/filetype.vn"), "w") as f:
-            f.write("FileType=.zip")
+        if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
+            print("No assets found!  Making some...")
+            if dotminecraft == "":
+                print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
+                dotminecraft = input()
+            os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/"))
+            compressdir(os.path.join(dotminecraft, ppath("/assets/")), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"), False)
+            with open(ppath("./cache/__MinecraftAssets/1.6.4/filetype.vn"), "w") as f:
+                f.write("FileType=.zip")
 
-    '''if not os.path.isdir(ppath("./data/")):
-        print("No data directory found.  Making one...")
-        os.mkdir(ppath("./data/"))
+        '''if not os.path.isdir(ppath("./data/")):
+            print("No data directory found.  Making one...")
+            os.mkdir(ppath("./data/"))
 
-    if not os.path.isdir(ppath("./data/launch/")):
-        print("No launch files found.  Making some...")
-        downloadfile("https://dl.dropbox.com/s/m2yunzwbjt22d5v/launch.tar.gz?dl=1", ppath("./launch.tar.gz"))
-        tarball = tarfile.open(ppath("./launch.tar.gz"), "r:gz")
-        tarball.extractall(ppath("./data/"))
+        if not os.path.isdir(ppath("./data/launch/")):
+            print("No launch files found.  Making some...")
+            downloadfile("https://dl.dropbox.com/s/m2yunzwbjt22d5v/launch.tar.gz?dl=1", ppath("./launch.tar.gz"))
+            tarball = tarfile.open(ppath("./launch.tar.gz"), "r:gz")
+            tarball.extractall(ppath("./data/"))
 
-    if not os.path.isdir(ppath("./data/minecraft/")):
-        print("No minecraft data directory found.  Making one...")
-        os.mkdir(ppath("./data/minecraft/"))
+        if not os.path.isdir(ppath("./data/minecraft/")):
+            print("No minecraft data directory found.  Making one...")
+            os.mkdir(ppath("./data/minecraft/"))
 
-    if not os.path.isdir(ppath("./data/minecraft/Minecraft/")):
-        print("No minecraft download directory found.  Making one...")
-        os.mkdir(ppath("./data/minecraft/Minecraft/"))
+        if not os.path.isdir(ppath("./data/minecraft/Minecraft/")):
+            print("No minecraft download directory found.  Making one...")
+            os.mkdir(ppath("./data/minecraft/Minecraft/"))
 
-    if not os.path.isdir(ppath("./data/minecraft/Libraries/")):
-        print("No libraries found.  Making some...")
-        downloadfile("https://dl.dropbox.com/s/h4mjby6cs0lruag/mclib.tar.gz?dl=1", ppath("./mclib.tar.gz"))
-        tarball = tarfile.open(ppath("./mclib.tar.gz"), "r:gz")
-        tarball.extractall(ppath("./data/minecraft/"))
+        if not os.path.isdir(ppath("./data/minecraft/Libraries/")):
+            print("No libraries found.  Making some...")
+            downloadfile("https://dl.dropbox.com/s/h4mjby6cs0lruag/mclib.tar.gz?dl=1", ppath("./mclib.tar.gz"))
+            tarball = tarfile.open(ppath("./mclib.tar.gz"), "r:gz")
+            tarball.extractall(ppath("./data/minecraft/"))
 
-    if not os.path.isdir(ppath("./data/minecraft/Natives/")):
-        print("No natives found.  Making some...")
-        downloadfile("https://dl.dropbox.com/s/5ex2yiqg5ntec1i/natlib.tar.gz?dl=1", ppath("./natlib.tar.gz"))
-        tarball = tarfile.open(ppath("./natlib.tar.gz"), "r:gz")
-        tarball.extractall(ppath("./data/minecraft/"))
+        if not os.path.isdir(ppath("./data/minecraft/Natives/")):
+            print("No natives found.  Making some...")
+            downloadfile("https://dl.dropbox.com/s/5ex2yiqg5ntec1i/natlib.tar.gz?dl=1", ppath("./natlib.tar.gz"))
+            tarball = tarfile.open(ppath("./natlib.tar.gz"), "r:gz")
+            tarball.extractall(ppath("./data/minecraft/"))
 
-    if not os.path.isdir(ppath("./packs/")):
-        print("No pack directrory found.  Making one...")
-        os.mkdir(ppath("./packs/"))
+        if not os.path.isdir(ppath("./packs/")):
+            print("No pack directrory found.  Making one...")
+            os.mkdir(ppath("./packs/"))
 
-    if not os.path.isdir(ppath("./data/minecraft/Natives/")):
-        print("No config.vn found.  Making one...")
-        downloadfile("https://dl.dropbox.com/s/vft455hxdvdvvh9/config.vn?dl=1", ppath("./config.vn"))
+        if not os.path.isdir(ppath("./data/minecraft/Natives/")):
+            print("No config.vn found.  Making one...")
+            downloadfile("https://dl.dropbox.com/s/vft455hxdvdvvh9/config.vn?dl=1", ppath("./config.vn"))
 
-    if not os.path.isdir(ppath("./data/minecraft/Assets/")):
-        print("No assets found!  Please enter the location of your Minecraft assets v1.6.4 directory:")
-        assetdiruser = input()
-        os.makedirs(ppath("./data/minecraft/Assets/1.6.4/"))
-        compressdir(assetdiruser, ppath("./data/minecraft/Assets/1.6.4/Assets.zip"), False)
-        with open(ppath("./data/minecraft/Assets/1.6.4/filetype.vn"), "w") as f:
-            f.write("FileType=.zip")'''
+        if not os.path.isdir(ppath("./data/minecraft/Assets/")):
+            print("No assets found!  Please enter the location of your Minecraft assets v1.6.4 directory:")
+            assetdiruser = input()
+            os.makedirs(ppath("./data/minecraft/Assets/1.6.4/"))
+            compressdir(assetdiruser, ppath("./data/minecraft/Assets/1.6.4/Assets.zip"), False)
+            with open(ppath("./data/minecraft/Assets/1.6.4/filetype.vn"), "w") as f:
+                f.write("FileType=.zip")'''
 
-    print("")
-    print("")
-
-    
-
-    username = ""
-    #loginname = ""
-    password = ""
-    modpack = ""
-    forceupdate = False
-    memory = ""
-    javapath = ""
-    verbose = False
-    nogui = False
-
-    if len(sys.argv) > 1:
-        for i in range(1, len(sys.argv)):
-            if sys.argv[i].split("=")[0] == "-username":
-                username = sys.argv[i].split("=")[1]
-            elif sys.argv[i].split("=")[0] == "-password":
-                password = sys.argv[i].split("=")[1]
-            #elif sys.argv[i].split("=")[0] == "-loginname":
-            #    loginname = sys.argv[i].split("=")[1]
-            elif sys.argv[i].split("=")[0] == "-modpack":
-                modpack = sys.argv[i].split("=")[1]
-            elif sys.argv[i].split("=")[0] == "-memory":
-                memory = sys.argv[i].split("=")[1]
-            elif sys.argv[i].lower() == "-forceupdate=true":
-                forceupdate = True
-            elif sys.argv[i].lower() == "-nogui":
-                nogui = True
-            elif sys.argv[i].split("=")[0] == "-javapath":
-                javapath = sys.argv[i].split("=")[1]
-            elif sys.argv[i].split("=")[0] == "-verbose":
-                verbose = sys.argv[i].split("=")[1]
-
-
-    if platform.system() == "Windows" and nogui == False:
-        p = subprocess.Popen([ppath("./ModdleFrontend.exe")], shell=False)
-    else:
-        print("###########################################################")
-        print("#########  Moddle Integrated Minecraft Launcher  ##########")
-        print("###########################################################")
         print("")
         print("")
 
         
-        if modpack == "":
-            print("Please enter the name of the modpack you wish to play.")
-            print("Modpack:")
-            modpackex = input()
-            modpack = modpackex.split(":")[0]
-            if modpackex.find(":forceupdate") > -1:
-                print("Forcing update.")
-                forceupdate = True
-            if modpackex.find(":f") > -1:
-                print("Forcing update.")
-                forceupdate = True
-            if modpackex.find(":verbose") > -1:
-                print("Verbose mode.")
-                verbose = True
-            if modpackex.find(":v") > -1:
-                print("Verbose mode.")
-                verbose = True
-            print("Modpack '" + modpack + "' selected.")
+
+        username = ""
+        #loginname = ""
+        password = ""
+        modpack = ""
+        forceupdate = False
+        memory = ""
+        javapath = ""
+        verbose = False
+        nogui = False
+
+        if len(sys.argv) > 1:
+            for i in range(1, len(sys.argv)):
+                if sys.argv[i].split("=")[0] == "-username":
+                    username = sys.argv[i].split("=")[1]
+                elif sys.argv[i].split("=")[0] == "-password":
+                    password = sys.argv[i].split("=")[1]
+                #elif sys.argv[i].split("=")[0] == "-loginname":
+                #    loginname = sys.argv[i].split("=")[1]
+                elif sys.argv[i].split("=")[0] == "-modpack":
+                    modpack = sys.argv[i].split("=")[1]
+                elif sys.argv[i].split("=")[0] == "-memory":
+                    memory = sys.argv[i].split("=")[1]
+                elif sys.argv[i].lower() == "-forceupdate=true":
+                    forceupdate = True
+                elif sys.argv[i].lower() == "-nogui":
+                    nogui = True
+                elif sys.argv[i].split("=")[0] == "-javapath":
+                    javapath = sys.argv[i].split("=")[1]
+                elif sys.argv[i].split("=")[0] == "-verbose":
+                    verbose = sys.argv[i].split("=")[1]
 
 
-        
-        if os.path.exists(ppath("./login.vn")):
-            loginconfig = VictoryNotationFile(ppath("./login.vn"))
-            if username == "":
-                username = loginconfig.getvalue("Username")
-            if password == "":
-                password = loginconfig.getvalue("Password")
+        if platform.system() == "Windows" and nogui == True:
+            p = subprocess.Popen([ppath("./ModdleFrontend.exe")], shell=False)
         else:
-            if username == "" and password == "":
-                print("")
-                print("Please enter your Minecraft account info.")
-                print("")
-                print("Username:")
-                username = input()
-                '''regexp = re.compile(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b')
-                if regexp.search(loginname) is None:
-                    print("Minecraft Displayname:")
+            print("###########################################################")
+            print("#########  Moddle Integrated Minecraft Launcher  ##########")
+            print("###########################################################")
+            print("")
+            print("")
+
+            
+            if modpack == "":
+                print("Please enter the name of the modpack you wish to play.")
+                print("Modpack:")
+                modpackex = input()
+                modpack = modpackex.split(":")[0]
+                if modpackex.find(":forceupdate") > -1:
+                    print("Forcing update.")
+                    forceupdate = True
+                if modpackex.find(":f") > -1:
+                    print("Forcing update.")
+                    forceupdate = True
+                if modpackex.find(":verbose") > -1:
+                    print("Verbose mode.")
+                    verbose = True
+                if modpackex.find(":v") > -1:
+                    print("Verbose mode.")
+                    verbose = True
+                print("Modpack '" + modpack + "' selected.")
+
+
+            
+            if os.path.exists(ppath("./login.vn")):
+                loginconfig = VictoryNotationFile(ppath("./login.vn"))
+                if username == "":
+                    username = loginconfig.getvalue("Username")
+                if password == "":
+                    password = loginconfig.getvalue("Password")
+            else:
+                if username == "" and password == "":
+                    print("")
+                    print("Please enter your Minecraft account info.")
+                    print("")
+                    print("Username:")
                     username = input()
+                    '''regexp = re.compile(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b')
+                    if regexp.search(loginname) is None:
+                        print("Minecraft Displayname:")
+                        username = input()
+                    else:
+                        username = loginname'''
+                    password = getpass.getpass(prompt='Password:\n', stream=None)
+                    
+
+            print("")
+            print("")
+            print("[LOGIN] Obtaining session ID...")
+
+            downloadfile("http://login.minecraft.net/?user=" + username + "&password=" + password + "&version=12", ppath("./login.tmp"))
+            #with open(ppath("./login.tmp"), 'b+w') as f:
+            #    f.write(d.read())
+            for lines in open(ppath("./login.tmp"), "r"):
+                username = lines.split(":")[2]
+                sessionid = lines.split(":")[3]
+            os.remove(ppath("./login.tmp"))
+            print("[LOGIN] Session ID " + sessionid + " generated.")
+
+
+            print("[PREBUILD] Parsing config.mmlx...")
+            moddleconfig = VictoryNotationFile(ppath("./config.vn"))
+            if javapath == "":
+                javapath = moddleconfig.getvalue("JavaPath")
+            if memory == "":
+                memory = moddleconfig.getvalue("Memory")
+            if verbose == False:
+                if moddleconfig.getvalue("Verbose") == "true":
+                    verbose = True
                 else:
-                    username = loginname'''
-                print("Password:")
-                password = input()
+                    verbose = False
                 
 
-        print("")
-        print("")
-        print("[LOGIN] Obtaining session ID...")
+            print("[PREBUILD] Starting modpack builder...")
 
-        downloadfile("http://login.minecraft.net/?user=" + username + "&password=" + password + "&version=12", ppath("./login.tmp"))
-        #with open(ppath("./login.tmp"), 'b+w') as f:
-        #    f.write(d.read())
-        for lines in open(ppath("./login.tmp"), "r"):
-            username = lines.split(":")[2]
-            sessionid = lines.split(":")[3]
-        os.remove(ppath("./login.tmp"))
-        print("[LOGIN] Session ID " + sessionid + " generated.")
+            if not os.path.isfile(ppath("./packs/" + modpack + ".zip")):
+                print("[PREBUILD][WARNING] Pack does not exist!")
+                input()
+                exit(0)
 
-
-        print("[PREBUILD] Parsing config.mmlx...")
-        moddleconfig = VictoryNotationFile(ppath("./config.vn"))
-        if javapath == "":
-            javapath = moddleconfig.getvalue("JavaPath")
-        if memory == "":
-            memory = moddleconfig.getvalue("Memory")
-        if verbose == False:
-            if moddleconfig.getvalue("Verbose") == "true":
-                verbose = True
+            if os.path.isdir(ppath("./ext/")):
+                print("[PREBUILD] Cleaning extraction directory...")
+                shutil.rmtree(ppath("./ext/"))
+                os.mkdir(ppath("./ext/"))
             else:
-                verbose = False
+                print("[PREBUILD] Creating extraction directory...")
+                os.mkdir(ppath("./ext/"))
+
+            print("[PREBUILD] Extracting pack...")
+            extractfile(ppath("./packs/" + modpack + ".zip"), ppath("./ext/"), verbose)
+
+            print("[PREBUILD] Loading pack config...")
+            packconfig = VictoryNotationFile(ppath("./ext/config.vn"))
             
-
-        print("[PREBUILD] Starting modpack builder...")
-
-        if not os.path.isfile(ppath("./packs/" + modpack + ".zip")):
-            print("[PREBUILD][WARNING] Pack does not exist!")
-            input()
-            exit(0)
-
-        if os.path.isdir(ppath("./ext/")):
-            print("[PREBUILD] Cleaning extraction directory...")
-            shutil.rmtree(ppath("./ext/"))
-            os.mkdir(ppath("./ext/"))
-        else:
-            print("[PREBUILD] Creating extraction directory...")
-            os.mkdir(ppath("./ext/"))
-
-        print("[PREBUILD] Extracting pack...")
-        extractfile(ppath("./packs/" + modpack + ".zip"), ppath("./ext/"), verbose)
-
-        print("[PREBUILD] Loading pack config...")
-        packconfig = VictoryNotationFile(ppath("./ext/config.vn"))
-        
-        if os.path.isfile(ppath("./packs/" + modpack + "/inst_complete")):
-            if forceupdate == True:
+            if os.path.isfile(ppath("./packs/" + modpack + "/inst_complete")):
+                if forceupdate == True:
+                    if packconfig.getvalue("PackType") == "Forge":
+                        build_forge(modpack, packconfig, verbose)
+                    else:
+                        builder = imp.load_source(packconfig.getvalue("PackBuilder"), ppath("./builders/" + packconfig.getvalue("PackBuilder") + ".py"))
+                        builder.build(modpack, packconfig, verbose)
+            else:
                 if packconfig.getvalue("PackType") == "Forge":
                     build_forge(modpack, packconfig, verbose)
                 else:
                     builder = imp.load_source(packconfig.getvalue("PackBuilder"), ppath("./builders/" + packconfig.getvalue("PackBuilder") + ".py"))
                     builder.build(modpack, packconfig, verbose)
-        else:
-            if packconfig.getvalue("PackType") == "Forge":
-                build_forge(modpack, packconfig, verbose)
-            else:
-                builder = imp.load_source(packconfig.getvalue("PackBuilder"), ppath("./builders/" + packconfig.getvalue("PackBuilder") + ".py"))
-                builder.build(modpack, packconfig, verbose)
 
-        print("[POSTBUILD] Cleaning extraction directory...")
-        shutil.rmtree(ppath("./ext/"))
+            print("[POSTBUILD] Cleaning extraction directory...")
+            shutil.rmtree(ppath("./ext/"))
 
 
-        print("[LAUNCH] Copying launch template...")
-        with open (ppath("./packs/" + modpack + "/start.bat"), "r") as f:
-            data=f.read()
-            
-        print("[LAUNCH] Generating launch script...")
-        data = data.replace("{JAVAPATH}", javapath.replace("\n", ""))
-        data = data.replace("{MEMORY}", memory.replace("\n", ""))
-        data = data.replace("{USERNAME}", username)
-        data = data.replace("{SESSIONID}", sessionid)
-        data = data.replace("{MODPACK}", modpack)
-        data = data.replace("{APPDATA}", os.getcwd() + "\\packs\\" + modpack + "\\")
-        data = data.replace("{GAMEDIR}", os.getcwd() + "\\packs\\" + modpack + "\\.minecraft\\")
-        data = data.replace("{VERSION}", packconfig.getvalue("MinecraftVersion"))
-        data = data.replace("{PACKTYPE}", packconfig.getvalue("PackType"))
-        with open (ppath("./packs/" + modpack + "/start.bat"), "w") as f:
-            f.write(data)
-        print("[LAUNCH] Starting Minecraft...")
-        p = subprocess.Popen([ppath("./packs/" + modpack + "/start.bat")], shell=False)
+            print("[LAUNCH] Copying launch template...")
+            with open (ppath("./packs/" + modpack + "/start.bat"), "r") as f:
+                data=f.read()
+                
+            print("[LAUNCH] Generating launch script...")
+            data = data.replace("{JAVAPATH}", javapath.replace("\n", ""))
+            data = data.replace("{MEMORY}", memory.replace("\n", ""))
+            data = data.replace("{USERNAME}", username)
+            data = data.replace("{SESSIONID}", sessionid)
+            data = data.replace("{MODPACK}", modpack)
+            data = data.replace("{APPDATA}", os.getcwd() + "\\packs\\" + modpack + "\\")
+            data = data.replace("{GAMEDIR}", os.getcwd() + "\\packs\\" + modpack + "\\.minecraft\\")
+            data = data.replace("{VERSION}", packconfig.getvalue("MinecraftVersion"))
+            data = data.replace("{PACKTYPE}", packconfig.getvalue("PackType"))
+            with open (ppath("./packs/" + modpack + "/start.bat"), "w") as f:
+                f.write(data)
+            print("[LAUNCH] Starting Minecraft...")
+            p = subprocess.Popen([ppath("./packs/" + modpack + "/start.bat")], shell=False)
 
+    except Exception as e:
+        print("[ERROR]\n" + str(e))
+        input()
