@@ -659,43 +659,52 @@ if __name__ == "__main__":
         if nogui == False:
             print("Checking for updates...")
             moddle_version = "0.0.1"
+            if not os.path.isfile(ppath("./mupdate.py")):
+                downloadfile("https://dl.dropbox.com/s/28b2tuzl3wiw8mb/mupdate.py?dl=1", ppath("./mupdate.py"))
             downloadfile("https://dl.dropbox.com/s/j663vr0q1qxmig4/mversion.txt?dl=1", ppath("./mversion.txt"))
             with open(ppath("./mversion.txt"), "r") as f:
                 if not f.read() == moddle_version:
                     print("-----------------------------------------------------")
                     print("MODDLE VERSION " + f.read() + " IS NOW AVAILABLE!")
                     print("-----------------------------------------------------")
-                    input()
+                    print("")
+                    print("Do you want to update right now? (y/n)")
+                    yesno = input()
+                    if yesno == "y" or yesno == "yes":
+                        p = subprocess.Popen([ppath("./mupdate.py")], shell=False)
+                        exit(0)
+                        
                 
         if not os.path.isdir(ppath("./cache/")):
-            print("Downloading cache (this might take a while)...")
+            print("No cache found.  Downloading one... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/pq0pjn2uvyv5qhq/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
             tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
             tarball.extractall(".")
         
         if not os.path.isdir(ppath("./packs/")):
-            print("Fetching pack lists...")
+            print("No packs found.  Downloading some... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/tx6qfnhb5ml1z5f/packs.tar.gz?dl=1", ppath("./packs.tar.gz"))
             tarball = tarfile.open(ppath("./packs.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./ModdleFrontend.exe")):
-            print("Downloading Windows front-end...")
+            print("No Windows Launcher found.  Downloading one... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/5uyvfxbga7volc7/winlauncher.tar.gz?dl=1", ppath("./winlauncher.tar.gz"))
             tarball = tarfile.open(ppath("./winlauncher.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./config.vn")):
-            print("Fetching universal configs...")
+            print("No config file found.  Making one... (This won't take very long!)")
             with open(ppath("./config.vn"), "w") as f:
                 f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")
 
         dotminecraft = ""
 
         if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-            print("Collecting assets...")
+            print("No assets found!  Making some... (This could take a while!)")
             if dotminecraft == "":
-                print("Please enter the path to a clean, vanilla, 1.6.4 .minecraft folder for assets extraction (this won't break Minecraft or even change it at all, we just need to do this to get the assets):")
+                print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
+                print("(This is for building Minecraft assets!)")
                 dotminecraft = input()
             os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/"))
             compressdir(os.path.join(dotminecraft, ppath("/assets/virtual/legacy/")), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"))
@@ -704,16 +713,13 @@ if __name__ == "__main__":
 
 
 
-        print("")
-        print("")
-        
-        
-
         if platform.system() == "Windows" and nogui == False:
             p = subprocess.Popen([ppath("./ModdleFrontend.exe")], shell=False)
         else:
 
             if not platform.system() == "Windows":
+                print("")
+                print("")
                 print("###########################################################")
                 print("#########  Moddle Integrated Minecraft Launcher  ##########")
                 print("###########################################################")
