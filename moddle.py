@@ -676,32 +676,32 @@ if __name__ == "__main__":
                         
                 
         if not os.path.isdir(ppath("./cache/")):
-            print("No cache found.  Downloading one... (This could take a while!)")
+            print("Downloading the cache... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/pq0pjn2uvyv5qhq/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
             tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
             tarball.extractall(".")
         
         if not os.path.isdir(ppath("./packs/")):
-            print("No packs found.  Downloading some... (This could take a while!)")
+            print("Fetching modpacks... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/tx6qfnhb5ml1z5f/packs.tar.gz?dl=1", ppath("./packs.tar.gz"))
             tarball = tarfile.open(ppath("./packs.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./ModdleFrontend.exe")):
-            print("No Windows Launcher found.  Downloading one... (This could take a while!)")
+            print("Downloading the Windows launcher... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/5uyvfxbga7volc7/winlauncher.tar.gz?dl=1", ppath("./winlauncher.tar.gz"))
             tarball = tarfile.open(ppath("./winlauncher.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./config.vn")):
-            print("No config file found.  Making one... (This won't take very long!)")
+            print("Making the main config file... (This won't take very long!)")
             with open(ppath("./config.vn"), "w") as f:
                 f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")
 
         dotminecraft = ""
 
         if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-            print("No assets found!  Making some... (This could take a while!)")
+            print("Building Minecraft assets... (This could take a while!)")
             if dotminecraft == "":
                 print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
                 print("(This is for building Minecraft assets!)")
