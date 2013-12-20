@@ -668,35 +668,34 @@ if __name__ == "__main__":
                     input()
                 
         if not os.path.isdir(ppath("./cache/")):
-            print("No cache found.  Making one... (This could take a while!)")
+            print("Downloading cache (this might take a while)...")
             downloadfile("https://dl.dropbox.com/s/pq0pjn2uvyv5qhq/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
             tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
             tarball.extractall(".")
         
         if not os.path.isdir(ppath("./packs/")):
-            print("No packs found.  Making some... (This could take a while!)")
+            print("Fetching pack lists...")
             downloadfile("https://dl.dropbox.com/s/tx6qfnhb5ml1z5f/packs.tar.gz?dl=1", ppath("./packs.tar.gz"))
             tarball = tarfile.open(ppath("./packs.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./ModdleFrontend.exe")):
-            print("No Windows Launcher found.  Making one... (This could take a while!)")
+            print("Downloading Windows front-end...")
             downloadfile("https://dl.dropbox.com/s/5uyvfxbga7volc7/winlauncher.tar.gz?dl=1", ppath("./winlauncher.tar.gz"))
             tarball = tarfile.open(ppath("./winlauncher.tar.gz"), "r:gz")
             tarball.extractall(".")
 
         if not os.path.isfile(ppath("./config.vn")):
-            print("No config file found.  Making one... (This won't take very long!)")
+            print("Fetching universal configs...")
             with open(ppath("./config.vn"), "w") as f:
                 f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")
 
         dotminecraft = ""
 
         if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-            print("No assets found!  Making some... (This could take a while!)")
+            print("Collecting assets...")
             if dotminecraft == "":
-                print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
-                print("(This is for building Minecraft assets!)")
+                print("Please enter the path to a clean, vanilla, 1.6.4 .minecraft folder for assets extraction (this won't break Minecraft or even change it at all, we just need to do this to get the assets):")
                 dotminecraft = input()
             os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/"))
             compressdir(os.path.join(dotminecraft, ppath("/assets/virtual/legacy/")), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"))
