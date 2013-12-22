@@ -86,6 +86,29 @@ class VictoryNotationFile:
             nodelist.append(m.name)
         return nodelist
 
+    def setnode(self, name, value):
+        for m in self.values:
+            if m.name == name:
+                m.values = value
+
+    def makenode(self, name, value):
+        newnode = VictoryNotationValue()
+        newnode.name = name
+        newnode.values = value
+        self.values.append(newnode)
+
+    def save(self, filename):
+        contents = ""
+        for m in self.values:
+            if len(m.values) > 1:
+                contents = contents + m.name + ":\n"
+                for value in m.values:
+                    contents = contents + "-" + value + "\n"
+                contents = contents + "\n"
+            else:
+                contents = contents + m.name + "=" + m.values[0] + "\n\n"
+        with open(filename, "w") as f:
+            f.write(contents)
 
 
 def ppath(path):
@@ -122,8 +145,9 @@ def extractfile(filename, target):
 def compress__directory(startingdir, directory, z):
     for root, directories, files in os.walk(directory):
         for file in files:
+            #fpath = os.join(root, file) #root + ppath("/") + file
             fpath = root + ppath("/") + file
-            z.write(fpath, fpath.replace(startingdir, "").replace("_aux.class", "aux.class"))
+            z.write(fpath, os.path.join(root.replace(startingdir, ""), file).replace("_aux.class", "aux.class"))
         for sub in directories:
             compress__directory(startingdir, os.path.join(root + sub), z)
 
@@ -365,9 +389,14 @@ def cache_uniconfig_copydir(source, target, config):
 def cache_uniconfig(name, version, modpack, config):
     if not packconfig.getvalue("UniversalConfigType") == "None":
         cache_extract("__UniversalConfig" + config.getvalue("UniversalConfigType"), name + "." + version, ppath("./etmp/"))
-        if not os.path.isdir(ppath("./packs/" + modpack + "/.minecraft/config/")):
-            os.mkdir(ppath("./packs/" + modpack + "/.minecraft/config/"))
-        cache_uniconfig_copydir(ppath("./etmp/"), ppath("./packs/" + modpack + "/.minecraft/config/"), config)
+        if modpack.find("_server") > -1:
+            if not os.path.isdir(ppath("./packs/" + modpack + "/config/")):
+                os.mkdir(ppath("./packs/" + modpack + "/config/"))
+            cache_uniconfig_copydir(ppath("./etmp/"), ppath("./packs/" + modpack + "/config/"), config)
+        else:
+            if not os.path.isdir(ppath("./packs/" + modpack + "/.minecraft/config/")):
+                os.mkdir(ppath("./packs/" + modpack + "/.minecraft/config/"))
+            cache_uniconfig_copydir(ppath("./etmp/"), ppath("./packs/" + modpack + "/.minecraft/config/"), config)
         try:
             shutil.rmtree(ppath("./etmp/"))
         except:
@@ -543,7 +572,7 @@ def build_forge_server(name, packconfig):
     print("[BUILD] Creating launch script...")
     #INCLUDES VOLATILE cache_getftype() CODE!!!
     #if cache_assert("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion")) == True:
-    cache_copy("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server", "./packs/" + name + "_server/start" + cache_getftype("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server"))
+    cache_copy("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server", "./packs/" + name + "_server/start_template" + cache_getftype("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server"))
 
     print("[BUILD] Obtaining Minecraft jarfile...")
     if packconfig.getvalue("MinecraftInstallType") == "Legacy":
@@ -657,25 +686,68 @@ if __name__ == "__main__":
         
 
         if nogui == False:
+
             print("Checking for updates...")
-            moddle_version = "0.0.1"
+
             if not os.path.isfile(ppath("./mupdate.py")):
-                downloadfile("https://dl.dropbox.com/s/28b2tuzl3wiw8mb/mupdate.py?dl=1", ppath("./mupdate.py"))
-            downloadfile("https://dl.dropbox.com/s/j663vr0q1qxmig4/mversion.txt?dl=1", ppath("./mversion.txt"))
-            with open(ppath("./mversion.txt"), "r") as f:
-                if not f.read() == moddle_version:
+                print("Downloading MupDate...")
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/mupdate.py?dl=1", ppath("./mupdate.py"))
+
+            experimental = False
+
+            if os.path.isfile(ppath("./config.vn")):
+                moddleconfig = VictoryNotationFile(ppath("./config.vn"))
+                if moddleconfig.getvalue("Experimental") == "true":
+                    experimental = True
+
+            versiontext = ""
+            if os.path.isfile(ppath("./version.vn")):
+                versionconfig = VictoryNotationFile(ppath("./version.vn"))
+                versiontext = versionconfig.getvalue("ModdleVersion")
+            else:
+                versiontext = "0"
+
+            if experimental == False:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/latestversion_stable.vn?dl=1", ppath("./latestversion.vn"))
+            else:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/latestversion_experimental.vn?dl=1", ppath("./latestversion.vn"))
+
+            latestversionconfig = VictoryNotationFile(ppath("./latestversion.vn"))
+            
+            if not latestversionconfig.getvalue("ModdleVersion") == versiontext:
+
+                if os.path.isdir(ppath("./cache/")):
                     print("-----------------------------------------------------")
-                    print("MODDLE VERSION " + f.read() + " IS NOW AVAILABLE!")
+                    print("MODDLE VERSION " + latestversionconfig.getvalue("ModdleVersion") + " IS NOW AVAILABLE!")
                     print("-----------------------------------------------------")
                     print("")
                     print("Do you want to update right now? (y/n)")
                     yesno = input()
                     if yesno == "y" or yesno == "yes":
-                        p = subprocess.Popen([ppath("./mupdate.py")], shell=False)
+                        if experimental == False:
+                            p = subprocess.Popen(["python", ppath("./mupdate.py")], shell=False)
+                        else:
+                            p = subprocess.Popen(["python", ppath("./mupdate.py"), "-experimental"], shell=False)
+                        exit(0)
+                    else:
+                        print("Very well then, continuing on with business...")
+                else:
+                    print("-----------------------------------------------------")
+                    print("INSTALL MODDLE VERSION " + latestversionconfig.getvalue("ModdleVersion"))
+                    print("-----------------------------------------------------")
+                    print("")
+                    print("Do you want to install Moddle now? (y/n)")
+                    yesno = input()
+                    if yesno == "y" or yesno == "yes":
+                        p = subprocess.Popen(["python", ppath("./mupdate.py")], shell=False)
+                        exit(0)
+                    else:
+                        print("Very well then, Moddle will not be installed on your system...")
+                        input()
                         exit(0)
                         
                 
-        if not os.path.isdir(ppath("./cache/")):
+        '''if not os.path.isdir(ppath("./cache/")):
             print("Downloading the cache... (This could take a while!)")
             downloadfile("https://dl.dropbox.com/s/pq0pjn2uvyv5qhq/cache.tar.gz?dl=1", ppath("./cache.tar.gz"))
             tarball = tarfile.open(ppath("./cache.tar.gz"), "r:gz")
@@ -696,20 +768,28 @@ if __name__ == "__main__":
         if not os.path.isfile(ppath("./config.vn")):
             print("Making the main config file... (This won't take very long!)")
             with open(ppath("./config.vn"), "w") as f:
-                f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")
-
-        dotminecraft = ""
+                f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")'''
 
         if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-            print("Building Minecraft assets... (This could take a while!)")
-            if dotminecraft == "":
-                print("Please enter the path to your CLEAN MINECRAFT INSTALLATION ('%APPDATA%/.minecraft/' directory):")
-                print("(This is for building Minecraft assets!)")
-                dotminecraft = input()
-            os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/"))
-            compressdir(os.path.join(dotminecraft, ppath("/assets/virtual/legacy/")), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"))
+            print("My good player, it appears that you have not installed your Minecraft assets")
+            print("into Moddle yet.  Please, allow me to install them for you.  This could take")
+            print("a bit of time.")
+            print("Please enter the path to your '%APPDATA%/.minecraft' directory:")
+            print("(This is for building Minecraft assets.  Note that your assets")
+            print("must be UNMODIFIED!)")
+            dotminecraft = input()
+            os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/atmp/"))
+            assetdir = dotminecraft + ppath("/assets/virtual/legacy/")
+            assetdir = assetdir.replace(ppath("//"), ppath("/"))
+            print("Copying...")
+            shutil.copytree(assetdir, ppath("./cache/__MinecraftAssets/1.6.4/atmp/assets/"))
+            print("Compressing...")
+            compressdir(ppath("./cache/__MinecraftAssets/1.6.4/atmp/"), ppath("./cache/__MinecraftAssets/1.6.4/__MinecraftAssets.zip"))
+            print("Cleaning up...")
+            shutil.rmtree(ppath("./cache/__MinecraftAssets/1.6.4/atmp/"))
             with open(ppath("./cache/__MinecraftAssets/1.6.4/filetype.vn"), "w") as f:
                 f.write("FileType=.zip")
+            print("Done.")
 
 
 
@@ -741,27 +821,24 @@ if __name__ == "__main__":
                 print("Modpack '" + modpack + "' selected.")
 
 
-            #if runserver == False:
-            if os.path.exists(ppath("./login.vn")):
-                loginconfig = VictoryNotationFile(ppath("./login.vn"))
-                if username == "":
-                    username = loginconfig.getvalue("Username")
-                if password == "":
-                    password = loginconfig.getvalue("Password")
-            else:
-                if username == "" and password == "":
-                    print("")
-                    print("Please enter your Minecraft account info.")
-                    print("")
-                    print("Username:")
-                    username = input()
-                    password = getpass.getpass(prompt='Password:\n', stream=None)
-                    
-
-            print("")
-            print("")
-
             if runserver == False:
+                if os.path.exists(ppath("./login.vn")):
+                    loginconfig = VictoryNotationFile(ppath("./login.vn"))
+                    if username == "":
+                        username = loginconfig.getvalue("Username")
+                    if password == "":
+                        password = loginconfig.getvalue("Password")
+                else:
+                    if username == "" and password == "":
+                        print("")
+                        print("Please enter your Minecraft account info.")
+                        print("")
+                        print("Username:")
+                        username = input()
+                        password = getpass.getpass(prompt='Password:\n', stream=None)
+                print("")
+                print("")
+
                 print("[LOGIN] Obtaining session ID...")
 
                 downloadfile("http://login.minecraft.net/?user=" + username + "&password=" + password + "&version=12", ppath("./login.tmp"))
@@ -915,6 +992,4 @@ if __name__ == "__main__":
         type_, value_, traceback_ = sys.exc_info()
         for line in traceback.format_exception(type_, value_, traceback_):
             print(line)
-        #print("[ERROR]\n" + str(e))
-        #print("[TRACEBACK]\n" + traceback.format_tb(traceback_))
         input()
