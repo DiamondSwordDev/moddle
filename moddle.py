@@ -771,12 +771,8 @@ if __name__ == "__main__":
                 f.write("***\n*** Moddle Configuration\n***\n\nMemory=1024\n\nJavaPath=C:\\Program Files\\Java\\jre7\\bin\\")'''
 
         if not os.path.isdir(ppath("./cache/__MinecraftAssets/")):
-            print("My good player, it appears that you have not installed your Minecraft assets")
-            print("into Moddle yet.  Please, allow me to install them for you.  This could take")
-            print("a bit of time.")
-            print("Please enter the path to your '%APPDATA%/.minecraft' directory:")
-            print("(This is for building Minecraft assets.  Note that your assets")
-            print("must be UNMODIFIED!)")
+            print("My good player, it appears that you have not installed your Minecraft assets into Moddle yet.  Please, allow me to install them for you.  This could take a bit of time.")
+            print("Please enter the path to your \".minecraft\" directory (it must be unmodified for this to work and will not be modified in this process):")
             dotminecraft = input()
             os.makedirs(ppath("./cache/__MinecraftAssets/1.6.4/atmp/"))
             assetdir = dotminecraft + ppath("/assets/virtual/legacy/")
