@@ -30,7 +30,7 @@ def checkupdates():
 
     if os.path.isfile(os.path.join(".", "config.vn")):
         moddleconfig = vnlib.VictoryNotationFile(os.path.join(".", "config.vn"))
-        if moddleconfig.getvalue("Experimental") == "true":
+        if moddleconfig.getvalue("Experimental").lower() == "true":
             experimental = True
 
     versiontext = ""
@@ -125,7 +125,7 @@ def getsession(uname, pword):
 
 
 
-def invokebuild(modpack, server):
+def invokebuild(modpack, server, clean):
     
     if not os.path.isfile(os.path.join(".", "packs", modpack + ".zip")):
         print("[PREBUILD][WARNING] Pack does not exist!")
@@ -150,18 +150,18 @@ def invokebuild(modpack, server):
         if os.path.isfile(os.path.join(".", "packs", modpack + "_server", "inst_complete")):
             if forceupdate == True:
                 builder = imp.load_source(packconfig.getvalue("PackType").lower(), os.path.join(".", packconfig.getvalue("PackType").lower() + ".py"))
-                builder.buildserver(modpack, packconfig)
+                builder.buildserver(modpack, packconfig, clean)
         else:
             builder = imp.load_source(packconfig.getvalue("PackType").lower(), os.path.join(".", packconfig.getvalue("PackType").lower() + ".py"))
-            builder.buildserver(modpack, packconfig)
+            builder.buildserver(modpack, packconfig, clean)
     else:
         if os.path.isfile(os.path.join(".", "packs", modpack, "inst_complete")):
             if forceupdate == True:
                 builder = imp.load_source(packconfig.getvalue("PackType").lower(), os.path.join(".", packconfig.getvalue("PackType").lower() + ".py"))
-                builder.build(modpack, packconfig)
+                builder.build(modpack, packconfig, clean)
         else:
             builder = imp.load_source(packconfig.getvalue("PackType").lower(), os.path.join(".", packconfig.getvalue("PackType").lower() + ".py"))
-            builder.build(modpack, packconfig)
+            builder.build(modpack, packconfig, clean)
 
     print("[POSTBUILD] Cleaning extraction directory...")
     shutil.rmtree(os.path.join(".", "ext"))
@@ -177,6 +177,7 @@ if __name__ == "__main__":
         password = ""
         modpack = ""
         forceupdate = False
+        clean = False
         memory = ""
         javapath = ""
         nogui = False
@@ -194,6 +195,8 @@ if __name__ == "__main__":
                     memory = sys.argv[i].split("=")[1]
                 elif sys.argv[i].lower() == "-forceupdate=true":
                     forceupdate = True
+                elif sys.argv[i].lower() == "-clean=true":
+                    clean = True
                 elif sys.argv[i].lower() == "-nogui":
                     nogui = True
                 elif sys.argv[i].lower() == "-runserver":
@@ -276,7 +279,7 @@ if __name__ == "__main__":
                 memory = moddleconfig.getvalue("Memory")
 
             print("[PREBUILD] Starting modpack builder...")
-            packconfig = invokebuild(modpack, runserver)
+            packconfig = invokebuild(modpack, runserver, clean)
 
             '''if runserver == True:
                 print("[LAUNCH] Copying launch template...")
@@ -318,16 +321,18 @@ if __name__ == "__main__":
 
             print("[LAUNCH] Copying launch template (NEW!)...")
             fullconfig = packconfig
-            
-            usernameval = vnlib.VictoryNotationValue()
-            usernameval.name = "Username"
-            usernameval.values.append(username)
-            fullconfig.values.append(usernameval)
 
-            sessionval = vnlib.VictoryNotationValue()
-            sessionval.name = "SessionID"
-            sessionval.values.append(sessionid)
-            fullconfig.values.append(sessionval)
+            if runserver == False:
+                
+                usernameval = vnlib.VictoryNotationValue()
+                usernameval.name = "Username"
+                usernameval.values.append(username)
+                fullconfig.values.append(usernameval)
+
+                sessionval = vnlib.VictoryNotationValue()
+                sessionval.name = "SessionID"
+                sessionval.values.append(sessionid)
+                fullconfig.values.append(sessionval)
 
             modpackval = vnlib.VictoryNotationValue()
             modpackval.name = "Modpack"
@@ -346,13 +351,23 @@ if __name__ == "__main__":
 
             appdataval = vnlib.VictoryNotationValue()
             appdataval.name = "AppData"
-            appdataval.values.append(os.path.join(os.getcwd() + "\\packs\\" + modpack + "\\"))
+            if runserver == True:
+                appdataval.values.append(os.path.join(os.getcwd(), "packs", modpack + "_server"))
+            else:
+                appdataval.values.append(os.path.join(os.getcwd(), "packs", modpack))
             fullconfig.values.append(appdataval)
+
+            if runserver == True:
+                vnlib.copyfile_macro(os.path.join(".", "packs", modpack + "_server", "start_template.bat"), os.path.join(".", "packs", modpack + "_server", "start.bat"), packconfig)
+            else:
+                vnlib.copyfile_macro(os.path.join(".", "packs", modpack, "start_template.bat"), os.path.join(".", "packs", modpack, "start.bat"), packconfig)
             
-            vnlib.copyfile_macro(os.path.join(".", "packs", modpack, "start_template.bat"), os.path.join(".", "packs", modpack, "start.bat"), packconfig)
-                
             print("[LAUNCH] Starting Minecraft...")
-            p = subprocess.Popen([os.path.join(".", "packs", modpack, "start.bat")], shell=False)
+            if runserver == True:
+                p = subprocess.Popen([os.path.join(".", "packs", modpack + "_server", "start.bat")], shell=False)
+            else:
+                p = subprocess.Popen([os.path.join(".", "packs", modpack, "start.bat")], shell=False)
+
 
 
 
