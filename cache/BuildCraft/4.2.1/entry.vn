@@ -1,0 +1,11 @@
+Author=The BuildCraft Team
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+BuildCraft.jar:
+-Extract=False
+-Url=http://www.curseforge.com/media/files/757/8/buildcraft-A-1.6.4-4.2.1.jar

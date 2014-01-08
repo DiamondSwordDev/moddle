@@ -1,0 +1,11 @@
+Author=ChickenBones
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-CodeChickenCore,0.9.0.6
+
+EnderStorage.jar:
+-Extract=False
+-Url=http://www.chickenbones.craftsaddle.org/Files/goto.php?file=EnderStorage&version=1.6.4

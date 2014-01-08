@@ -1,0 +1,11 @@
+Author=MojangAB
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+minecraft_server.1.6.4.jar:
+-Extract=False
+-Url=https://s3.amazonaws.com/Minecraft.Download/versions/1.6.4/minecraft_server.1.6.4.jar

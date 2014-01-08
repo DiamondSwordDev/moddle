@@ -1,0 +1,11 @@
+Author=bdew
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+NEIAddons.jar:
+-Extract=False
+-Url=http://bit.ly/HHLQ1s

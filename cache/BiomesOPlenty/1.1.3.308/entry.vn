@@ -1,0 +1,11 @@
+Author=The Biomes O Plenty Team
+
+HasConfigs=True
+ConfigInstallDir=config
+
+Dependencies:
+-None
+
+BiomesOPlenty.jar:
+-Extract=False
+-Url=http://files.minecraftforge.net/BiomesOPlenty/BiomesOPlenty-universal-1.6.4-1.1.3.308.jar

@@ -1,0 +1,10 @@
+Author=The Forge Team
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+ForgeServer.zip:
+-Extract=True

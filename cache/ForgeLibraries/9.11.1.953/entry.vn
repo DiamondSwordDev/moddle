@@ -1,0 +1,7 @@
+Author=The Forge Team
+
+Dependencies:
+-None
+
+ForgeLibraries.zip:
+-Extract=True

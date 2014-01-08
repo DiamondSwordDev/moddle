@@ -1,0 +1,10 @@
+Author=Greenlock28
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+__ModdleAssets.zip:
+-Extract=True

@@ -1,0 +1,11 @@
+Author=Nuchaz
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-BiblioCraft,1.5.3
+
+BiblioWoodsNatura.zip:
+-Extract=False
+-Url=http://www.bibliocraftmod.com/releases/BiblioWoods[Natura][v1.1].zip
