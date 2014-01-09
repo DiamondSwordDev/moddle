@@ -1,0 +1,11 @@
+Author=AlgorithmX2
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+AppliedEnergistics.jar:
+-Extract=False
+-Url=http://ae-mod.info/beta/appeng-rv14-finale3-mc16x.jar
