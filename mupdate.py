@@ -15,36 +15,74 @@ try:
 
     time.sleep(2)
 
-    print("")
-    print("")
-    print("===========================================")
-    print("=========         MupDate        ==========")
-    print("=========   The Moddle Updater   ==========")
-    print("===========================================")
-    print("")
-    print("")
-    print("This will update your Moddle installation.")
-    print("THIS COULD BREAK STUFF! DO YOU WISH TO PROCEED? (y/n)")
+    experimental = False
+    newversion = "legacy"
+    silentmode = False
+    
+    if len(sys.argv) > 1:
+        for i in range(1, len(sys.argv)):
+            if sys.argv[i] == "-experimental":
+                experimental = True
+            elif sys.argv[i].split("=")[0] == "-version":
+                newversion = sys.argv[i].split("=")[1]
+            elif sys.argv[i] == "-silent":
+                silentmode = True
 
-    yesno = input()
-    if yesno == "y" or yesno == "yes":
+    if silentmode == True:
         print("")
         print("")
         print("Downloading...")
-        experimental = False
-        if len(sys.argv) > 1:
-            for i in range(1, len(sys.argv)):
-                if sys.argv[i].split("=")[0] == "-experimental":
-                    experimental = True
-        if experimental == True:
-            downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/experimental/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+
+        if newversion == "legacy":
+            if experimental == True:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/experimental/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+            else:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/release/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
         else:
-            downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/release/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+            if experimental == True:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/experimental/" + newversion + "/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+            else:
+                downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/release/" + newversion + "/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+
         print("Extracting...")
         tarball = tarfile.open(os.path.join(".", "moddle.tar.gz"), "r:gz")
         tarball.extractall(".")
         print("Done!  You may now restart Moddle.")
         input()
+    else:
+        print("")
+        print("")
+        print("===========================================")
+        print("=========         MupDate        ==========")
+        print("=========   The Moddle Updater   ==========")
+        print("===========================================")
+        print("")
+        print("")
+        print("This will update your Moddle installation.")
+        print("THIS COULD BREAK STUFF! DO YOU WISH TO PROCEED? (y/n)")
+
+        yesno = input()
+        if yesno == "y" or yesno == "yes":
+            print("")
+            print("")
+            print("Downloading...")
+
+            if newversion == "legacy":
+                if experimental == True:
+                    downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/experimental/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+                else:
+                    downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/release/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+            else:
+                if experimental == True:
+                    downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/experimental/" + newversion + "/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+                else:
+                    downloadfile("https://dl.dropboxusercontent.com/u/242871063/moddle/release/" + newversion + "/moddle.tar.gz?dl=1", os.path.join(".", "moddle.tar.gz"))
+
+            print("Extracting...")
+            tarball = tarfile.open(os.path.join(".", "moddle.tar.gz"), "r:gz")
+            tarball.extractall(".")
+            print("Done!  You may now restart Moddle.")
+            input()
 
 except Exception as e:
     type_, value_, traceback_ = sys.exc_info()

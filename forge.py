@@ -130,13 +130,13 @@ def buildserver(name, packconfig, clean):
 
     print("[BUILD] Building server installation...")
     print("[BUILD] Installing Forge...")
-    unicache.cache_get("ForgeServer", packconfig.getvalue("ForgeVersion"), os.path.join(".", "packs", name + "_server"), packconfig)
+    unicache.cache_get("ForgeServer", packconfig.getvalue("ForgeVersion"), os.path.join(".", "packs", name + "_server"), packconfig, os.path.join(".", "packs", name + "_server"))
 
     print("[BUILD] Creating launch script...")
-    unicache.cache_get("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server", os.path.join(".", "packs", name + "_server"), packconfig)
+    unicache.cache_get("__MinecraftLauncher", platform.system() + "." + packconfig.getvalue("MinecraftVersion") + ".server", os.path.join(".", "packs", name + "_server"), packconfig, os.path.join(".", "packs", name + "_server"))
 
     print("[BUILD] Obtaining Minecraft jarfile...")
-    unicache.cache_get("__MinecraftServer", packconfig.getvalue("MinecraftVersion"), os.path.join(".", "packs", name + "_server"), packconfig)
+    unicache.cache_get("__MinecraftServer", packconfig.getvalue("MinecraftVersion"), os.path.join(".", "packs", name + "_server"), packconfig, os.path.join(".", "packs", name + "_server"))
         
     '''if not packconfig.getvalue("JarMods") == "None":
         
@@ -188,7 +188,7 @@ def buildserver(name, packconfig, clean):
     for mod in packconfig.getvalues("Mods"):
         if not mod == "None":
             print("[BUILD][MOD] " + mod)
-            unicache.cache_get(mod.split(",")[0], mod.split(",")[1], os.path.join(".", "packs", name + "_server", "mods"), packconfig)
+            unicache.cache_get(mod.split(",")[0], mod.split(",")[1], os.path.join(".", "packs", name + "_server", "mods"), packconfig, os.path.join(".", "packs", name + "_server"))
 
     '''print("[BUILD] Installing Configs...")
     if not os.path.isdir(ppath("./packs/" + name + "_server/config/")):

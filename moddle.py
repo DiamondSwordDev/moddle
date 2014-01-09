@@ -63,9 +63,9 @@ def checkupdates():
             yesno = input()
             if yesno == "y" or yesno == "yes":
                 if experimental == False:
-                    p = subprocess.Popen(["python", os.path.join(".", "mupdate.py")], shell=False)
+                    p = subprocess.Popen(["python", os.path.join(".", "mupdate.py"), "-silent", "-version=" + latestversionconfig.getvalue("ModdleVersion")], shell=False)
                 else:
-                    p = subprocess.Popen(["python", os.path.join(".", "mupdate.py")], shell=False)
+                    p = subprocess.Popen(["python", os.path.join(".", "mupdate.py"), "-experimental", "-silent", "-version=" + latestversionconfig.getvalue("ModdleVersion")], shell=False)
                 exit(0)
             else:
                 print("Very well then, continuing on with business...")
@@ -77,7 +77,7 @@ def checkupdates():
             print("Do you want to install Moddle now? (y/n)")
             yesno = input()
             if yesno == "y" or yesno == "yes":
-                p = subprocess.Popen(["python", os.path.join(".", "mupdate.py")], shell=False)
+                p = subprocess.Popen(["python", os.path.join(".", "mupdate.py"), "-silent", "-version=" + latestversionconfig.getvalue("ModdleVersion")], shell=False)
                 exit(0)
             else:
                 print("Very well then, Moddle will not be installed on your system...")
@@ -107,6 +107,13 @@ def checkassets():
         print("Done.")
         print("----------------------------------------------------------------------------")
 
+
+
+def checknews():
+    mcore.downloadfile("https://sites.google.com/site/moddleframework/news.txt?attredirects=0&d=1", os.path.join(".", "news.txt"))
+    with open(os.path.join(".", "news.txt"), "r") as f:
+        print(f.read())
+        
 
 
 def getsession(uname, pword):
@@ -182,6 +189,7 @@ if __name__ == "__main__":
         javapath = ""
         nogui = False
         runserver = False
+        newsmode = False
 
         if len(sys.argv) > 1:
             for i in range(1, len(sys.argv)):
@@ -203,12 +211,21 @@ if __name__ == "__main__":
                     runserver = True
                 elif sys.argv[i].split("=")[0] == "-javapath":
                     javapath = sys.argv[i].split("=")[1]
+                elif sys.argv[i].lower() == "-news":
+                    newsmode = True
 
         
         if nogui == False:
             print("Checking for updates...")
             checkupdates()
         checkassets()    
+
+
+        if newsmode == True:
+            print("")
+            print("")
+            checknews()
+            exit(0)
 
         
         if platform.system() == "Windows" and nogui == False:

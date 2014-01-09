@@ -1,0 +1,11 @@
+Author=RWTema
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+ExtraUtils.tar.gz:
+-Extract=True
+-Url=https://dl.dropboxusercontent.com/u/242871063/moddle/dist/extrautils/1.0.2/extrautils.tar.gz
