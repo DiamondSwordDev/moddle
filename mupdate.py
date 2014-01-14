@@ -16,7 +16,7 @@ try:
     time.sleep(2)
 
     experimental = False
-    newversion = "legacy"
+    newversion = "latest"
     silentmode = False
     
     if len(sys.argv) > 1:

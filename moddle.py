@@ -16,6 +16,8 @@ import os
 import vnlib
 import mcore
 
+import perspective
+
 
 def checkupdates():
     
@@ -86,26 +88,77 @@ def checkupdates():
 
 
 
-def checkassets():
+def assetsbuilder_old():
     
-    if not os.path.isdir(os.path.join(".", "cache", "__MinecraftAssets")):
-        print("----------------------------------------------------------------------------")
+    print("----------------------------------------------------------------------------")
+    print("Looking out the Windows for automagical assets candidates...")
+    if os.path.isdir(os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", ".minecraft", "assets", "virtual", "legacy")):
+        print("Your assets can be automagically created!")
+        print("Copying...")
+        shutil.copytree(os.path.join(os.environ["USERPROFILE"], "AppData", "Roaming", ".minecraft", "assets", "virtual", "legacy"), os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp", "assets"))
+        print("Compressing...")
+        mcore.compresszipfile(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"), os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
+        #mcore.compresszipfile(assetdir, os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
+        print("Cleaning up...")
+        shutil.rmtree(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
+        print("Done.")
+    else:
         print("My good player, it appears that you have not installed your Minecraft assets into Moddle yet.  Please, allow me to install them for you.  This could take a bit of time.")
         print("Please enter the path to your \".minecraft\" directory (it must be unmodified for this to work and will not be modified in this process):")
         dotminecraft = input()
-        os.makedirs(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
+        #os.makedirs(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
         assetdir = os.path.join(dotminecraft, "assets", "virtual", "legacy")
         assetdir = assetdir.replace(ppath("//"), ppath("/"))
         print("Copying...")
         shutil.copytree(assetdir, os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp", "assets"))
         print("Compressing...")
-        mcore.compresszipfile(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"), os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "__MinecraftAssets.zip"))
+        mcore.compresszipfile(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"), os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
+        #mcore.compresszipfile(assetdir, os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
         print("Cleaning up...")
         shutil.rmtree(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
-        with open(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "filetype.vn"), "w") as f:
-            f.write("FileType=.zip")
+        #with open(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "filetype.vn"), "w") as f:
+        #    f.write("FileType=.zip")
         print("Done.")
-        print("----------------------------------------------------------------------------")
+    print("----------------------------------------------------------------------------")
+
+
+
+def assetsbuilder():
+    print("--------------------------------------------------------------------------------")
+    print("My good player, it appears that you do not have any Minecraft assets installed.")
+    print("I shall, therefore, install them for you.")
+    try:
+        os.makedirs(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
+    except:
+        pass
+    print("Downloading Assets...")
+    perspective.getassets(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp", "assets"), "legacy", verbose=True, prefix="[ASSETS]")
+    print("Compressing...")
+    mcore.compresszipfile(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"), os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
+    print("Cleaning up...")
+    try:
+        shutil.rmtree(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
+    except:
+        print("Asset cleanup failed.")
+    print("Done.")
+    print("--------------------------------------------------------------------------------")
+    
+
+
+def checkassets(rebuildassets):
+    
+    if not os.path.isfile(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip")):
+        assetsbuilder()
+    elif rebuildassets == True:
+        try:
+            shutil.rmtree(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "atmp"))
+        except:
+            pass
+        try:
+            os.remove(os.path.join(".", "cache", "__MinecraftAssets", "1.6.4", "assets.zip"))
+        except:
+            pass
+        assetsbuilder()
 
 
 
@@ -190,6 +243,7 @@ if __name__ == "__main__":
         nogui = False
         runserver = False
         newsmode = False
+        rebuildassets = False
 
         if len(sys.argv) > 1:
             for i in range(1, len(sys.argv)):
@@ -209,6 +263,8 @@ if __name__ == "__main__":
                     nogui = True
                 elif sys.argv[i].lower() == "-runserver":
                     runserver = True
+                elif sys.argv[i].lower() == "-assets":
+                    rebuildassets = True
                 elif sys.argv[i].split("=")[0] == "-javapath":
                     javapath = sys.argv[i].split("=")[1]
                 elif sys.argv[i].lower() == "-news":
@@ -218,7 +274,7 @@ if __name__ == "__main__":
         if nogui == False:
             print("Checking for updates...")
             checkupdates()
-        checkassets()    
+        checkassets(rebuildassets)
 
 
         if newsmode == True:
