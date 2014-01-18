@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import urllib.request
+import subprocess
 import tarfile
 import time
 import sys
@@ -47,8 +48,10 @@ try:
         print("Extracting...")
         tarball = tarfile.open(os.path.join(".", "moddle.tar.gz"), "r:gz")
         tarball.extractall(".")
-        print("Done!  You may now restart Moddle.")
-        input()
+        #print("Done!  You may now restart Moddle.")
+        #input()
+        print("Done!  Re-launching Moddle...")
+        p = subprocess.Popen(["python", os.path.join(".", "moddle.py")], shell=False)
     else:
         print("")
         print("")
@@ -81,8 +84,10 @@ try:
             print("Extracting...")
             tarball = tarfile.open(os.path.join(".", "moddle.tar.gz"), "r:gz")
             tarball.extractall(".")
-            print("Done!  You may now restart Moddle.")
-            input()
+            #print("Done!  You may now restart Moddle.")
+            #input()
+            print("Done!  Re-launching Moddle...")
+            p = subprocess.Popen(["python", os.path.join(".", "moddle.py")], shell=False)
 
 except Exception as e:
     type_, value_, traceback_ = sys.exc_info()
