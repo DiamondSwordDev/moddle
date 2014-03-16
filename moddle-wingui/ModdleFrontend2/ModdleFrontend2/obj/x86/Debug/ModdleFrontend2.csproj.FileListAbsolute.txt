@@ -1,0 +1,11 @@
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\bin\Debug\ModdleFrontend2.exe.config
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\bin\Debug\ModdleFrontend2.exe
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\bin\Debug\ModdleFrontend2.pdb
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\ModdleFrontend2.MainForm.resources
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\ModdleFrontend2.exe
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\ModdleFrontend2.pdb
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\obj\x86\Debug\ModdleFrontend2.ErrorDialog.resources
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend2\ModdleFrontend2\bin\Debug\ICSharpCode.SharpZipLib.dll

@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.2.0.8783
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moddle2", "Moddle2\Moddle2.csproj", "{FA539A26-D2AF-44F1-AD39-7C1B4A2EB50B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA539A26-D2AF-44F1-AD39-7C1B4A2EB50B}.Debug|x86.Build.0 = Debug|x86
+		{FA539A26-D2AF-44F1-AD39-7C1B4A2EB50B}.Debug|x86.ActiveCfg = Debug|x86
+		{FA539A26-D2AF-44F1-AD39-7C1B4A2EB50B}.Release|x86.Build.0 = Release|x86
+		{FA539A26-D2AF-44F1-AD39-7C1B4A2EB50B}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+EndGlobal
