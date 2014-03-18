@@ -1,5 +1,6 @@
 Moddle
 ======
+[![Build Status](https://travis-ci.org/DiamondSwordDev/moddle.png?branch=master)](https://travis-ci.org/DiamondSwordDev/moddle)
 
 A simple, easy to use, mod launcher with a build-in cache.
 
