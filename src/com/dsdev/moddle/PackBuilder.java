@@ -4,6 +4,9 @@
  */
 package com.dsdev.moddle;
 
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+
 /**
  *
  * @author Greenlock28
@@ -17,15 +20,21 @@ public class PackBuilder {
     }
     
     
-    
     public void buildPack() {
+        try {
         
+            System.out.println("[Build] Creating pack directory...");
+            File modpackDir = new File("./packs/" + ModpackName);
+            if (!modpackDir.exists())
+                FileUtils.forceMkdir(modpackDir);
+
+            File dotMinecraft = new File("./packs/" + ModpackName + "/.minecraft");
+            if (!dotMinecraft.exists())
+                FileUtils.forceMkdir(dotMinecraft);
         
-        
-    }
-    
-    public void runPack() {
-        
+        } catch (Exception ex) {
+            System.out.println("[Build][ERROR] " + ex.getMessage());
+        }
     }
     
 }
