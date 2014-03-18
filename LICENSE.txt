@@ -1,12 +1,6 @@
-============================================================================
-============================ The Moddle License ============================
-============================================================================
-=  Based upon the MIT license, improved to comply with the Minecraft EULA  =
-============================================================================
+Copyright 2013-2014 Diamond Sword Development
 
-Copyright 2014 Diamond Sword Development
-
-This software and associated documentation is distributed under the terms and conditions set forth in this license, as well as those in the Minecraft Terms of Use.  By using this software and/or its associated documentation files, you agree to the terms and conditions of this license as stated below.
+This software and associated documentation is distributed under the terms and conditions set forth in this license, as well as those set forth in the Minecraft Terms of Use.  By using this software and/or its associated documentation files, you agree to the terms and conditions of this license as stated below.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without any restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sublicense copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
