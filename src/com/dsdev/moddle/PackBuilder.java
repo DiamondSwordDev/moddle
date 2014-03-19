@@ -25,6 +25,7 @@ public class PackBuilder {
                 FileUtils.forceMkdir(modpackDir);
             }
 
+            System.out.println("[Build] Creating .minecraft directory...");
             File dotMinecraft = new File("./packs/" + ModpackName + "/.minecraft");
             if (!dotMinecraft.exists()) {
                 FileUtils.forceMkdir(dotMinecraft);
