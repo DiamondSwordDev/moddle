@@ -30,6 +30,8 @@ public class MainForm extends javax.swing.JFrame {
         ModpackNameField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Moddle Launcher");
+        setMinimumSize(new java.awt.Dimension(100, 100));
 
         jButton1.setText("Play");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -72,13 +74,13 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println("[Moddle] Starting...");
+        Logger.info("Starting...");
         if (!ModpackNameField.getText().equals("")) {
-            System.out.println("[Moddle] Invoking pack builder...");
+            Logger.info("Invoking pack builder...");
             PackBuilder builder = new PackBuilder(ModpackNameField.getText());
             builder.buildPack();
         } else {
-            System.out.println("[Moddle][ERROR] No pack specified!");
+            Logger.error("No pack specified!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

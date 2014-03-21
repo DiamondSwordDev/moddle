@@ -19,20 +19,22 @@ public class PackBuilder {
     public void buildPack() {
         try {
 
-            System.out.println("[Build] Creating pack directory...");
+            Logger.info("Creating pack directory...");
             File modpackDir = new File("./packs/" + ModpackName);
             if (!modpackDir.exists()) {
                 FileUtils.forceMkdir(modpackDir);
             }
 
-            System.out.println("[Build] Creating .minecraft directory...");
+            Logger.info("Creating .minecraft directory...");
             File dotMinecraft = new File("./packs/" + ModpackName + "/.minecraft");
             if (!dotMinecraft.exists()) {
                 FileUtils.forceMkdir(dotMinecraft);
             }
+            
+            Logger.info("Loading pack config...");
 
         } catch (Exception ex) {
-            System.out.println("[Build][ERROR] " + ex.getMessage());
+            Logger.error(ex.getMessage());
         }
     }
 
