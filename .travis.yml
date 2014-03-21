@@ -3,4 +3,8 @@ jdk:
   - oraclejdk7
   - openjdk7
   - openjdk6
-  
+notifications:
+  email:
+    on_success: [always]
+    on_failure: [always]
+  irc: "irc.esper.net#moddle"
