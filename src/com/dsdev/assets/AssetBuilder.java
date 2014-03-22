@@ -8,6 +8,7 @@ import java.nio.channels.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 
 /**
  * This class contains all of the tools required to build and maintain a copy of
@@ -16,11 +17,6 @@ import java.nio.file.Paths;
  * @author Nathan2055
  */
 public class AssetBuilder {
-
-    /**
-     * A File object representing the assets definition file from Mojang.
-     */
-    private File defFile;
 
     /**
      * This method builds a fresh copy of the Minecraft assets in the provided
@@ -36,18 +32,14 @@ public class AssetBuilder {
         buffer.mkdirs();
 
         // Now let's fetch the version definition file from Mojang.
-        defFile = File.createTempFile("assets", ".json");
+        File defFile = File.createTempFile("assets", ".json");
         URL defWeb = new URL("https://s3.amazonaws.com/Minecraft.Download/indexes/legacy.json");
         ReadableByteChannel rbc = Channels.newChannel(defWeb.openStream());
         FileOutputStream fos = new FileOutputStream(defFile);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
         // And now we parse...
-        String defPathString = defFile.getAbsolutePath();
-        byte[] encoded = Files.readAllBytes(Paths.get(defPathString));
-        String defString = Charset.defaultCharset().decode(ByteBuffer.wrap(encoded)).toString();
-        BufferedReader br = new BufferedReader(new FileReader(defFile));
-        Gson gson = new GsonBuilder().create();
-        //DataObject obj = gson.fromJson(br, DataObject);
+        String defString = FileUtils.readFileToString(defFile);
+        //JSON parsing code goes here.
     }
 }
