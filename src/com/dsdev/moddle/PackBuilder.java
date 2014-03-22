@@ -46,7 +46,7 @@ public class PackBuilder {
             JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./tmp/pack/pack.json")));
             
             Logger.info("Loading version config...");
-            JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./data/versions/" + packConfig.get("version"))));
+            JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./data/versions/" + packConfig.get("version") + ".json")));
 
         } catch (Exception ex) {
             Logger.error(ex.getMessage());

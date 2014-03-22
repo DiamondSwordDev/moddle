@@ -4,6 +4,8 @@
  */
 package com.dsdev.moddle;
 
+import java.io.File;
+
 /**
  *
  * @author Greenlock28
