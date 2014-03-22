@@ -3,7 +3,11 @@ package com.dsdev.assets;
 import com.google.gson.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * This class contains all of the tools required to build and maintain a copy of
@@ -39,8 +43,11 @@ public class AssetBuilder {
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
         // And now we parse...
+        String defPathString = defFile.getAbsolutePath();
+        byte[] encoded = Files.readAllBytes(Paths.get(defPathString));
+        String defString = Charset.defaultCharset().decode(ByteBuffer.wrap(encoded)).toString();
         BufferedReader br = new BufferedReader(new FileReader(defFile));
         Gson gson = new GsonBuilder().create();
-        DataObject obj = gson.fromJson(br, DataObject);
+        //DataObject obj = gson.fromJson(br, DataObject);
     }
 }
