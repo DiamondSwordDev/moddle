@@ -1,1 +1,6 @@
-{ "hello" : "world" }
+{
+    "name" : "1.6.4",
+    "type" : "modern"
+    
+    "libraries" : []
+}
