@@ -3,11 +3,7 @@ package com.dsdev.assets;
 import com.google.gson.*;
 import java.io.*;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 
 /**
