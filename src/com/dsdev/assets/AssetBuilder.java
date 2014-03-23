@@ -1,9 +1,8 @@
 package com.dsdev.assets;
 
-import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import java.io.*;
 import java.net.URL;
-import java.nio.channels.*;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -23,19 +22,17 @@ public class AssetBuilder {
      * @throws java.io.IOException Of course. :P
      */
     public void buildAssets(String directory) throws IOException {
-        // Let's start by setting up the folders we are gonna need.
+        // Let's start by setting up the folders we are gonna need
         File buffer = new File(directory + "/legacy");
         buffer.mkdirs();
 
-        // Now let's fetch the version definition file from Mojang.
+        // Now let's download the version definition file from Mojang and store it in a temporary file
         File defFile = File.createTempFile("assets", ".json");
         URL defWeb = new URL("https://s3.amazonaws.com/Minecraft.Download/indexes/legacy.json");
-        ReadableByteChannel rbc = Channels.newChannel(defWeb.openStream());
-        FileOutputStream fos = new FileOutputStream(defFile);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        FileUtils.copyURLToFile(defWeb, defFile);
 
         // And now we parse...
         String defString = FileUtils.readFileToString(defFile);
-        //JSON parsing code goes here.
+        //JSON parsing code goes here
     }
 }
