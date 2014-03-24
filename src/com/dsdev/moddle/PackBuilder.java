@@ -32,11 +32,11 @@ public class PackBuilder {
 
             Logger.info("Creating pack directory...");
             if (!getFile("./packs/" + ModpackName).exists())
-                FileUtils.forceMkdir(getFile("./packs/" + ModpackName));
+                getFile("./packs/" + ModpackName).mkdirs();
 
             Logger.info("Creating .minecraft directory...");
             if (!getFile("./packs/" + ModpackName + "/.minecraft").exists())
-                FileUtils.forceMkdir(getFile("./packs/" + ModpackName + "/.minecraft"));
+                getFile("./packs/" + ModpackName + "/.minecraft").mkdirs();
             
             Logger.info("Extracting pack archive...");
             if (!decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/"))
@@ -47,12 +47,12 @@ public class PackBuilder {
             
             Logger.info("Loading version config...");
             JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./data/versions/" + packConfig.get("version") + ".json")));
-
+            
         } catch (Exception ex) {
             Logger.error(ex.getMessage());
         }
     }
-
+    
     
     
     public File getFile(String path) {
