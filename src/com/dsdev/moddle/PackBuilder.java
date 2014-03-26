@@ -52,7 +52,22 @@ public class PackBuilder {
             Logger.info("Loading version config...");
             JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./data/" + packConfig.get("version") + ".json")));
             
-            JSONArray libraryList
+            Logger.info("Creating '.minecraft/versions/' ...");
+            if (!getFile("./packs/" + ModpackName + "/.minecraft/versions").exists())
+                getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
+            
+            Logger.info("Creating '.minecraft/versions/<version>/' ...");
+            if (!getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).exists())
+                getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).mkdirs();
+            
+            Logger.info("Obtaining Minecraft jarfile...");
+            if (!getFile("./tmp/versions").exists())
+                getFile("./tmp/versions").mkdirs();
+            if (!getFile("./tmp/versions/" + packConfig.get("version") + ".jar").exists()) {
+                Logger.info("Version does not exist.  Downloading...");
+                FileUtils.copyURLToFile(getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"), getFile("./tmp/versions/" + packConfig.get("version") + ".jar"));
+            }
+            FileUtils.copyFile(getFile("./tmp/versions/" + packConfig.get("version") + ".jar"), getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
             
         } catch (Exception ex) {
             Logger.error(ex.getMessage());
@@ -63,6 +78,15 @@ public class PackBuilder {
     
     public File getFile(String path) {
         return new File(path);
+    }
+    
+    public URL getURL(String uri) {
+        try {
+            return new URL(uri);
+        } catch (Exception ex) {
+            Logger.error("GetURL", ex.getMessage());
+            return null;
+        }
     }
     
     public boolean decompressZipfile(String file, String outputDir) {
@@ -83,38 +107,6 @@ public class PackBuilder {
         } catch (Exception ex) {
             Logger.error("UnZip", ex.getMessage());
             return false;
-        }
-    }
-    
-    public boolean downloadFile(String webAddress, String targetFile) {
-        String x = null;
-        OutputStream os = null;
-        InputStream is = null;
-        ProgressListener progressListener = new ActionListener();
-        try {
-            os = new FileOutputStream(getFile(targetFile));
-            is = (new URL(webAddress)).openStream();
-
-            DownloadCountingOutputStream dcount = new DownloadCountingOutputStream(os);
-            dcount.setListener(progressListener);
-
-            // this line give you the total length of source stream as a String.
-            // you may want to convert to integer and store this value to
-            // calculate percentage of the progression.
-            dl.openConnection().getHeaderField("Content-Length");
-
-            // begin transfer by writing to dcount, not os.
-            IOUtils.copy(is, dcount);
-
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            if (os != null) { 
-                os.close(); 
-            }
-            if (is != null) { 
-                is.close(); 
-            }
         }
     }
     
