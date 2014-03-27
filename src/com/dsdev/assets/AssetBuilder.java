@@ -35,4 +35,28 @@ public class AssetBuilder {
         String defString = FileUtils.readFileToString(defFile);
         //JSON parsing code goes here
     }
+
+    /**
+     * This method rechecks the asset files that have been downloaded and
+     * updates them if necessary.
+     *
+     * @param directory
+     */
+    public void recheckAssets(String directory) {
+        //TODO: Write code to recheck the asset files that have already been downloaded
+    }
+
+    /**
+     * This method will copy a set of downloaded assets to a Minecraft
+     * directory.
+     *
+     * @param downloadedAssets The folder that contains an assets definition
+     * downloaded using the buildAssets() method.
+     * @param assetsType Either legacy or modern based on what version of
+     * Minecraft you are using.
+     * @param destFolder The destination folder for the assets.
+     */
+    public void copyAssets(String downloadedAssets, String assetsType, String destFolder) {
+        //TODO: Create method to export the dwonloaded assets
+    }
 }
