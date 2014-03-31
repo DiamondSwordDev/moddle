@@ -80,6 +80,7 @@ public class MainForm extends javax.swing.JFrame {
         if (!ModpackNameField.getText().equals("")) {
             Logger.info("Invoking pack builder...");
             Modpack pack = new Modpack(ModpackNameField.getText());
+            pack.build();
             pack.run();
         } else {
             Logger.error("No pack specified!");

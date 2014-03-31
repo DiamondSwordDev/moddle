@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -74,7 +75,7 @@ public class Modpack {
                 Logger.info("Version does not exist.  Downloading...");
                 FileUtils.copyURLToFile(getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"), getFile("./data/versions/" + packConfig.get("version") + ".jar"));
             }
-            FileUtils.copyFile(getFile("./tmp/versions/" + packConfig.get("version") + ".jar"), getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
+            FileUtils.copyFile(getFile("./data/versions/" + packConfig.get("version") + ".jar"), getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
             
             Logger.info("Creating '.minecraft/libraries/' ...");
             if (!getFile("./packs/" + ModpackName + "/.minecraft/libraries").exists())
@@ -82,8 +83,9 @@ public class Modpack {
             
             Logger.info("Installing libraries...");
             JSONArray libraryList = (JSONArray)packConfig.get("libraries");
-            for (Object obj : libraryList) {
-                JSONObject library = (JSONObject)obj;
+            Iterator i = libraryList.iterator();
+            while (i.hasNext()) {
+                JSONObject library = (JSONObject)i.next();
                 Logger.info("Installing library: " + library.get("name"));
                 if (!decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
                     return false;

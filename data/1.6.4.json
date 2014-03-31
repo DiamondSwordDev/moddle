@@ -16,6 +16,7 @@
         { "name" : "commons-io", "version" : "2.4" },
         { "name" : "jinput", "version" : "2.0.5" },
         { "name" : "jutils", "version" : "1.0.0" },
-        { "name" : "gson", "version" : "2.2.2" }
+        { "name" : "gson", "version" : "2.2.2" },
+        { "name" : "lwjgl", "version" : "2.9.0" }
     ]
 }
