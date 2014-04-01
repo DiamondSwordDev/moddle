@@ -9,7 +9,7 @@
         { "name" : "libraryjavasound", "version" : "20101123" },
         { "name" : "librarylwjglopenal", "version" : "20100824" },
         { "name" : "soundsystem", "version" : "20120107" },
-        { "name" : "argo", "version" : "2.5_fixed" },
+        { "name" : "argo", "version" : "2.25_fixed" },
         { "name" : "bcprov-jdk15on", "version" : "1.47" },
         { "name" : "guava", "version" : "14.0" },
         { "name" : "commons-lang3", "version" : "3.1" },

@@ -82,10 +82,10 @@ public class Modpack {
                 getFile("./packs/" + ModpackName + "/.minecraft/libraries").mkdirs();
             
             Logger.info("Installing libraries...");
-            JSONArray libraryList = (JSONArray)packConfig.get("libraries");
-            Iterator i = libraryList.iterator();
-            while (i.hasNext()) {
-                JSONObject library = (JSONObject)i.next();
+            JSONArray libraryList = (JSONArray)versionConfig.get("libraries");
+            for (Iterator it = libraryList.iterator(); it.hasNext();) {
+                Object obj = it.next();
+                JSONObject library = (JSONObject)obj;
                 Logger.info("Installing library: " + library.get("name"));
                 if (!decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
                     return false;
@@ -190,12 +190,16 @@ public class Modpack {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 File entryDestination = new File(outputDir,  entry.getName());
-                entryDestination.getParentFile().mkdirs();
-                InputStream in = zipFile.getInputStream(entry);
-                OutputStream out = new FileOutputStream(entryDestination);
-                IOUtils.copy(in, out);
-                IOUtils.closeQuietly(in);
-                IOUtils.closeQuietly(out);
+                if (entry.isDirectory()) {
+                    entryDestination.mkdirs();
+                } else {
+                    //entryDestination.getParentFile().mkdirs();
+                    InputStream in = zipFile.getInputStream(entry);
+                    OutputStream out = new FileOutputStream(entryDestination);
+                    IOUtils.copy(in, out);
+                    IOUtils.closeQuietly(in);
+                    IOUtils.closeQuietly(out);
+                }
             }
             return true;
         } catch (Exception ex) {
