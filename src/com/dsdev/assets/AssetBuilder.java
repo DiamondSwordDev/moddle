@@ -1,6 +1,7 @@
 package com.dsdev.assets;
 
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import java.io.*;
 import java.net.URL;
 import org.apache.commons.io.FileUtils;
@@ -18,13 +19,15 @@ public class AssetBuilder {
      * directory. If the directory already exists, it is deleted.
      *
      * @param directory A String representing the directory where the assets
-     * should be created.
+     * should be created. MAKE SURE THAT IT ENDS WITH A / CHARCTER OR THIS CODE
+     * WILL GO BOOM!
      * @throws java.io.IOException Of course. :P
      */
     public void buildAssets(String directory) throws IOException {
-        // Let's start by setting up the folders we are gonna need
-        File buffer = new File(directory + "/legacy");
-        buffer.mkdirs();
+        // Let's start by setting up the stuff we're gonna need
+        File assetFolder = new File(directory);
+        File assetFolderLegacy = new File(directory + "/legacy");
+        assetFolderLegacy.mkdirs();
 
         // Now let's download the version definition file from Mojang and store it in a temporary file
         File defFile = File.createTempFile("assets", ".json");
@@ -33,7 +36,30 @@ public class AssetBuilder {
 
         // And now we parse...
         String defString = FileUtils.readFileToString(defFile);
-        //JSON parsing code goes here
+        StringReader defReader = new StringReader(defString);
+        JsonReader reader = new JsonReader(defReader);
+        try {
+            reader.nextBoolean();
+            reader.beginObject();
+            boolean newFile = true;
+            while (newFile) {
+                String assetName = reader.nextName();
+                reader.beginObject();
+                String hash = reader.nextString();
+                String subhash = hash.substring(0, 2);
+                URL asset = new URL("http://resources.download.minecraft.net/" + subhash + "/" + hash);
+                File assetDest = new File(directory + "modern/" + subhash + "/" + hash);
+                FileUtils.copyURLToFile(asset, assetDest);
+                assetDest = new File(directory + "legacy/" + assetName);
+                FileUtils.copyURLToFile(asset, assetDest);
+                reader.skipValue();
+                JsonToken next = reader.peek();
+                newFile = next == JsonToken.NAME;
+            }
+        } finally {
+            reader.close();
+        }
+
     }
 
     /**
