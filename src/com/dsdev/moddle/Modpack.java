@@ -31,55 +31,49 @@ public class Modpack {
 
     
     
-    public boolean buildAndRun() {
-        if (!build())
-            return false;
-        if (!run())
-            return false;
-        return true;
-    }
-    
-    public boolean build() {
+    public boolean build(Settings packSettings) {
         try {
 
             Logger.info("Creating pack directory...");
-            if (!getFile("./packs/" + ModpackName).exists())
-                getFile("./packs/" + ModpackName).mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName).exists())
+                Util.getFile("./packs/" + ModpackName).mkdirs();
 
             Logger.info("Creating .minecraft directory...");
-            if (!getFile("./packs/" + ModpackName + "/.minecraft").exists())
-                getFile("./packs/" + ModpackName + "/.minecraft").mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft").exists())
+                Util.getFile("./packs/" + ModpackName + "/.minecraft").mkdirs();
+            
             
             Logger.info("Extracting pack archive...");
-            if (!decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/"))
+            if (!Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/"))
                 return false;
             
             Logger.info("Loading pack config...");
-            JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./tmp/pack/pack.json")));
+            JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
+            
             
             Logger.info("Loading version config...");
-            JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./data/" + packConfig.get("version") + ".json")));
+            JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./data/" + packConfig.get("version") + ".json")));
             
             Logger.info("Creating '.minecraft/versions/' ...");
-            if (!getFile("./packs/" + ModpackName + "/.minecraft/versions").exists())
-                getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").exists())
+                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
             
             Logger.info("Creating '.minecraft/versions/<version>/' ...");
-            if (!getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).exists())
-                getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).exists())
+                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).mkdirs();
             
             Logger.info("Obtaining Minecraft jarfile...");
-            if (!getFile("./data/versions").exists())
-                getFile("./data/versions").mkdirs();
-            if (!getFile("./data/versions/" + packConfig.get("version") + ".jar").exists()) {
+            if (!Util.getFile("./data/versions").exists())
+                Util.getFile("./data/versions").mkdirs();
+            if (!Util.getFile("./data/versions/" + packConfig.get("version") + ".jar").exists()) {
                 Logger.info("Version does not exist.  Downloading...");
-                FileUtils.copyURLToFile(getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"), getFile("./data/versions/" + packConfig.get("version") + ".jar"));
+                FileUtils.copyURLToFile(Util.getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"), Util.getFile("./data/versions/" + packConfig.get("version") + ".jar"));
             }
-            FileUtils.copyFile(getFile("./data/versions/" + packConfig.get("version") + ".jar"), getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
+            FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("version") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
             
             Logger.info("Creating '.minecraft/libraries/' ...");
-            if (!getFile("./packs/" + ModpackName + "/.minecraft/libraries").exists())
-                getFile("./packs/" + ModpackName + "/.minecraft/libraries").mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").exists())
+                Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").mkdirs();
             
             Logger.info("Installing libraries...");
             JSONArray libraryList = (JSONArray)versionConfig.get("libraries");
@@ -87,7 +81,7 @@ public class Modpack {
                 Object obj = it.next();
                 JSONObject library = (JSONObject)obj;
                 Logger.info("Installing library: " + library.get("name"));
-                if (!decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
+                if (!Util.decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
                     return false;
             }
             
@@ -99,13 +93,11 @@ public class Modpack {
         }
     }
     
-    public boolean run() {
+    public boolean run(Settings packSettings) {
         try {
             
-            Logger.info("Preparing to launch...");
-
             Logger.info("Getting version...");
-            JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(getFile("./tmp/pack/pack.json")));
+            JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
             String mcVersion = (String)packConfig.get("version");
 
             Logger.info("Getting classpath values...");
@@ -120,23 +112,23 @@ public class Modpack {
             ProcessBuilder launcher = new ProcessBuilder(
                     "java.exe",
                     "-Xmx1024M",
-                    "-Djava.library.path=\"" + getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + "-natives").getCanonicalPath() + "\"",
-                    "-cp", "\"" + getFile("/packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"",//classPathVariable,
-                    "net.minecraft.client.main.Main");
-                    //"--username", "Player",
-                    //"--session", "Null",
-                    //"--version", "1.6.4",
-                    //"--gameDir", "%APPDATA%/.minecraft",
-                    //"--assetsDir", "%APPDATA%/.minecraft/assets");
+                    "-Djava.library.path=\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + "-natives").getCanonicalPath() + "\"",
+                    "-cp", "\"" + Util.getFile("/packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"",//classPathVariable,
+                    "net.minecraft.client.main.Main",
+                    "--username", "Player",
+                    "--session", "Null",
+                    "--version", "1.6.4",
+                    "--gameDir", "%APPDATA%/.minecraft",
+                    "--assetsDir", "%APPDATA%/.minecraft/assets");
             
             Logger.info("Setting environment variables...");
             Map<String, String> env = launcher.environment();
-            env.put("APPDATA", getFile("./packs/" + ModpackName).getCanonicalPath());
+            env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
             
             Logger.info("Launching process!");
-            launcher.redirectOutput(getFile("./stdout.txt"));
-            launcher.redirectError(getFile("./stderr.txt"));
-            launcher.directory(getFile("./packs/" + ModpackName + "/.minecraft"));
+            //launcher.redirectOutput(getFile("./stdout.txt"));
+            //launcher.redirectError(getFile("./stderr.txt"));
+            launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
             launcher.start();
             
             return true;
@@ -151,7 +143,7 @@ public class Modpack {
         try {
             
             String ret = "";
-            for (File item : getFile(dir).listFiles()) {
+            for (File item : Util.getFile(dir).listFiles()) {
                 if (item.isDirectory()) {
                     ret += getLibraryJarfiles(item.getCanonicalPath());
                 } else {
@@ -165,46 +157,6 @@ public class Modpack {
         } catch (Exception ex) {
             Logger.error("GetLibPaths", ex.getMessage());
             return null;
-        }
-    }
-    
-    
-    
-    private File getFile(String path) {
-        return new File(path);
-    }
-    
-    private URL getURL(String uri) {
-        try {
-            return new URL(uri);
-        } catch (Exception ex) {
-            Logger.error("GetURL", ex.getMessage());
-            return null;
-        }
-    }
-    
-    private boolean decompressZipfile(String file, String outputDir) {
-        try {
-            ZipFile zipFile = new ZipFile(file);
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                File entryDestination = new File(outputDir,  entry.getName());
-                if (entry.isDirectory()) {
-                    entryDestination.mkdirs();
-                } else {
-                    //entryDestination.getParentFile().mkdirs();
-                    InputStream in = zipFile.getInputStream(entry);
-                    OutputStream out = new FileOutputStream(entryDestination);
-                    IOUtils.copy(in, out);
-                    IOUtils.closeQuietly(in);
-                    IOUtils.closeQuietly(out);
-                }
-            }
-            return true;
-        } catch (Exception ex) {
-            Logger.error("UnZip", ex.getMessage());
-            return false;
         }
     }
     

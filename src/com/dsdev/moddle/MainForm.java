@@ -4,8 +4,6 @@
  */
 package com.dsdev.moddle;
 
-import java.io.File;
-
 /**
  *
  * @author Greenlock28
@@ -78,10 +76,20 @@ public class MainForm extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Logger.info("Starting...");
         if (!ModpackNameField.getText().equals("")) {
+            
+            Logger.info("Loading global settings...");
+            Settings globalSettings = new Settings();
+            globalSettings.loadSettingsFromFile("./data/global.json");
+            
             Logger.info("Invoking pack builder...");
+            Settings packSettings = new Settings();
             Modpack pack = new Modpack(ModpackNameField.getText());
-            pack.build();
-            pack.run();
+            pack.build(packSettings);
+            
+            Logger.info("Preparing to launch modpack...");
+            globalSettings.appendSettings(packSettings);
+            pack.run(globalSettings);
+            
         } else {
             Logger.error("No pack specified!");
         }
