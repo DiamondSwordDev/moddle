@@ -1,8 +1,8 @@
 
 package com.dsdev.moddle;
 
-import java.io.File;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -12,15 +12,31 @@ import org.json.simple.JSONValue;
  */
 public class Cache {
     
-    public static boolean getCacheEntry(String entryPath, Settings entrySettings) {
+    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir) {
         try {
             
-            if (!Util.decompressZipfile(entryPath, "./tmp/cache/" + Util.getFile(entryPath).getName().replace(".zip", "")))
-                return false;
+            if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                if (!Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion))
+                    return false;
+            } else if (Util.getFile("./tmp/pack/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                if (!Util.decompressZipfile("./tmp/pack/cache/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion))
+                    return false;
+            } else if (Util.getFile("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                if (!Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion))
+                    return false;
+            }
             
-            JSONObject entryConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/cache/" + Util.getFile(entryPath).getName().replace(".zip", "") + "/entry.json")));
+            JSONObject entryConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/cache/" + entryName + "-" + entryVersion + "/entry.json")));
             
-            entrySettings.loadSettingsFromFile(entryPath);
+            JSONArray filesArray = (JSONArray)entryConfig.get("files");
+            
+            for (Object obj : filesArray) {
+                JSONObject file = (JSONObject)obj;
+                if (((String)file.get("action")).equalsIgnoreCase("extract-zip")) {
+                    if (!Util.decompressZipfile("./tmp/cache/" + entryName + "-" + entryVersion + "/" + (String)file.get("name"), targetDir + (String)file.get("target")))
+                        return false;
+                }
+            }
             
             return true;
             
