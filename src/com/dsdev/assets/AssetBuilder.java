@@ -23,7 +23,7 @@ public class AssetBuilder {
      * WILL GO BOOM!
      * @throws java.io.IOException Of course. :P
      */
-    public void buildAssets(String directory) throws IOException {
+    public static void buildAssets(String directory) throws IOException {
         // Let's start by setting up the stuff we're gonna need
         File assetFolder = new File(directory);
         File assetFolderLegacy = new File(directory + "/legacy");
