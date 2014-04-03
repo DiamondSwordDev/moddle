@@ -32,6 +32,8 @@ public class Util {
     
     public static boolean decompressZipfile(String file, String outputDir) {
         try {
+            if (!Util.getFile(outputDir).exists())
+                Util.getFile(outputDir).mkdirs();
             ZipFile zipFile = new ZipFile(file);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {

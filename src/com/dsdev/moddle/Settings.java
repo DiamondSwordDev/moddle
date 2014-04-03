@@ -28,11 +28,9 @@ public class Settings {
             for (Object obj : settingsArray) {
                 JSONObject setting = (JSONObject)obj;
                 if (((String)setting.get("func")).equalsIgnoreCase("setMemory")) {
-                    this.JavaMemory = Integer.parseInt(((String)setting.get("value")));
+                    this.MinimumMemory = Integer.parseInt(((String)setting.get("value")));
                 } else if (((String)setting.get("func")).equalsIgnoreCase("setJavaPath")) {
                     this.JavaExecutablePath = (String)setting.get("value");
-                } else if (((String)setting.get("func")).equalsIgnoreCase("addArgument")) {
-                    this.JavaArguments.add((String)setting.get("value"));
                 }
             }
 
@@ -48,8 +46,8 @@ public class Settings {
     
     public void appendSettings(Settings newSettings) {
         
-        if (newSettings.JavaMemory > this.JavaMemory)
-            this.JavaMemory = newSettings.JavaMemory;
+        if (newSettings.MinimumMemory > this.MinimumMemory)
+            this.MinimumMemory = newSettings.MinimumMemory;
         
         if (newSettings.JavaExecutablePath != null)
             this.JavaExecutablePath = newSettings.JavaExecutablePath;
@@ -60,10 +58,7 @@ public class Settings {
     
     
     
-    public String Username = null;
-    public String SessionID = null;
-    
-    public List<String> JavaArguments = new ArrayList();
-    public int JavaMemory = 1024;
+    public String TweakClass = null;
+    public int MinimumMemory = 1024;
     public String JavaExecutablePath = null;
 }
