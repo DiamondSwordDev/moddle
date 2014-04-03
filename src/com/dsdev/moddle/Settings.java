@@ -58,7 +58,8 @@ public class Settings {
     
     
     
-    public String TweakClass = null;
+    //Launch Args
     public int MinimumMemory = 1024;
+    public String TweakClass = null;
     public String JavaExecutablePath = null;
 }
