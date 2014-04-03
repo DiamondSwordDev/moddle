@@ -1,17 +1,9 @@
 package com.dsdev.moddle;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -50,28 +42,33 @@ public class Modpack {
             Logger.info("Loading pack config...");
             JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
             
+            Logger.info("Building skeleton installation...");
+            Cache.getCacheEntry("minecraft", (String)packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft");
             
-            Logger.info("Loading version config...");
-            JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./data/" + packConfig.get("version") + ".json")));
+            //Logger.info("Building Forge installation...");
+            //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft");
+            
+            //Logger.info("Loading version config...");
+            //JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./data/" + packConfig.get("version") + ".json")));
             
             Logger.info("Creating '.minecraft/versions/' ...");
             if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").exists())
-                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
+               Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
             
             Logger.info("Creating '.minecraft/versions/<version>/' ...");
-            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).exists())
-                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version")).mkdirs();
+            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion")).exists())
+                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion")).mkdirs();
             
             Logger.info("Obtaining Minecraft jarfile...");
             if (!Util.getFile("./data/versions").exists())
                 Util.getFile("./data/versions").mkdirs();
-            if (!Util.getFile("./data/versions/" + packConfig.get("version") + ".jar").exists()) {
+            if (!Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists()) {
                 Logger.info("Version does not exist.  Downloading...");
-                FileUtils.copyURLToFile(Util.getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"), Util.getFile("./data/versions/" + packConfig.get("version") + ".jar"));
+                FileUtils.copyURLToFile(Util.getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"));
             }
-            FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("version") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("version") + "/" + packConfig.get("version") + ".jar"));
+            FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"));
             
-            Logger.info("Creating '.minecraft/libraries/' ...");
+            /*Logger.info("Creating '.minecraft/libraries/' ...");
             if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").exists())
                 Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").mkdirs();
             
@@ -83,7 +80,7 @@ public class Modpack {
                 Logger.info("Installing library: " + library.get("name"));
                 if (!Util.decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
                     return false;
-            }
+            }*/
             
             return true;
             
@@ -98,36 +95,34 @@ public class Modpack {
             
             Logger.info("Getting version...");
             JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
-            String mcVersion = (String)packConfig.get("version");
+            String mcVersion = (String)packConfig.get("minecraftversion");
 
             Logger.info("Getting classpath values...");
-            ////String classPathVariable = "\"";
-            ////classPathVariable += getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
-            ////classPathVariable = classPathVariable.substring(0, classPathVariable.length()-2);
-            ////classPathVariable += ";%APPDATA%/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar\"";
-            //classPathVariable += "\"";
-            String classPathVariable = "\"./packs/Testcraft/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar\"";
+            String classPathVariable = "\"";
+            classPathVariable += getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
+            classPathVariable += Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"";
             
             Logger.info("Building process...");
             ProcessBuilder launcher = new ProcessBuilder(
-                    "java.exe",
+                    "javaw.exe",
                     "-Xmx1024M",
                     "-Djava.library.path=\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + "-natives").getCanonicalPath() + "\"",
-                    "-cp", "\"" + Util.getFile("/packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"",//classPathVariable,
-                    "net.minecraft.client.main.Main",
+                    "-cp", classPathVariable,
+                    "net.minecraft.client.main.Main", //"net.minecraft.launchwrapper.Launch", //"net.minecraft.client.main.Main",
                     "--username", "Player",
                     "--session", "Null",
-                    "--version", "1.6.4",
-                    "--gameDir", "%APPDATA%/.minecraft",
-                    "--assetsDir", "%APPDATA%/.minecraft/assets");
+                    "--version", mcVersion,
+                    "--gameDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft").getCanonicalPath() + "\"",
+                    "--assetsDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/assets").getCanonicalPath() + "\"");
+                    //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");
             
             Logger.info("Setting environment variables...");
             Map<String, String> env = launcher.environment();
             env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
             
             Logger.info("Launching process!");
-            //launcher.redirectOutput(getFile("./stdout.txt"));
-            //launcher.redirectError(getFile("./stderr.txt"));
+            //launcher.redirectOutput(Util.getFile("./stdout.txt"));
+            //launcher.redirectError(Util.getFile("./stderr.txt"));
             launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
             launcher.start();
             
@@ -138,6 +133,8 @@ public class Modpack {
             return false;
         }
     }
+    
+    
     
     private String getLibraryJarfiles(String dir) {
         try {

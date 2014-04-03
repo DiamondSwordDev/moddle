@@ -15,6 +15,9 @@ public class Cache {
     public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir) {
         try {
             
+            //if (!Util.getFile("./tmp/cache").exists())
+            //    Util.getFile("./tmp/cache").mkdirs();
+            
             if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
                 if (!Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion))
                     return false;
@@ -24,6 +27,9 @@ public class Cache {
             } else if (Util.getFile("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
                 if (!Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion))
                     return false;
+            } else {
+                Logger.error("GetCacheEntry", "Cache entry was not found!");
+                return false;
             }
             
             JSONObject entryConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/cache/" + entryName + "-" + entryVersion + "/entry.json")));
