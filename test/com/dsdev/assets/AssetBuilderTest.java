@@ -10,11 +10,16 @@ import java.io.IOException;
 public class AssetBuilderTest {
 
     /**
+     * Builds a copy of the Minecraft assets to a folder called "assets" on the
+     * user's desktop.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         try {
-            AssetBuilder.buildAssets("assets");
+            String home = System.getProperty("user.home");
+            String directory = home + "\\Desktop\\assets\\";
+            AssetBuilder.buildAssets(directory);
         } catch (IOException ex) {
             System.err.println("An error was encountered. Printing stack trace...");
             ex.printStackTrace(System.err);
