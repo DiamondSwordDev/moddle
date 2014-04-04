@@ -10,24 +10,58 @@ import java.util.List;
  */
 public class LaunchArgs {
     
-    //Launch command format:
-    //    "{JavaExecutablePath}" -Xmx{MinimumMemory}M -Xms{StartingMemory}M -Djava.library.path="{DJavaLibPath}"
-    //    -cp "{ClassPathEntries}" {MainClass} 
+    //General Arguments
     
-    public int MinimumMemory = 1024;
-    public int StartingMemory = 256;
-    
-    public String JavaExecutablePath = null;
-    
-    public String MainClass = null;
-    public String TweakClass = null;
-    
-    public String DJavaLibPath = null;
-    public boolean AddCPEntriesFromLibraries = true;
-    public List<String> ClassPathEntries = new ArrayList();
-    
-    public String GameDirectory = null;
-    public String AssetDirectory = null;
     public String MinecraftVersion = null;
+    
+    
+    
+    //Java Core Arguments
+    
+    public String JavaExecutablePath = "javaw.exe";
+    
+    public boolean UseXmxArgument = true;
+    public int XmxArgument = 1024;
+    
+    public boolean UseXmsArgument = false;
+    public int XmsArgument = 256;
+    
+    public boolean UseDJavaLibPathArgument = false;
+    public String DJavaLibPathArgument = null;
+    
+    public boolean UseClassPathArgument = false;
+    public boolean GetLibraryClassPaths = false;
+    public boolean GetMinecraftClassPath = false;
+    public List<String> AdditionalClassPathEntries = new ArrayList();
+    
+    public boolean UseMainClassArgument = true;
+    public String MainClassArgument = "net.minecraft.client.main.Main";
+    
+    public List<String> AdditionalCoreArguments = new ArrayList();
+    
+    
+    
+    //Minecraft Arguments
+    
+    public boolean UseGameDirArgument = false;
+    public String GameDirArgument = null;
+    
+    public boolean UseAssetDirArgument = false;
+    public String AssetDirArgument = null;
+    
+    public boolean UseAssetIndexArgument = false;
+    public String AssetIndexArgument = null;
+    
+    public boolean UseVersionArgument = false;
+    public String VersionArgument = null;
+    
+    public boolean UseUsernameArgument = false;
+    public boolean UseSessionArgument = false;
+    public boolean UseUUIDArgument = false;
+    public boolean UseAccessTokenArgument = false;
+    public boolean UseUserPropertiesArgument = false;
+    public boolean UseUserTypeArgument = false;
+    
+    public List<String> AdditionalMinecraftArguments = new ArrayList();
     
 }

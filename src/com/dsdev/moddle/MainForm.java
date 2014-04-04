@@ -88,7 +88,7 @@ public class MainForm extends javax.swing.JFrame {
             
             Logger.info("Preparing to launch modpack...");
             globalSettings.appendSettings(packSettings);
-            pack.run(globalSettings);
+            //pack.run(globalSettings);
             
         } else {
             Logger.error("No pack specified!");

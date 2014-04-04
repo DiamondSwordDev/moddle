@@ -1,10 +1,10 @@
 package com.dsdev.moddle;
 
 import java.io.File;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -90,20 +90,70 @@ public class Modpack {
         }
     }
     
-    public boolean run(Settings packSettings) {
+    public boolean run(LaunchArgs launchArgs, MinecraftLogin login) {
         try {
             
-            Logger.info("Getting version...");
-            JSONObject packConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
-            String mcVersion = (String)packConfig.get("minecraftversion");
-
-            Logger.info("Getting classpath values...");
-            String classPathVariable = "\"";
-            classPathVariable += getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
-            classPathVariable += Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"";
+            //Logger.info("Getting classpath values...");
+            //String classPathVariable = "\"";
+            //classPathVariable += getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
+            //classPathVariable += Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"";
             
-            Logger.info("Building process...");
-            ProcessBuilder launcher = new ProcessBuilder(
+            Logger.info("Building process arguments...");
+            List<String> args = new ArrayList();
+            
+            Logger.info("    JavaExecutablePath");
+            if (launchArgs.JavaExecutablePath != null)
+                args.add(launchArgs.JavaExecutablePath);
+            else
+                args.add("javaw.exe");
+            
+            Logger.info("    XmxArgument");
+            if (launchArgs.UseXmxArgument)
+                args.add("-Xmx" + Integer.toString(launchArgs.XmxArgument) + "M");
+            
+            Logger.info("    XmsArgument");
+            if (launchArgs.UseXmsArgument)
+                args.add("-Xms" + Integer.toString(launchArgs.XmsArgument) + "M");
+            
+            Logger.info("    DJavaLibPathArgument");
+            if (launchArgs.UseDJavaLibPathArgument)
+                args.add("-Djava.library.path=\"" + Util.getFile(launchArgs.DJavaLibPathArgument).getCanonicalPath() + "\"");
+            
+            Logger.info("    ClassPathArgument");
+            if (launchArgs.UseClassPathArgument) {
+                String cpArg = "\"";
+                if (launchArgs.GetLibraryClassPaths) {
+                    String libCp = getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
+                    cpArg += libCp.substring(0, libCp.length() - 2);
+                }
+                if (launchArgs.GetMinecraftClassPath) {
+                    if (cpArg.length() > 0)
+                        cpArg += ";";
+                    cpArg += Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + launchArgs.MinecraftVersion + "/" + launchArgs.MinecraftVersion + ".jar").getCanonicalPath();
+                }
+                if (!launchArgs.AdditionalClassPathEntries.isEmpty()) {
+                    if (cpArg.length() > 0)
+                        cpArg += ";";
+                    for (String cpArgEntry : launchArgs.AdditionalClassPathEntries) {
+                        cpArg += cpArgEntry + ";";
+                    }
+                    cpArg = cpArg.substring(0, cpArg.length() - 2);
+                }
+                args.add("-cp");
+                args.add("\"" + cpArg + "\"");
+            }
+            
+            Logger.info("    MainClassArgument");
+            if (launchArgs.UseMainClassArgument)
+                args.add(launchArgs.MainClassArgument);
+            
+            Logger.info("    AdditionalCoreArguments");
+            if (!launchArgs.AdditionalCoreArguments.isEmpty())
+                for (String additionalArg : launchArgs.AdditionalCoreArguments) {
+                    args.add(additionalArg);
+                }
+            
+            /*ProcessBuilder launcher = new ProcessBuilder(
                     "javaw.exe",
                     "-Xmx1024M",
                     "-Djava.library.path=\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + "-natives").getCanonicalPath() + "\"",
@@ -114,17 +164,17 @@ public class Modpack {
                     "--version", mcVersion,
                     "--gameDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft").getCanonicalPath() + "\"",
                     "--assetsDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/assets").getCanonicalPath() + "\"");
-                    //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");
+                    //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");*/
             
             Logger.info("Setting environment variables...");
-            Map<String, String> env = launcher.environment();
-            env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
+            //Map<String, String> env = launcher.environment();
+            //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
             
             Logger.info("Launching process!");
-            //launcher.redirectOutput(Util.getFile("./stdout.txt"));
-            //launcher.redirectError(Util.getFile("./stderr.txt"));
-            launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
-            launcher.start();
+            ////launcher.redirectOutput(Util.getFile("./stdout.txt"));
+            ////launcher.redirectError(Util.getFile("./stderr.txt"));
+            //launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
+            //launcher.start();
             
             return true;
         
