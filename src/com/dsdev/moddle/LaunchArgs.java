@@ -62,6 +62,8 @@ public class LaunchArgs {
     public boolean UseUserPropertiesArgument = false;
     public boolean UseUserTypeArgument = false;
     
+    public boolean UseLegacyUsernameAndSession = false;
+    
     public List<String> AdditionalMinecraftArguments = new ArrayList();
     
 }

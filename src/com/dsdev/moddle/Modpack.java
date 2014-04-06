@@ -1,6 +1,7 @@
 package com.dsdev.moddle;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +102,8 @@ public class Modpack {
             Logger.info("Building process arguments...");
             List<String> args = new ArrayList();
             
+            //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
+            
             Logger.info("    JavaExecutablePath");
             if (launchArgs.JavaExecutablePath != null)
                 args.add(launchArgs.JavaExecutablePath);
@@ -153,6 +156,84 @@ public class Modpack {
                     args.add(additionalArg);
                 }
             
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
+            
+            Logger.info("    UseLegacyUsernameAndSession");
+            if (launchArgs.UseLegacyUsernameAndSession) {
+                args.add(login.Username);
+                args.add(login.AccessToken);
+            }
+            
+            Logger.info("    UseGameDirArgument");
+            if (launchArgs.UseGameDirArgument) {
+                args.add("--gameDir");
+                args.add(launchArgs.GameDirArgument);
+            }
+            
+            Logger.info("    UseAssetDirArgument");
+            if (launchArgs.UseAssetDirArgument) {
+                args.add("--assetDir");
+                args.add(launchArgs.AssetDirArgument);
+            }
+            
+            Logger.info("    UseVersionArgument");
+            if (launchArgs.UseVersionArgument) {
+                args.add("--version");
+                args.add(launchArgs.VersionArgument);
+            }
+            
+            Logger.info("    UseUsernameArgument");
+            if (launchArgs.UseUsernameArgument) {
+                args.add("--username");
+                args.add(login.Username);
+            }
+            
+            Logger.info("    UseSessionArgument");
+            if (launchArgs.UseSessionArgument) {
+                args.add("--session");
+                args.add(login.AccessToken);
+            }
+            
+            Logger.info("    UseUUIDArgument");
+            if (launchArgs.UseUUIDArgument) {
+                args.add("--uuid");
+                args.add(login.UUID);
+            }
+            
+            Logger.info("    UseAccessTokenArgument");
+            if (launchArgs.UseAccessTokenArgument) {
+                args.add("--accessToken");
+                args.add(login.AccessToken);
+            }
+            
+            Logger.info("    UseUserPropertiesArgument");
+            if (launchArgs.UseUserPropertiesArgument) {
+                args.add("--userProperties");
+                args.add(login.UserProperties);
+            }
+            
+            Logger.info("    UseUserTypeArgument");
+            if (launchArgs.UseUserTypeArgument) {
+                args.add("--userType");
+                args.add(login.UserType);
+            }
+            
+            Logger.info("    AdditionalMinecraftArguments");
+            if (!launchArgs.AdditionalMinecraftArguments.isEmpty())
+                for (String additionalArg : launchArgs.AdditionalMinecraftArguments) {
+                    args.add(additionalArg);
+                }
+            
+            //</editor-fold>
+            
+            String[] argArray = new String[args.toArray().length];
+            for (int i = 0; i < argArray.length; i++)
+                argArray[i] = args.get(i);
+            
+            ProcessBuilder launcher = new ProcessBuilder(argArray);
+            
             /*ProcessBuilder launcher = new ProcessBuilder(
                     "javaw.exe",
                     "-Xmx1024M",
@@ -167,14 +248,14 @@ public class Modpack {
                     //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");*/
             
             Logger.info("Setting environment variables...");
-            //Map<String, String> env = launcher.environment();
-            //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
+            Map<String, String> env = launcher.environment();
+            env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
             
             Logger.info("Launching process!");
             ////launcher.redirectOutput(Util.getFile("./stdout.txt"));
             ////launcher.redirectError(Util.getFile("./stderr.txt"));
-            //launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
-            //launcher.start();
+            launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
+            launcher.start();
             
             return true;
         

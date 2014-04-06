@@ -15,4 +15,7 @@ public class MinecraftLogin {
     public String UserProperties = null;
     public String UserType = null;
     
+    public String AccessToken = null;
+    public String ClientToken = null;
+    
 }
