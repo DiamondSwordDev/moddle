@@ -2,6 +2,12 @@ Moddle
 ======
 [![Build Status](https://travis-ci.org/DiamondSwordDev/moddle.png?branch=master)](https://travis-ci.org/DiamondSwordDev/moddle)
 
-A simple, easy to use, mod launcher with a build-in cache.
+Moddle is an open-source and user-friendly Minecraft launcher specializing in the installation and creation of modpacks.  Its purpose is to make modpack creation a quick and easy process for anyone and everyone who wants to make their own Minecraft modpack.  It also provides a simple and straightforward method of modpack distribution by serving as a standard platform for building modpacks.  Version 0.1 of Moddle is available on our [Minecraft Forum thread](http://www.minecraftforum.net/topic/2318602-moddle-launcher-and-modpack-creation-framework-alpha/).
 
-(I really need to write a better README. Until then, read our announcements [here](http://redd.it/1sbnzz) and [here](http://redd.it/1tftd3).)
+The release version of Moddle at this time is written in Python, however, we are currently in the process of rewriting the launcher in Java.  This is primarily to keep our commitment of user-friendliness, but it is also a result of some moderate bugs in Python.  The general design of Moddle will staying the same with these changes.  (All code in this repository is written in Java; if you are looking for the source code to the released version... well... it's written in Python, so just install Moddle v0.1 and you have all of the code right there. :D)
+
+We have several threads regarding Moddle on various websites.  Our preliminary posts about Moddle are on the FTB Subreddit (/r/feedthebeast), [here](http://redd.it/1sbnzz) and [here](http://redd.it/1tftd3).  We also posted a preliminary thread on the Minecraft Forums [here](http://www.minecraftforum.net/topic/2181154-wiplauncher-moddle-minecraft-launcher-and-modpack-creation-framework/).  The Moddle version 0.1 release is available on [this forum thread](http://www.minecraftforum.net/topic/2318602-moddle-launcher-and-modpack-creation-framework-alpha/) (as shown above) and is our official download thread for the release version.
+
+We do not have any comprehensive technical documentation at this time, although we do have some minimal in-code documentation.  To learn about how the released version works, we suggest that you read the Python code files and tinker around with the launcher as much as you like.  To get more details about how Moddle works, or how the rewritten Java version works, contact one of the developers on the project (see below).
+
+The development team for Moddle currently consists of Nathan2055 and Greenlock28.  We have also received tremendous support from Greenphlem, as well as many other members of the Minecraft community.  (We are available on the Minecraft Forums and the FTB Subreddit.  More contact info is soon to come!)
