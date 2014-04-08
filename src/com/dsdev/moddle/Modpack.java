@@ -22,7 +22,7 @@ public class Modpack {
         ModpackName = name;
     }
 
-    public boolean build(Settings packSettings) {
+    public boolean build(LaunchArgs launchArgs, MinecraftLogin login) {
         try {
 
             Logger.info("Creating pack directory...");
@@ -163,6 +163,7 @@ public class Modpack {
             }
 
             //</editor-fold>
+            
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
             Logger.info("    UseLegacyUsernameAndSession");
             if (launchArgs.UseLegacyUsernameAndSession) {
@@ -232,6 +233,7 @@ public class Modpack {
             }
 
             //</editor-fold>
+            
             String[] argArray = new String[args.toArray().length];
             for (int i = 0; i < argArray.length; i++) {
                 argArray[i] = args.get(i);
