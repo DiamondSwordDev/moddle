@@ -13,6 +13,9 @@ public class MinecraftLogin {
     public void doLogin(String username, String password) {
         try {
         
+            AccountName = username;
+            Password = password;
+            
             Logger.info("Login", "Building payload...");
             JSONObject agent = new JSONObject();
             agent.put("name", "Minecraft");
@@ -23,9 +26,31 @@ public class MinecraftLogin {
             payload.put("password", password);
             
             Logger.info("Login", "Performing POST request...");
-            String resultString = Util.doJSONPost("url", payload);
+            String resultString = Util.doJSONPost("https://authserver.mojang.com/authenticate", payload);
             
             JSONObject result = (JSONObject)JSONValue.parse(resultString);
+            
+            if (result.get("accessToken") != null) {
+                AccessToken = (String)result.get("accessToken");
+            }
+            
+            if (result.get("clientToken") != null) {
+                ClientToken = (String)result.get("clientToken");
+            }
+            
+            if (result.get("selectedProfile") != null) {
+                JSONObject selectedProfile = (JSONObject)result.get("selectedProfile");
+                
+                if (selectedProfile.get("id") != null) {
+                    UUID = (String)selectedProfile.get("id");
+                }
+                
+                if (selectedProfile.get("name") != null) {
+                    Username = (String)selectedProfile.get("name");
+                }
+            }
+            
+            Logger.info("Login", "AccessToken " + AccessToken + " generated.");
         
         } catch (Exception ex) {
             Logger.error("Login", ex.getMessage());

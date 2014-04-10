@@ -3,7 +3,6 @@ package com.dsdev.moddle;
 import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -36,7 +35,10 @@ public class MainForm extends javax.swing.JFrame {
         UsernameField = new javax.swing.JTextField();
         ModpackComboBox = new javax.swing.JComboBox();
         PasswordField = new javax.swing.JPasswordField();
-        ModpackImageLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        ModpackDescriptionLabel = new javax.swing.JLabel();
+        ModpackHeaderImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
@@ -61,6 +63,32 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(ModpackHeaderImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ModpackDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ModpackHeaderImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ModpackDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(193, Short.MAX_VALUE))
+        );
+
+        jScrollPane1.setViewportView(jPanel1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -80,16 +108,16 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(ModpackImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ModpackImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -110,25 +138,21 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        /*Logger.info("Starting...");
-        if (!ModpackNameField.getText().equals("")) {
+        
+        Logger.info("Starting...");
+        
+        Logger.info("Logging in...");
+        MinecraftLogin login = new MinecraftLogin();
+        login.doLogin(UsernameField.getText(), PasswordField.getText());
+        
+        LaunchArgs launchArgs = new LaunchArgs();
 
-            LaunchArgs launchArgs = new LaunchArgs();
-            MinecraftLogin login = new MinecraftLogin();
-            
-            Logger.info("Loading global settings (NYI)...");
-            //Load global settings
+        Logger.info("Invoking pack builder...");
+        Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString());
+        pack.build(launchArgs, login);
 
-            Logger.info("Invoking pack builder...");
-            Modpack pack = new Modpack(ModpackNameField.getText());
-            pack.build(launchArgs, login);
-
-            Logger.info("Preparing to launch modpack...");
-            pack.run(launchArgs, login);
-
-        } else {
-            Logger.error("No pack specified!");
-        }*/
+        Logger.info("Preparing to launch modpack...");
+        pack.run(launchArgs, login);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -149,19 +173,20 @@ public class MainForm extends javax.swing.JFrame {
             DefaultListModel model = new DefaultListModel();
             for (File f : Util.getFile("./packs").listFiles()) {
                 if (f.getName().endsWith(".zip")) {
-                    //Code for pack images
-                    /*if (!Util.getFile("./tmp/launcher/" + f.getName().replace(".zip", "") + "/pack.png").exists()) {
+                    if (!Util.getFile("./tmp/launcher/" + f.getName().replace(".zip", "") + "/pack.png").exists()) {
                         if (!Util.decompressZipfile(f.getCanonicalPath(), "./tmp/launcher/" + f.getName().replace(".zip", ""))) {
                             Logger.warning("Startup", "Failed to load pack image for " + f.getName().replace(".zip", ""));
                         }
-                    }*/
+                    }
                     ModpackComboBox.addItem(f.getName().replace(".zip", ""));
                 }
             }
-            //Again, unused code for pack images
-            //String selectedPack = ModpackComboBox.getSelectedItem().toString();
-            //ModpackImageLabel.setIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
-
+            
+            String selectedPack = ModpackComboBox.getSelectedItem().toString();
+            ModpackHeaderImage.setIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
+            ModpackDescriptionLabel.setText(FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")));
+            //ModpackDescriptionLabel.setSize(ModpackDescriptionLabel.getSize().width, StringUtils.countMatches(ModpackDescriptionLabel.getText()));
+            
             Logger.info("Startup", "Finished loading.");
 
         } catch (Exception ex) {
@@ -206,12 +231,15 @@ public class MainForm extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox ModpackComboBox;
-    private javax.swing.JLabel ModpackImageLabel;
+    private javax.swing.JLabel ModpackDescriptionLabel;
+    private javax.swing.JLabel ModpackHeaderImage;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
