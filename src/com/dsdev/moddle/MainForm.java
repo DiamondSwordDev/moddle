@@ -3,6 +3,8 @@ package com.dsdev.moddle;
 import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -35,10 +37,8 @@ public class MainForm extends javax.swing.JFrame {
         UsernameField = new javax.swing.JTextField();
         ModpackComboBox = new javax.swing.JComboBox();
         PasswordField = new javax.swing.JPasswordField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        ModpackDescriptionLabel = new javax.swing.JLabel();
-        ModpackHeaderImage = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ModpackDescriptionPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
@@ -63,31 +63,16 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        ModpackComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModpackComboBoxActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ModpackHeaderImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ModpackDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE))
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ModpackHeaderImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ModpackDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
-        );
-
-        jScrollPane1.setViewportView(jPanel1);
+        ModpackDescriptionPane.setEditable(false);
+        ModpackDescriptionPane.setBackground(new java.awt.Color(240, 240, 240));
+        ModpackDescriptionPane.setBorder(null);
+        jScrollPane3.setViewportView(ModpackDescriptionPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -95,29 +80,26 @@ public class MainForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(UsernameField)
-                            .addComponent(PasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(UsernameField)
+                    .addComponent(PasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addComponent(jScrollPane3)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -182,10 +164,19 @@ public class MainForm extends javax.swing.JFrame {
                 }
             }
             
+            
             String selectedPack = ModpackComboBox.getSelectedItem().toString();
-            ModpackHeaderImage.setIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
-            ModpackDescriptionLabel.setText(FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")));
-            //ModpackDescriptionLabel.setSize(ModpackDescriptionLabel.getSize().width, StringUtils.countMatches(ModpackDescriptionLabel.getText()));
+            Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
+            ModpackDescriptionPane.setText("");
+            ModpackDescriptionPane.insertIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
+            SimpleAttributeSet keyWord = new SimpleAttributeSet();
+            //StyleConstants.setForeground(keyWord, Color.RED);
+            //StyleConstants.setBackground(keyWord, Color.YELLOW);
+            //StyleConstants.setBold(keyWord, true);
+            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(),
+                    "\n\n" + FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")),
+                    keyWord);
+            ModpackDescriptionPane.setCaretPosition(0);
             
             Logger.info("Startup", "Finished loading.");
 
@@ -193,6 +184,24 @@ public class MainForm extends javax.swing.JFrame {
             Logger.error("Startup", ex.getMessage());
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void ModpackComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModpackComboBoxActionPerformed
+        try {
+
+            String selectedPack = ModpackComboBox.getSelectedItem().toString();
+            Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
+            ModpackDescriptionPane.setText("");
+            ModpackDescriptionPane.insertIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
+            SimpleAttributeSet keyWord = new SimpleAttributeSet();
+            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(),
+                    "\n\n" + FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")),
+                    keyWord);
+            ModpackDescriptionPane.setCaretPosition(0);
+            
+        } catch (Exception ex) {
+            Logger.error("GUI", ex.getMessage());
+        }
+    }//GEN-LAST:event_ModpackComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,15 +240,13 @@ public class MainForm extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox ModpackComboBox;
-    private javax.swing.JLabel ModpackDescriptionLabel;
-    private javax.swing.JLabel ModpackHeaderImage;
+    private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }
