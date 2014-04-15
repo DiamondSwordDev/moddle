@@ -29,6 +29,8 @@ public class Modpack {
             if (!Util.getFile("./packs/" + ModpackName).exists()) {
                 Util.getFile("./packs/" + ModpackName).mkdirs();
             }
+            
+            launchArgs.AppDataDirectory = Util.getFile("./packs/" + ModpackName).getCanonicalPath();
 
             Logger.info("Creating .minecraft directory...");
             if (!Util.getFile("./packs/" + ModpackName + "/.minecraft").exists()) {
@@ -44,10 +46,11 @@ public class Modpack {
             JSONObject packConfig = (JSONObject) JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
 
             Logger.info("Building skeleton installation...");
-            Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft");
+            Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs);
 
             //Logger.info("Building Forge installation...");
-            //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft");
+            //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft", launchArgs);
+            
             //Logger.info("Loading version config...");
             //JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./data/" + packConfig.get("version") + ".json")));
             Logger.info("Creating '.minecraft/versions/' ...");
@@ -104,7 +107,7 @@ public class Modpack {
             //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
             Logger.info("    JavaExecutablePath");
             if (launchArgs.JavaExecutablePath != null) {
-                args.add(launchArgs.JavaExecutablePath);
+                args.add(launchArgs.parseString(launchArgs.JavaExecutablePath));
             } else {
                 args.add("javaw.exe");
             }
@@ -121,15 +124,15 @@ public class Modpack {
 
             Logger.info("    DJavaLibPathArgument");
             if (launchArgs.UseDJavaLibPathArgument) {
-                args.add("-Djava.library.path=\"" + Util.getFile(launchArgs.DJavaLibPathArgument).getCanonicalPath() + "\"");
+                args.add("-Djava.library.path=\"" + Util.getFile(launchArgs.parseString(launchArgs.DJavaLibPathArgument)).getCanonicalPath() + "\"");
             }
 
             Logger.info("    ClassPathArgument");
             if (launchArgs.UseClassPathArgument) {
-                String cpArg = "\"";
+                String cpArg = "";//"\"";
                 if (launchArgs.GetLibraryClassPaths) {
                     String libCp = getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
-                    cpArg += libCp.substring(0, libCp.length() - 2);
+                    cpArg += libCp.substring(0, libCp.length() - 1);
                 }
                 if (launchArgs.GetMinecraftClassPath) {
                     if (cpArg.length() > 0) {
@@ -142,7 +145,7 @@ public class Modpack {
                         cpArg += ";";
                     }
                     for (String cpArgEntry : launchArgs.AdditionalClassPathEntries) {
-                        cpArg += cpArgEntry + ";";
+                        cpArg += launchArgs.parseString(cpArgEntry) + ";";
                     }
                     cpArg = cpArg.substring(0, cpArg.length() - 2);
                 }
@@ -152,13 +155,13 @@ public class Modpack {
 
             Logger.info("    MainClassArgument");
             if (launchArgs.UseMainClassArgument) {
-                args.add(launchArgs.MainClassArgument);
+                args.add(launchArgs.parseString(launchArgs.MainClassArgument));
             }
 
             Logger.info("    AdditionalCoreArguments");
             if (!launchArgs.AdditionalCoreArguments.isEmpty()) {
                 for (String additionalArg : launchArgs.AdditionalCoreArguments) {
-                    args.add(additionalArg);
+                    args.add(launchArgs.parseString(additionalArg));
                 }
             }
 
@@ -174,19 +177,19 @@ public class Modpack {
             Logger.info("    UseGameDirArgument");
             if (launchArgs.UseGameDirArgument) {
                 args.add("--gameDir");
-                args.add(launchArgs.GameDirArgument);
+                args.add(launchArgs.parseString(launchArgs.GameDirArgument));
             }
 
             Logger.info("    UseAssetDirArgument");
             if (launchArgs.UseAssetDirArgument) {
                 args.add("--assetDir");
-                args.add(launchArgs.AssetDirArgument);
+                args.add(launchArgs.parseString(launchArgs.AssetDirArgument));
             }
 
             Logger.info("    UseVersionArgument");
             if (launchArgs.UseVersionArgument) {
                 args.add("--version");
-                args.add(launchArgs.VersionArgument);
+                args.add(launchArgs.parseString(launchArgs.VersionArgument));
             }
 
             Logger.info("    UseUsernameArgument");
@@ -228,7 +231,7 @@ public class Modpack {
             Logger.info("    AdditionalMinecraftArguments");
             if (!launchArgs.AdditionalMinecraftArguments.isEmpty()) {
                 for (String additionalArg : launchArgs.AdditionalMinecraftArguments) {
-                    args.add(additionalArg);
+                    args.add(launchArgs.parseString(additionalArg));
                 }
             }
 
@@ -255,11 +258,12 @@ public class Modpack {
              //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");*/
             Logger.info("Setting environment variables...");
             Map<String, String> env = launcher.environment();
-            env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
+            //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
+            env.put("APPDATA", launchArgs.AppDataDirectory);
 
             Logger.info("Launching process!");
-            ////launcher.redirectOutput(Util.getFile("./stdout.txt"));
-            ////launcher.redirectError(Util.getFile("./stderr.txt"));
+            launcher.redirectOutput(Util.getFile("./stdout.txt"));
+            launcher.redirectError(Util.getFile("./stderr.txt"));
             launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
             launcher.start();
 

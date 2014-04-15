@@ -4,7 +4,6 @@ import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import org.apache.commons.io.FileUtils;
 
 /**

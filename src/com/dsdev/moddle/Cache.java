@@ -12,7 +12,7 @@ import org.json.simple.JSONValue;
  */
 public class Cache {
 
-    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir) {
+    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs) {
         try {
 
             //if (!Util.getFile("./tmp/cache").exists())
@@ -37,7 +37,6 @@ public class Cache {
             JSONObject entryConfig = (JSONObject) JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/cache/" + entryName + "-" + entryVersion + "/entry.json")));
 
             JSONArray filesArray = (JSONArray) entryConfig.get("files");
-
             for (Object obj : filesArray) {
                 JSONObject file = (JSONObject) obj;
                 if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
@@ -45,6 +44,12 @@ public class Cache {
                         return false;
                     }
                 }
+            }
+            
+            JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
+            for (Object obj : settingsArray) {
+                JSONObject setting = (JSONObject) obj;
+                launchArgs.setVariable((String)setting.get("name"), (String)setting.get("value"));
             }
 
             return true;
