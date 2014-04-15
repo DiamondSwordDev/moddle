@@ -119,7 +119,10 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        try {
+            FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + ModpackComboBox.getSelectedItem().toString());
+        } catch (Exception ex) { }
+            
         Logger.info("Starting...");
         
         Logger.info("Logging in...");
@@ -161,6 +164,15 @@ public class MainForm extends javax.swing.JFrame {
                     }
                     ModpackComboBox.addItem(f.getName().replace(".zip", ""));
                 }
+            }
+            
+            Logger.info("Startup", "Loading last login info...");
+            if (Util.getFile("./lastlogin.dat").exists()) {
+                String lastlogin = FileUtils.readFileToString(Util.getFile("./lastlogin.dat"));
+                String[] lastloginLines = lastlogin.split("\n");
+                UsernameField.setText(lastloginLines[0]);
+                PasswordField.setText(lastloginLines[1]);
+                ModpackComboBox.setSelectedItem(lastloginLines[2]);
             }
             
             

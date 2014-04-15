@@ -1,11 +1,11 @@
 package com.dsdev.moddle;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -16,7 +16,10 @@ import org.json.simple.JSONValue;
  */
 public class Modpack {
 
-    private String ModpackName = "";
+    public String ModpackName = "";
+    
+    public List<String> InstalledEntries = new ArrayList();
+    public List<String> ExcludedEntries = new ArrayList();
 
     public Modpack(String name) {
         ModpackName = name;
@@ -46,13 +49,11 @@ public class Modpack {
             JSONObject packConfig = (JSONObject) JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
 
             Logger.info("Building skeleton installation...");
-            Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs);
+            Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
 
             //Logger.info("Building Forge installation...");
             //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft", launchArgs);
             
-            //Logger.info("Loading version config...");
-            //JSONObject versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(Util.getFile("./data/" + packConfig.get("version") + ".json")));
             Logger.info("Creating '.minecraft/versions/' ...");
             if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").exists()) {
                 Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
@@ -73,19 +74,13 @@ public class Modpack {
             }
             FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"));
 
-            /*Logger.info("Creating '.minecraft/libraries/' ...");
-             if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").exists())
-             Util.getFile("./packs/" + ModpackName + "/.minecraft/libraries").mkdirs();
+            JSONArray entriesArray = (JSONArray)packConfig.get("entries");
+            for (Object obj : entriesArray) {
+                JSONObject entryObj = (JSONObject)obj;
+                Logger.info("Installing entry " + (String)entryObj.get("name") + "...");
+                Cache.getCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
+            }
             
-             Logger.info("Installing libraries...");
-             JSONArray libraryList = (JSONArray)versionConfig.get("libraries");
-             for (Iterator it = libraryList.iterator(); it.hasNext();) {
-             Object obj = it.next();
-             JSONObject library = (JSONObject)obj;
-             Logger.info("Installing library: " + library.get("name"));
-             if (!Util.decompressZipfile("./data/libraries/" + library.get("name") + "-" + library.get("version") + ".zip", "./packs/" + ModpackName + "/.minecraft/libraries"))
-             return false;
-             }*/
             return true;
 
         } catch (Exception ex) {
@@ -228,6 +223,12 @@ public class Modpack {
                 args.add(login.UserType);
             }
 
+            Logger.info("    UseTweakClassArgument");
+            if (launchArgs.UseTweakClassArgument) {
+                args.add("--tweakClass");
+                args.add(launchArgs.parseString(launchArgs.TweakClassArgument));
+            }
+            
             Logger.info("    AdditionalMinecraftArguments");
             if (!launchArgs.AdditionalMinecraftArguments.isEmpty()) {
                 for (String additionalArg : launchArgs.AdditionalMinecraftArguments) {

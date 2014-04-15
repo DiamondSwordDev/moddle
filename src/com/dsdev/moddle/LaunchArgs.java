@@ -49,6 +49,9 @@ public class LaunchArgs {
 
     public boolean UseVersionArgument = false;
     public String VersionArgument = null;
+    
+    public boolean UseTweakClassArgument = false;
+    public String TweakClassArgument = null;
 
     public boolean UseUsernameArgument = false;
     public boolean UseSessionArgument = false;
