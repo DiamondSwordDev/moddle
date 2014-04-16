@@ -2,6 +2,8 @@ package com.dsdev.moddle;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.URL;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -45,7 +47,8 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         ModpackDescriptionPane = new javax.swing.JTextPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        NewsContentPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
@@ -81,13 +84,18 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane.setName(""); // NOI18N
 
         ModpackDescriptionPane.setEditable(false);
-        ModpackDescriptionPane.setBackground(new java.awt.Color(240, 240, 240));
+        ModpackDescriptionPane.setBackground(new java.awt.Color(250, 250, 250));
         ModpackDescriptionPane.setBorder(null);
         jScrollPane3.setViewportView(ModpackDescriptionPane);
 
         MainTabPane.addTab("Modpack", jScrollPane3);
         MainTabPane.addTab("Settings", jTabbedPane1);
-        MainTabPane.addTab("News", jTabbedPane2);
+
+        NewsContentPane.setEditable(false);
+        NewsContentPane.setBackground(new java.awt.Color(250, 250, 250));
+        jScrollPane1.setViewportView(NewsContentPane);
+
+        MainTabPane.addTab("News", jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,15 +114,15 @@ public class MainForm extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(MainTabPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(MainTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(MainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -127,7 +135,7 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
                             .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -157,33 +165,39 @@ public class MainForm extends javax.swing.JFrame {
 
             LaunchArgs launchArgs = new LaunchArgs();
 
-            Logger.info("Applying global settings...");
-            if (new File("./users/global.json").exists()) {
-                JSONObject globalConfig = Util.readJSONFile("./users/global.json");
-                launchArgs.loadSettings((JSONArray)globalConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users");
-                FileUtils.writeStringToFile(new File("./users/global.json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
-            }
+            try {
+                Logger.info("Applying global settings...");
+                if (new File("./users/global.json").exists()) {
+                    JSONObject globalConfig = Util.readJSONFile("./users/global.json");
+                    launchArgs.loadSettings((JSONArray)globalConfig.get("settings"));
+                } else {
+                    Util.assertDirectoryExistence("./users");
+                    FileUtils.writeStringToFile(new File("./users/global.json"), "{ settings : [ ] }");
+                }
+            } catch (Exception ex) { }
 
-            Logger.info("Applying user settings...");
-            if (new File("./users/" + login.Username + "/userprefs.json").exists()) {
-                JSONObject userConfig = Util.readJSONFile("./users/" + login.Username + "/userprefs.json");
-                launchArgs.loadSettings((JSONArray)userConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users/" + login.Username);
-                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/userprefs.json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
-            }
+            try {
+                Logger.info("Applying user settings...");
+                if (new File("./users/" + login.Username + "/userprefs.json").exists()) {
+                    JSONObject userConfig = Util.readJSONFile("./users/" + login.Username + "/userprefs.json");
+                    launchArgs.loadSettings((JSONArray)userConfig.get("settings"));
+                } else {
+                    Util.assertDirectoryExistence("./users/" + login.Username);
+                    FileUtils.writeStringToFile(new File("./users/" + login.Username + "/userprefs.json"), "{ settings : [ ] }");
+                }
+            } catch (Exception ex) { }
             
-            Logger.info("Applying pack-specific settings...");
-            String selectedPack = ModpackComboBox.getSelectedItem().toString();
-            if (new File("./users/" + login.Username + "/" + selectedPack + ".json").exists()) {
-                JSONObject selpackConfig = Util.readJSONFile("./users/" + login.Username + "/" + selectedPack + ".json");
-                launchArgs.loadSettings((JSONArray)selpackConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users/" + login.Username);
-                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/" + selectedPack + ".json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
-            }
+            try {
+                Logger.info("Applying pack-specific settings...");
+                String selectedPack = ModpackComboBox.getSelectedItem().toString();
+                if (new File("./users/" + login.Username + "/" + selectedPack + ".json").exists()) {
+                    JSONObject selpackConfig = Util.readJSONFile("./users/" + login.Username + "/" + selectedPack + ".json");
+                    launchArgs.loadSettings((JSONArray)selpackConfig.get("settings"));
+                } else {
+                    Util.assertDirectoryExistence("./users/" + login.Username);
+                    FileUtils.writeStringToFile(new File("./users/" + login.Username + "/" + selectedPack + ".json"), "{ settings : [ ] }");
+                }
+            } catch (Exception ex) { }
 
             Logger.info("Invoking pack builder...");
             PackBuilder pack = new PackBuilder(ModpackComboBox.getSelectedItem().toString());
@@ -233,6 +247,7 @@ public class MainForm extends javax.swing.JFrame {
                 ModpackComboBox.setSelectedItem(lastloginLines[2]);
             }
             
+            //<editor-fold defaultstate="collapsed" desc="Load modpack content">
             
             String selectedPack = ModpackComboBox.getSelectedItem().toString();
             Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
@@ -248,8 +263,13 @@ public class MainForm extends javax.swing.JFrame {
                     String styleString = line.substring(3, line.length() - 2);
                     for (String style : styleString.split(",")) {
                         
-                        String styleArg = style.split(":")[0];
-                        String styleValue = style.split(":")[1];
+                        String styleArg = style;
+                        String styleValue = "";
+                        
+                        try {
+                            styleArg = style.split(":")[0];
+                            styleValue = style.split(":")[1];
+                        } catch (Exception ex) { }
                         
                         Logger.info("Style", style);
                         
@@ -285,6 +305,77 @@ public class MainForm extends javax.swing.JFrame {
             
             ModpackDescriptionPane.setCaretPosition(0);
             
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Load news content">
+            
+            Logger.info("Startup", "Fetching news...");
+            
+            InetAddress addr = InetAddress.getByName("sites.google.com");
+            if (addr.isReachable(600)) {
+                FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddleframework/news.zip"), new File("./news.zip"));
+            } else {
+                Logger.warning("Startup", "Failed to update news!");
+            }
+            
+            if (!Util.decompressZipfile("./news.zip", "./tmp/news/")) {
+                Logger.warning("Startup", "Failed to load news!");
+            }
+            
+            contentLocation = "./tmp/news/";
+            contentLines = FileUtils.readLines(new File("./tmp/news/content.txt"));
+            keyWord = new SimpleAttributeSet();
+            NewsContentPane.setText("");
+            
+            for (String line : contentLines) {
+                
+                if (line.startsWith("${{") && line.endsWith("}}")) {
+                    String styleString = line.substring(3, line.length() - 2);
+                    for (String style : styleString.split(",")) {
+                        
+                        String styleArg = style;
+                        String styleValue = "";
+                        
+                        try {
+                            styleArg = style.split(":")[0];
+                            styleValue = style.split(":")[1];
+                        } catch (Exception ex) { }
+                        
+                        Logger.info("Style", style);
+                        
+                        if (styleArg.equalsIgnoreCase("image")) {
+                            NewsContentPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                            NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), "\n", keyWord);
+                        } else if (styleArg.equalsIgnoreCase("reset")) {
+                            keyWord = new SimpleAttributeSet();
+                        } else {
+                            try {
+                                for (Method m : StyleConstants.class.getMethods()) {
+                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
+                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
+                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
+                                        } else if (Util.isNumeric(styleValue)) {
+                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
+                                        } else {
+                                            m.invoke(null, new Object[] { keyWord, styleValue });
+                                        }
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                Util.isNumeric("0");
+                            }
+                        }
+                        
+                    }
+                } else {
+                    NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), line + "\n", keyWord);
+                }
+                
+            }
+            
+            NewsContentPane.setCaretPosition(0);
+            
+            //</editor-fold>
             
             Logger.info("Startup", "Finished loading.");
 
@@ -393,14 +484,15 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JComboBox ModpackComboBox;
     private javax.swing.JTextPane ModpackDescriptionPane;
+    private javax.swing.JTextPane NewsContentPane;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
     // End of variables declaration//GEN-END:variables
 }
