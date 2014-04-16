@@ -3,6 +3,8 @@ package com.dsdev.moddle;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * This class contains fields required for modifying launch arguments.
@@ -14,6 +16,7 @@ public class LaunchArgs {
     //General Arguments
     public String MinecraftVersion = null;
     public String AppDataDirectory = null;
+    public String None = null;
 
     //Java Core Arguments
     public String JavaExecutablePath = "javaw.exe";
@@ -119,6 +122,13 @@ public class LaunchArgs {
         } catch (Exception ex) {
             Logger.error("LArgsParseStr", ex.getMessage());
             return null;
+        }
+    }
+    
+    public void loadSettings(JSONArray settingsArray) {
+        for (Object obj : settingsArray) {
+            JSONObject setting = (JSONObject) obj;
+            setVariable((String)setting.get("name"), (String)setting.get("value"));
         }
     }
 }

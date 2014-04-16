@@ -12,7 +12,7 @@ import org.json.simple.JSONValue;
  */
 public class Cache {
 
-    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs, Modpack pack) {
+    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs, PackBuilder pack) {
         try {
 
             if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -44,12 +44,8 @@ public class Cache {
                 }
             }
             
-            JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
-            for (Object obj : settingsArray) {
-                JSONObject setting = (JSONObject) obj;
-                launchArgs.setVariable((String)setting.get("name"), (String)setting.get("value"));
-            }
-
+            launchArgs.loadSettings((JSONArray)entryConfig.get("settings"));
+            
             return true;
 
         } catch (Exception ex) {
