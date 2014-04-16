@@ -246,8 +246,8 @@ public class PackBuilder {
             env.put("APPDATA", launchArgs.AppDataDirectory);
 
             Logger.info("Launching process!");
-            launcher.redirectOutput(Util.getFile("./stdout.txt"));
-            launcher.redirectError(Util.getFile("./stderr.txt"));
+            //launcher.redirectOutput(Util.getFile("./stdout.txt"));
+            //launcher.redirectError(Util.getFile("./stderr.txt"));
             launcher.directory(Util.getFile("./packs/" + ModpackName + "/.minecraft"));
             launcher.start();
 
