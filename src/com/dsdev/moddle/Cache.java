@@ -15,8 +15,6 @@ public class Cache {
     public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs, Modpack pack) {
         try {
 
-            
-            
             if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
                 if (!Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion)) {
                     return false;

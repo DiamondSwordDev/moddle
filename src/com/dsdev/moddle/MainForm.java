@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import java.awt.BorderLayout;
 import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;

@@ -29,16 +29,12 @@ public class Modpack {
         try {
 
             Logger.info("Creating pack directory...");
-            if (!Util.getFile("./packs/" + ModpackName).exists()) {
-                Util.getFile("./packs/" + ModpackName).mkdirs();
-            }
+            Util.assertDirectoryExistence("./packs/" + ModpackName);
             
-            launchArgs.AppDataDirectory = Util.getFile("./packs/" + ModpackName).getCanonicalPath();
+            launchArgs.AppDataDirectory = Util.getFullPath("./packs/" + ModpackName);
 
             Logger.info("Creating .minecraft directory...");
-            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft").exists()) {
-                Util.getFile("./packs/" + ModpackName + "/.minecraft").mkdirs();
-            }
+            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft");
 
             Logger.info("Extracting pack archive...");
             if (!Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/")) {
@@ -46,7 +42,7 @@ public class Modpack {
             }
 
             Logger.info("Loading pack config...");
-            JSONObject packConfig = (JSONObject) JSONValue.parse(FileUtils.readFileToString(Util.getFile("./tmp/pack/pack.json")));
+            JSONObject packConfig = Util.readJSONFile("./tmp/pack/pack.json");
 
             Logger.info("Building skeleton installation...");
             Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
@@ -55,19 +51,13 @@ public class Modpack {
             //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft", launchArgs);
             
             Logger.info("Creating '.minecraft/versions/' ...");
-            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").exists()) {
-                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions").mkdirs();
-            }
+            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions");
 
             Logger.info("Creating '.minecraft/versions/<version>/' ...");
-            if (!Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion")).exists()) {
-                Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion")).mkdirs();
-            }
+            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion"));
 
             Logger.info("Obtaining Minecraft jarfile...");
-            if (!Util.getFile("./data/versions").exists()) {
-                Util.getFile("./data/versions").mkdirs();
-            }
+            Util.assertDirectoryExistence("./data/versions");
             if (!Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists()) {
                 Logger.info("Version does not exist.  Downloading...");
                 FileUtils.copyURLToFile(Util.getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"));

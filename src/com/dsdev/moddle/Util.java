@@ -12,8 +12,10 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * Random utilities for stuff.
@@ -35,6 +37,32 @@ public class Util {
         }
     }
 
+    public static void assertDirectoryExistence(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+    
+    public static String getFullPath(String path) {
+        try {
+            File f = new File(path);
+            return f.getCanonicalPath();
+        } catch (Exception ex) {
+            Logger.error("GetPath", ex.getMessage());
+            return path;
+        }
+    }
+    
+    public static JSONObject readJSONFile(String path) {
+        try {
+            return (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(path)));
+        } catch (Exception ex) {
+            Logger.error("ReadJSON", ex.getMessage());
+            return null;
+        }
+    }
+    
     public static boolean decompressZipfile(String file, String outputDir) {
         try {
             if (!Util.getFile(outputDir).exists()) {
