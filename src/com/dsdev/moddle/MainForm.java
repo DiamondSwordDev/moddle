@@ -1,11 +1,12 @@
 package com.dsdev.moddle;
 
-import java.awt.BorderLayout;
 import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * The main GUI.
@@ -121,23 +122,65 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + ModpackComboBox.getSelectedItem().toString());
-        } catch (Exception ex) { }
+        
+            try {
+                FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + ModpackComboBox.getSelectedItem().toString());
+            } catch (Exception ex) { }
+
+            if (UsernameField.getText().equals("")) {
+                Logger.error("No account name given!");
+                return;
+            }
             
-        Logger.info("Starting...");
-        
-        Logger.info("Logging in...");
-        MinecraftLogin login = new MinecraftLogin();
-        login.doLogin(UsernameField.getText(), PasswordField.getText());
-        
-        LaunchArgs launchArgs = new LaunchArgs();
+            if (PasswordField.getText().equals("")) {
+                Logger.error("No password given!");
+                return;
+            }
+            
+            Logger.info("Logging in...");
+            MinecraftLogin login = new MinecraftLogin();
+            login.doLogin(UsernameField.getText(), PasswordField.getText());
 
-        Logger.info("Invoking pack builder...");
-        Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString());
-        pack.build(launchArgs, login);
+            LaunchArgs launchArgs = new LaunchArgs();
 
-        Logger.info("Preparing to launch modpack...");
-        pack.run(launchArgs, login);
+            Logger.info("Applying global settings...");
+            if (new File("./users/global.json").exists()) {
+                JSONObject globalConfig = Util.readJSONFile("./users/global.json");
+                launchArgs.loadSettings((JSONArray)globalConfig.get("settings"));
+            } else {
+                Util.assertDirectoryExistence("./users");
+                FileUtils.writeStringToFile(new File("./users/global.json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
+            }
+
+            Logger.info("Applying user settings...");
+            if (new File("./users/" + login.Username + "/userprefs.json").exists()) {
+                JSONObject userConfig = Util.readJSONFile("./users/" + login.Username + "/userprefs.json");
+                launchArgs.loadSettings((JSONArray)userConfig.get("settings"));
+            } else {
+                Util.assertDirectoryExistence("./users/" + login.Username);
+                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/userprefs.json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
+            }
+            
+            Logger.info("Applying pack-specific settings...");
+            String selectedPack = ModpackComboBox.getSelectedItem().toString();
+            if (new File("./users/" + login.Username + "/" + selectedPack + ".json").exists()) {
+                JSONObject selpackConfig = Util.readJSONFile("./users/" + login.Username + "/" + selectedPack + ".json");
+                launchArgs.loadSettings((JSONArray)selpackConfig.get("settings"));
+            } else {
+                Util.assertDirectoryExistence("./users/" + login.Username);
+                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/" + selectedPack + ".json"), "{ settings : [ { \"name\" : \"None\", \"value\" : \"None\" } ] }");
+            }
+
+            Logger.info("Invoking pack builder...");
+            PackBuilder pack = new PackBuilder(ModpackComboBox.getSelectedItem().toString());
+            pack.build(launchArgs, login);
+
+            Logger.info("Preparing to launch modpack...");
+            pack.run(launchArgs, login);
+        
+        } catch (Exception ex) {
+            Logger.error("Main", ex.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened

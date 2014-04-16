@@ -14,20 +14,24 @@ import org.json.simple.JSONValue;
  *
  * @author Greenlock28
  */
-public class Modpack {
+public class PackBuilder {
 
     public String ModpackName = "";
     
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
 
-    public Modpack(String name) {
+    public PackBuilder(String name) {
         ModpackName = name;
     }
 
+    
+    
     public boolean build(LaunchArgs launchArgs, MinecraftLogin login) {
         try {
 
+            //<editor-fold defaultstate="collapsed" desc="Pack Setup">
+            
             Logger.info("Creating pack directory...");
             Util.assertDirectoryExistence("./packs/" + ModpackName);
             
@@ -36,19 +40,18 @@ public class Modpack {
             Logger.info("Creating .minecraft directory...");
             Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft");
 
-            Logger.info("Extracting pack archive...");
+            //</editor-fold>
+            
+            Logger.info("Loading pack...");
             if (!Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/")) {
                 return false;
             }
-
-            Logger.info("Loading pack config...");
             JSONObject packConfig = Util.readJSONFile("./tmp/pack/pack.json");
 
             Logger.info("Building skeleton installation...");
             Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
 
-            //Logger.info("Building Forge installation...");
-            //Cache.getCacheEntry("minecraftforge", "9.11.1.965", "./packs/" + ModpackName + "/.minecraft", launchArgs);
+            //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
             
             Logger.info("Creating '.minecraft/versions/' ...");
             Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions");
@@ -64,6 +67,8 @@ public class Modpack {
             }
             FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"));
 
+            //</editor-fold>
+            
             JSONArray entriesArray = (JSONArray)packConfig.get("entries");
             for (Object obj : entriesArray) {
                 JSONObject entryObj = (JSONObject)obj;
@@ -79,17 +84,16 @@ public class Modpack {
         }
     }
 
+    
+    
     public boolean run(LaunchArgs launchArgs, MinecraftLogin login) {
         try {
 
-            //Logger.info("Getting classpath values...");
-            //String classPathVariable = "\"";
-            //classPathVariable += getLibraryJarfiles("./packs/" + ModpackName + "/.minecraft/libraries");
-            //classPathVariable += Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar").getCanonicalPath() + "\"";
             Logger.info("Building process arguments...");
             List<String> args = new ArrayList();
 
             //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
+            
             Logger.info("    JavaExecutablePath");
             if (launchArgs.JavaExecutablePath != null) {
                 args.add(launchArgs.parseString(launchArgs.JavaExecutablePath));
@@ -153,6 +157,7 @@ public class Modpack {
             //</editor-fold>
             
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
+            
             Logger.info("    UseLegacyUsernameAndSession");
             if (launchArgs.UseLegacyUsernameAndSession) {
                 args.add(login.Username);
@@ -235,18 +240,6 @@ public class Modpack {
 
             ProcessBuilder launcher = new ProcessBuilder(argArray);
 
-            /*ProcessBuilder launcher = new ProcessBuilder(
-             "javaw.exe",
-             "-Xmx1024M",
-             "-Djava.library.path=\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + "-natives").getCanonicalPath() + "\"",
-             "-cp", classPathVariable,
-             "net.minecraft.client.main.Main", //"net.minecraft.launchwrapper.Launch", //"net.minecraft.client.main.Main",
-             "--username", "Player",
-             "--session", "Null",
-             "--version", mcVersion,
-             "--gameDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft").getCanonicalPath() + "\"",
-             "--assetsDir", "\"" + Util.getFile("./packs/" + ModpackName + "/.minecraft/assets").getCanonicalPath() + "\"");
-             //"--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker");*/
             Logger.info("Setting environment variables...");
             Map<String, String> env = launcher.environment();
             //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
@@ -261,7 +254,7 @@ public class Modpack {
             return true;
 
         } catch (Exception ex) {
-            Logger.error(ex.getMessage());
+            Logger.error("Run", ex.getMessage());
             return false;
         }
     }
