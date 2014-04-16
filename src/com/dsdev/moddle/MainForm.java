@@ -1,9 +1,12 @@
 package com.dsdev.moddle;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -38,11 +41,15 @@ public class MainForm extends javax.swing.JFrame {
         UsernameField = new javax.swing.JTextField();
         ModpackComboBox = new javax.swing.JComboBox();
         PasswordField = new javax.swing.JPasswordField();
+        MainTabPane = new javax.swing.JTabbedPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         ModpackDescriptionPane = new javax.swing.JTextPane();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
+        setMaximumSize(new java.awt.Dimension(800, 450));
         setMinimumSize(new java.awt.Dimension(800, 450));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -70,10 +77,17 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        MainTabPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+        MainTabPane.setName(""); // NOI18N
+
         ModpackDescriptionPane.setEditable(false);
         ModpackDescriptionPane.setBackground(new java.awt.Color(240, 240, 240));
         ModpackDescriptionPane.setBorder(null);
         jScrollPane3.setViewportView(ModpackDescriptionPane);
+
+        MainTabPane.addTab("Modpack", jScrollPane3);
+        MainTabPane.addTab("Settings", jTabbedPane1);
+        MainTabPane.addTab("News", jTabbedPane2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -95,12 +109,12 @@ public class MainForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .addComponent(jScrollPane3)
+            .addComponent(MainTabPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                .addComponent(MainTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -222,16 +236,55 @@ public class MainForm extends javax.swing.JFrame {
             
             String selectedPack = ModpackComboBox.getSelectedItem().toString();
             Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
-            ModpackDescriptionPane.setText("");
-            ModpackDescriptionPane.insertIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
+            
+            String contentLocation = "./tmp/launcher/" + selectedPack + "/";
+            List<String> contentLines = FileUtils.readLines(new File("./tmp/launcher/" + selectedPack + "/description.txt"));
             SimpleAttributeSet keyWord = new SimpleAttributeSet();
-            //StyleConstants.setForeground(keyWord, Color.RED);
-            //StyleConstants.setBackground(keyWord, Color.YELLOW);
-            //StyleConstants.setBold(keyWord, true);
-            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(),
-                    "\n\n" + FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")),
-                    keyWord);
+            ModpackDescriptionPane.setText("");
+            
+            for (String line : contentLines) {
+                
+                if (line.startsWith("${{") && line.endsWith("}}")) {
+                    String styleString = line.substring(3, line.length() - 2);
+                    for (String style : styleString.split(",")) {
+                        
+                        String styleArg = style.split(":")[0];
+                        String styleValue = style.split(":")[1];
+                        
+                        Logger.info("Style", style);
+                        
+                        if (styleArg.equalsIgnoreCase("image")) {
+                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
+                        } else if (styleArg.equalsIgnoreCase("reset")) {
+                            keyWord = new SimpleAttributeSet();
+                        } else {
+                            try {
+                                for (Method m : StyleConstants.class.getMethods()) {
+                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
+                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
+                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
+                                        } else if (Util.isNumeric(styleValue)) {
+                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
+                                        } else {
+                                            m.invoke(null, new Object[] { keyWord, styleValue });
+                                        }
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                Util.isNumeric("0");
+                            }
+                        }
+                        
+                    }
+                } else {
+                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
+                }
+                
+            }
+            
             ModpackDescriptionPane.setCaretPosition(0);
+            
             
             Logger.info("Startup", "Finished loading.");
 
@@ -245,13 +298,56 @@ public class MainForm extends javax.swing.JFrame {
 
             String selectedPack = ModpackComboBox.getSelectedItem().toString();
             Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
-            ModpackDescriptionPane.setText("");
-            ModpackDescriptionPane.insertIcon(new ImageIcon("./tmp/launcher/" + selectedPack + "/pack.png"));
+            
+            String contentLocation = "./tmp/launcher/" + selectedPack + "/";
+            List<String> contentLines = FileUtils.readLines(new File("./tmp/launcher/" + selectedPack + "/description.txt"));
             SimpleAttributeSet keyWord = new SimpleAttributeSet();
-            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(),
-                    "\n\n" + FileUtils.readFileToString(Util.getFile("./tmp/launcher/" + selectedPack + "/pack.txt")),
-                    keyWord);
+            ModpackDescriptionPane.setText("");
+            
+            for (String line : contentLines) {
+                
+                if (line.startsWith("${{") && line.endsWith("}}")) {
+                    String styleString = line.substring(3, line.length() - 2);
+                    for (String style : styleString.split(",")) {
+                        
+                        String styleArg = style.split(":")[0];
+                        String styleValue = style.split(":")[1];
+                        
+                        Logger.info("Style", style);
+                        
+                        if (styleArg.equalsIgnoreCase("image")) {
+                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
+                        } else if (styleArg.equalsIgnoreCase("reset")) {
+                            keyWord = new SimpleAttributeSet();
+                        } else {
+                            try {
+                                for (Method m : StyleConstants.class.getMethods()) {
+                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
+                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
+                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
+                                        } else if (Util.isNumeric(styleValue)) {
+                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
+                                        } else {
+                                            m.invoke(null, new Object[] { keyWord, styleValue });
+                                        }
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                Util.isNumeric("0");
+                            }
+                        }
+                        
+                    }
+                } else {
+                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
+                }
+                
+            }
+            
             ModpackDescriptionPane.setCaretPosition(0);
+            
+            MainTabPane.setSelectedIndex(0);
             
         } catch (Exception ex) {
             Logger.error("GUI", ex.getMessage());
@@ -294,6 +390,7 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JComboBox ModpackComboBox;
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JPasswordField PasswordField;
@@ -303,5 +400,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     // End of variables declaration//GEN-END:variables
 }
