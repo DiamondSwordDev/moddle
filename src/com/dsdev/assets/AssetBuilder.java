@@ -25,7 +25,7 @@ public class AssetBuilder {
      * @throws java.io.IOException Of course. :P
      */
     public static void buildAssets(String directory) throws IOException {
-        Logger.info("Assets", "Building Minecraft assets at " + directory);
+        Logger.info("Assets", "Building Minecraft assets at " + directory);space
 
         // Let's start by setting up the stuff we're gonna need
         Logger.info("Assets", "Setting up folders...");
