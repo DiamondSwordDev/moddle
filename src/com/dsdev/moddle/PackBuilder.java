@@ -17,12 +17,18 @@ import org.json.simple.JSONValue;
 public class PackBuilder {
 
     public String ModpackName = "";
+    public String BasePath = "";
     
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
 
     public PackBuilder(String name) {
+        
         ModpackName = name;
+        
+        //Logger.info("Creating pack directory...");
+        //    Util.assertDirectoryExistence("./packs/" + ModpackName);
+        
     }
 
     
