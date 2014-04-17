@@ -32,7 +32,7 @@ public class Util {
         try {
             return new URL(uri);
         } catch (Exception ex) {
-            Logger.error("GetURL", ex.getMessage());
+            Logger.error("Util.getURL", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
@@ -49,7 +49,7 @@ public class Util {
             File f = new File(path);
             return f.getCanonicalPath();
         } catch (Exception ex) {
-            Logger.error("GetPath", ex.getMessage());
+            Logger.error("Util.getFullPath", ex.getMessage(), false, ex.getMessage());
             return path;
         }
     }
@@ -58,7 +58,7 @@ public class Util {
         try {
             return (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(path)));
         } catch (Exception ex) {
-            Logger.error("ReadJSON", ex.getMessage());
+            Logger.error("Util.readJSONFile", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
@@ -86,7 +86,7 @@ public class Util {
             }
             return true;
         } catch (Exception ex) {
-            Logger.error("UnZip", ex.getMessage());
+            Logger.error("Util.decompressZipfile", ex.getMessage(), false, ex.getMessage());
             return false;
         }
     }

@@ -28,7 +28,7 @@ public class Cache {
                     return false;
                 }
             } else {
-                Logger.error("GetCacheEntry", "Cache entry was not found!");
+                Logger.error("Cache.getCacheEntry", "Cache entry was not found!", false, "None");
                 return false;
             }
 
@@ -49,7 +49,7 @@ public class Cache {
             return true;
 
         } catch (Exception ex) {
-            Logger.error("GetCacheEntry", ex.getMessage());
+            Logger.error("Cache.getCacheEntry", ex.getMessage(), false, ex.getMessage());
             return false;
         }
     }

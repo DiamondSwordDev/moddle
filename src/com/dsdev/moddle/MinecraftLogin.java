@@ -53,7 +53,7 @@ public class MinecraftLogin {
             Logger.info("Login", "AccessToken " + AccessToken + " generated.");
         
         } catch (Exception ex) {
-            Logger.error("Login", ex.getMessage());
+            Logger.error("MinecraftLogin.doLogin", ex.getMessage(), false, ex.getMessage());
         }
     }
     

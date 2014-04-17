@@ -85,7 +85,7 @@ public class LaunchArgs {
             }
             
         } catch (Exception ex) {
-            Logger.error("LArgsSetVar", ex.getMessage());
+            Logger.error("LaunchArgs.setVariable", ex.getMessage(), false, ex.getMessage());
         }
     }
     
@@ -101,7 +101,7 @@ public class LaunchArgs {
             return null;
             
         } catch (Exception ex) {
-            Logger.error("LArgsGetVar", ex.getMessage());
+            Logger.error("MainForm.getVariable", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
@@ -120,7 +120,7 @@ public class LaunchArgs {
             return ret;
             
         } catch (Exception ex) {
-            Logger.error("LArgsParseStr", ex.getMessage());
+            Logger.error("LaunchArgs.parseString", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }

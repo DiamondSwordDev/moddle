@@ -22,7 +22,7 @@ public class Logger {
             System.out.println("[" + getCurrentTimeStamp() + "][Moddle][Logger.begin] - Logger has been instantiated.");
         } catch (Exception ex) {
             instanceLoggerFile = null;
-            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  FROGSQUISH  +=======================+");
+            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
             System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: Logger.begin");
             System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Message: Could not create logfile!");
             System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  Not barely.");
@@ -65,8 +65,16 @@ public class Logger {
         System.out.println("[" + getCurrentTimeStamp() + "][Moddle][Error] - " + message);
     }
 
-    public static void error(String prefix, String message) {
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle][" + prefix + "][Error] - " + message);
+    public static void error(String method, String message, boolean isFatal, String exMessage) {
+        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
+        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: " + method);
+        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Message: " + message);
+        if (isFatal) {
+            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  Yes.");
+        } else {
+            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
+        }
+        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
     }
 
     public static String getCurrentTimeStamp() {

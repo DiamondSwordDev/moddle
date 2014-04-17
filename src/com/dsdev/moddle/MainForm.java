@@ -207,7 +207,7 @@ public class MainForm extends javax.swing.JFrame {
             pack.run(launchArgs, login);
         
         } catch (Exception ex) {
-            Logger.error("Main", ex.getMessage());
+            Logger.error("MainForm.jButton1ActionPerformed", ex.getMessage(), true, ex.getMessage());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -380,7 +380,7 @@ public class MainForm extends javax.swing.JFrame {
             Logger.info("Startup", "Finished loading.");
 
         } catch (Exception ex) {
-            Logger.error("Startup", ex.getMessage());
+            Logger.error("MainForm.formWindowOpened", ex.getMessage(), false, ex.getMessage());
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -441,7 +441,7 @@ public class MainForm extends javax.swing.JFrame {
             MainTabPane.setSelectedIndex(0);
             
         } catch (Exception ex) {
-            Logger.error("GUI", ex.getMessage());
+            Logger.error("MainForm.ModpackComboBoxActionPerformed", ex.getMessage(), false, ex.getMessage());
         }
     }//GEN-LAST:event_ModpackComboBoxActionPerformed
 

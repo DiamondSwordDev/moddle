@@ -260,7 +260,7 @@ public class PackBuilder {
             return true;
 
         } catch (Exception ex) {
-            Logger.error("Run", ex.getMessage());
+            Logger.error("PackBuilder.run", ex.getMessage(), true, ex.getMessage());
             return false;
         }
     }
@@ -281,7 +281,7 @@ public class PackBuilder {
             return ret;
 
         } catch (Exception ex) {
-            Logger.error("GetLibPaths", ex.getMessage());
+            Logger.error("PackBuilder.getLibraryJarfiles", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
