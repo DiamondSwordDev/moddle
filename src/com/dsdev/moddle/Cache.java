@@ -12,7 +12,7 @@ import org.json.simple.JSONValue;
  */
 public class Cache {
 
-    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs, PackBuilder pack) {
+    public static boolean getCacheEntry(String entryName, String entryVersion, String targetDir, LaunchArgs launchArgs, Modpack pack) {
         try {
 
             if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {

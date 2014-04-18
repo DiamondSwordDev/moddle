@@ -200,7 +200,7 @@ public class MainForm extends javax.swing.JFrame {
             } catch (Exception ex) { }
 
             Logger.info("Invoking pack builder...");
-            PackBuilder pack = new PackBuilder(ModpackComboBox.getSelectedItem().toString());
+            Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString());
             pack.build(launchArgs, login);
 
             Logger.info("Preparing to launch modpack...");

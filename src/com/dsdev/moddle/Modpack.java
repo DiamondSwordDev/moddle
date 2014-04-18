@@ -14,7 +14,7 @@ import org.json.simple.JSONValue;
  *
  * @author Greenlock28
  */
-public class PackBuilder {
+public class Modpack {
 
     public String ModpackName = "";
     public String BasePath = "";
@@ -22,7 +22,7 @@ public class PackBuilder {
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
 
-    public PackBuilder(String name) {
+    public Modpack(String name) {
         
         ModpackName = name;
         
