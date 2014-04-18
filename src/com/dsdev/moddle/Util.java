@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -63,7 +64,7 @@ public class Util {
         }
     }
     
-    public static boolean decompressZipfile(String file, String outputDir) {
+    public static void decompressZipfile(String file, String outputDir) throws Exception {
         try {
             if (!Util.getFile(outputDir).exists()) {
                 Util.getFile(outputDir).mkdirs();
@@ -84,10 +85,10 @@ public class Util {
                     IOUtils.closeQuietly(out);
                 }
             }
-            return true;
-        } catch (Exception ex) {
-            Logger.error("Util.decompressZipfile", ex.getMessage(), false, ex.getMessage());
-            return false;
+        } catch (IOException ex) {
+            throw new Exception("Failed to extract zipfile!");
+            //Logger.error("Util.decompressZipfile", ex.getMessage(), false, ex.getMessage());
+            //return false;
         }
     }
     

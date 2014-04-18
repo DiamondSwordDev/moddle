@@ -16,18 +16,32 @@ import org.json.simple.JSONValue;
  */
 public class Modpack {
 
-    public String ModpackName = "";
+    private String ModpackName = "";
+    private String PlayerOwner = "";
     public String BasePath = "";
     
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
 
-    public Modpack(String name) {
+    public Modpack() { }
+    
+    public Modpack(String name, String player) {
         
-        ModpackName = name;
+        this.ModpackName = name;
+        this.PlayerOwner = player;
         
-        //Logger.info("Creating pack directory...");
-        //    Util.assertDirectoryExistence("./packs/" + ModpackName);
+        Logger.info("Modpack (const)", "Asserting pack directory...");
+        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName);
+        
+        Logger.info("Modpack (const)", "Asserting .minecraft directory...");
+        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft");
+        
+        Logger.info("Modpack (const)", "Asserting entries directory...");
+        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
+        
+        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/").exists())) {
+            
+        }
         
     }
 
@@ -49,9 +63,7 @@ public class Modpack {
             //</editor-fold>
             
             Logger.info("Loading pack...");
-            if (!Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/")) {
-                return false;
-            }
+            Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/");
             JSONObject packConfig = Util.readJSONFile("./tmp/pack/pack.json");
 
             Logger.info("Building skeleton installation...");
