@@ -2,7 +2,6 @@
 /build/
 /dist/
 /tmp/
-/packs/*/
 /data/versions/
 /stderr.txt
 /stdout.txt
