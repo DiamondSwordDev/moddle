@@ -1,6 +1,7 @@
 package com.dsdev.moddle;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.URL;
@@ -36,7 +37,7 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        PlayButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -60,11 +61,11 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setText("Play");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        PlayButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        PlayButton.setText("Play");
+        PlayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                PlayButtonActionPerformed(evt);
             }
         });
 
@@ -115,7 +116,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(MainTabPane)
         );
@@ -135,27 +136,26 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
                             .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
+    private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
         
             try {
                 FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + ModpackComboBox.getSelectedItem().toString());
             } catch (Exception ex) { }
 
             if (UsernameField.getText().equals("")) {
-                Logger.error("No account name given!");
+                Logger.error("MainForm.PlayButtonActionPerformed", "No account name given!", true, "None");
                 return;
             }
             
             if (PasswordField.getText().equals("")) {
-                Logger.error("No password given!");
+                Logger.error("MainForm.PlayButtonActionPerformed", "No password given!", true, "None");
                 return;
             }
             
@@ -200,16 +200,12 @@ public class MainForm extends javax.swing.JFrame {
             } catch (Exception ex) { }
 
             Logger.info("Invoking pack builder...");
-            Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString());
-            pack.build(launchArgs, login);
+            Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString(), UsernameField.getText());
+            pack.build();
 
             Logger.info("Preparing to launch modpack...");
             pack.run(launchArgs, login);
-        
-        } catch (Exception ex) {
-            Logger.error("MainForm.jButton1ActionPerformed", ex.getMessage(), true, ex.getMessage());
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_PlayButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
@@ -230,7 +226,9 @@ public class MainForm extends javax.swing.JFrame {
             for (File f : Util.getFile("./packs").listFiles()) {
                 if (f.getName().endsWith(".zip")) {
                     if (!Util.getFile("./tmp/launcher/" + f.getName().replace(".zip", "") + "/pack.png").exists()) {
-                        if (!Util.decompressZipfile(f.getCanonicalPath(), "./tmp/launcher/" + f.getName().replace(".zip", ""))) {
+                        try {
+                            Util.decompressZipfile(f.getCanonicalPath(), "./tmp/launcher/" + f.getName().replace(".zip", ""));
+                        } catch (IOException ex) {
                             Logger.warning("Startup", "Failed to load pack image for " + f.getName().replace(".zip", ""));
                         }
                     }
@@ -318,7 +316,9 @@ public class MainForm extends javax.swing.JFrame {
                 Logger.warning("Startup", "Failed to update news!");
             }
             
-            if (!Util.decompressZipfile("./news.zip", "./tmp/news/")) {
+            try {
+                Util.decompressZipfile("./news.zip", "./tmp/news/");
+            } catch (IOException ex) {
                 Logger.warning("Startup", "Failed to load news!");
             }
             
@@ -486,8 +486,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JTextPane NewsContentPane;
     private javax.swing.JPasswordField PasswordField;
+    private javax.swing.JButton PlayButton;
     private javax.swing.JTextField UsernameField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

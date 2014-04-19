@@ -1,6 +1,8 @@
 package com.dsdev.moddle;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,10 @@ public class Modpack {
 
     private String ModpackName = "";
     private String PlayerOwner = "";
-    public String BasePath = "";
+    
+    public boolean IsInstallComplete = false;
+    
+    private LaunchArgs LaunchArguments = new LaunchArgs();
     
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
@@ -39,69 +44,155 @@ public class Modpack {
         Logger.info("Modpack (const)", "Asserting entries directory...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
         
-        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/").exists())) {
-            
+        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists())) {
+            IsInstallComplete = false;
+            if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").exists())) {
+                try {
+                    FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall"), "");
+                } catch (IOException ex) {
+                    Logger.error("Modpack (const)", "Failed to create partialinstall file!", false, ex.getMessage());
+                }
+            }
+        } else {
+            IsInstallComplete = true;
+        }
+    }
+
+    
+    
+    public void build() {
+        
+        LaunchArguments.AppDataDirectory = Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName);
+
+        //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation">
+        
+        if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists()) {
+            if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").delete())) {
+                Logger.error("Modpack.build", "Failed to delete completeinstall file!", false, "None");
+            }
         }
         
-    }
+        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").exists())) {
+            try {
+                FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall"), "");
+            } catch (IOException ex) {
+                Logger.error("Modpack.build", "Failed to create partialinstall file!", false, ex.getMessage());
+            }
+        }
 
-    
-    
-    public boolean build(LaunchArgs launchArgs, MinecraftLogin login) {
+        //</editor-fold>
+        
+        Logger.info("Extracting pack archive...");
         try {
-
-            //<editor-fold defaultstate="collapsed" desc="Pack Setup">
-            
-            Logger.info("Creating pack directory...");
-            Util.assertDirectoryExistence("./packs/" + ModpackName);
-            
-            launchArgs.AppDataDirectory = Util.getFullPath("./packs/" + ModpackName);
-
-            Logger.info("Creating .minecraft directory...");
-            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft");
-
-            //</editor-fold>
-            
-            Logger.info("Loading pack...");
             Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/");
-            JSONObject packConfig = Util.readJSONFile("./tmp/pack/pack.json");
-
-            Logger.info("Building skeleton installation...");
-            Cache.getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
-
-            //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
-            
-            Logger.info("Creating '.minecraft/versions/' ...");
-            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions");
-
-            Logger.info("Creating '.minecraft/versions/<version>/' ...");
-            Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion"));
-
-            Logger.info("Obtaining Minecraft jarfile...");
-            Util.assertDirectoryExistence("./data/versions");
-            if (!Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists()) {
-                Logger.info("Version does not exist.  Downloading...");
-                FileUtils.copyURLToFile(Util.getURL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"));
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Failed to extract pack archive!", true, ex.getMessage());
+            return;
+        }
+        
+        JSONObject packConfig = null;
+        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/pack.json").exists())) {
+            try {
+                FileUtils.copyFile(new File("./tmp/pack/pack.json"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/pack.json"));
+            } catch (IOException ex) {
+                Logger.error("Modpack.build", "Failed to copy pack config file!", true, ex.getMessage());
+                return;
             }
-            FileUtils.copyFile(Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar"), Util.getFile("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"));
+        }
+        try {
+            packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/pack.json");
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Failed to read pack.json!", true, ex.getMessage());
+            return;
+        }
+        
+        Logger.info("Building skeleton installation...");
+        getCacheEntry("minecraft", (String) packConfig.get("minecraftversion"), "./packs/" + ModpackName + "/.minecraft", true);
 
-            //</editor-fold>
-            
-            JSONArray entriesArray = (JSONArray)packConfig.get("entries");
-            for (Object obj : entriesArray) {
-                JSONObject entryObj = (JSONObject)obj;
-                Logger.info("Installing entry " + (String)entryObj.get("name") + "...");
-                Cache.getCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), "./packs/" + ModpackName + "/.minecraft", launchArgs, this);
+        //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
+
+        Logger.info("Creating '.minecraft/versions/' ...");
+        Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions");
+
+        Logger.info("Creating '.minecraft/versions/<version>/' ...");
+        Util.assertDirectoryExistence("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion"));
+
+        Logger.info("Obtaining Minecraft jarfile...");
+        Util.assertDirectoryExistence("./data/versions");
+        if (!Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists()) {
+            Logger.info("Version does not exist.  Downloading...");
+            try {
+                FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"), new File("./data/versions/" + packConfig.get("minecraftversion") + ".jar"));
+            } catch (IOException ex) {
+                Logger.error("Modpack.build", "Failed to download Minecraft jarfile!", true, ex.getMessage());
+                return;
             }
-            
-            return true;
+        }
+        try {
+        FileUtils.copyFile(new File("./data/versions/" + packConfig.get("minecraftversion") + ".jar"), new File("./packs/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"));
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex.getMessage());
+            return;
+        }
+        
+        //</editor-fold>
 
-        } catch (Exception ex) {
-            Logger.error(ex.getMessage());
-            return false;
+        JSONArray entriesArray = (JSONArray)packConfig.get("entries");
+        for (Object obj : entriesArray) {
+            JSONObject entryObj = (JSONObject)obj;
+            Logger.info("Installing entry " + (String)entryObj.get("name") + "...");
+            getCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), "./packs/" + ModpackName + "/.minecraft", false);
         }
     }
 
+    public static void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality) {
+        if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            try {
+                Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion);
+            } catch (IOException ex) {
+                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                return;
+            }
+        } else if (Util.getFile("./tmp/pack/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            try {
+                Util.decompressZipfile("./tmp/pack/cache/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion);
+            } catch (IOException ex) {
+                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                return;
+            }
+        } else if (Util.getFile("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            try {
+                Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./tmp/cache/" + entryName + "-" + entryVersion);
+            } catch (IOException ex) {
+                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                return;
+            }
+        } else {
+            Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
+            return;
+        }
+
+        JSONObject entryConfig = null;
+        try {
+            entryConfig = Util.readJSONFile("./tmp/cache/" + entryName + "-" + entryVersion + "/entry.json");
+        } catch (IOException ex) {
+            Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
+            return;
+        }
+
+        JSONArray filesArray = (JSONArray) entryConfig.get("files");
+        for (Object obj : filesArray) {
+            JSONObject file = (JSONObject) obj;
+            try {
+                if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
+                    Util.decompressZipfile("./tmp/cache/" + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                }
+            } catch (IOException ex) {
+                Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
+            }
+        }
+    }
+    
     
     
     public boolean run(LaunchArgs launchArgs, MinecraftLogin login) {

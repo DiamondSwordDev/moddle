@@ -3,6 +3,7 @@ package com.dsdev.moddle;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,40 +56,29 @@ public class Util {
         }
     }
     
-    public static JSONObject readJSONFile(String path) {
-        try {
-            return (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(path)));
-        } catch (Exception ex) {
-            Logger.error("Util.readJSONFile", ex.getMessage(), false, ex.getMessage());
-            return null;
-        }
+    public static JSONObject readJSONFile(String path) throws IOException {
+        return (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(path)));
     }
     
-    public static void decompressZipfile(String file, String outputDir) throws Exception {
-        try {
-            if (!Util.getFile(outputDir).exists()) {
-                Util.getFile(outputDir).mkdirs();
+    public static void decompressZipfile(String file, String outputDir) throws IOException {
+        if (!Util.getFile(outputDir).exists()) {
+            Util.getFile(outputDir).mkdirs();
+        }
+        ZipFile zipFile = new ZipFile(file);
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            File entryDestination = new File(outputDir, entry.getName());
+            if (entry.isDirectory()) {
+                entryDestination.mkdirs();
+            } else {
+                //entryDestination.getParentFile().mkdirs();
+                InputStream in = zipFile.getInputStream(entry);
+                OutputStream out = new FileOutputStream(entryDestination);
+                IOUtils.copy(in, out);
+                IOUtils.closeQuietly(in);
+                IOUtils.closeQuietly(out);
             }
-            ZipFile zipFile = new ZipFile(file);
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                File entryDestination = new File(outputDir, entry.getName());
-                if (entry.isDirectory()) {
-                    entryDestination.mkdirs();
-                } else {
-                    //entryDestination.getParentFile().mkdirs();
-                    InputStream in = zipFile.getInputStream(entry);
-                    OutputStream out = new FileOutputStream(entryDestination);
-                    IOUtils.copy(in, out);
-                    IOUtils.closeQuietly(in);
-                    IOUtils.closeQuietly(out);
-                }
-            }
-        } catch (IOException ex) {
-            throw new Exception("Failed to extract zipfile!");
-            //Logger.error("Util.decompressZipfile", ex.getMessage(), false, ex.getMessage());
-            //return false;
         }
     }
     

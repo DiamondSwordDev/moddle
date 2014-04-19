@@ -41,14 +41,18 @@ public class Logger {
         }
     }
     
+    public static void safelyLog(String line) {
+        System.out.println(line);
+        safelyLogToFile(line);
+    }
+    
     //depreciated
     public static void info(String message) {
         System.out.println("[" + getCurrentTimeStamp() + "][Moddle][Info] - " + message);
     }
 
     public static void info(String method, String message) {
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] - " + message);
-        safelyLogToFile("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] - " + message);
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] - " + message);
     }
 
     //depreciated
@@ -57,8 +61,7 @@ public class Logger {
     }
 
     public static void warning(String method, String message) {
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] (WARNING!) - " + message);
-        safelyLogToFile("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] (WARNING!) - " + message);
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] (WARNING!) - " + message);
     }
 
     public static void error(String message) {
@@ -66,15 +69,15 @@ public class Logger {
     }
 
     public static void error(String method, String message, boolean isFatal, String exMessage) {
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: " + method);
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Message: " + message);
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: " + method);
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Message: " + message);
         if (isFatal) {
-            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  Yes.");
+            safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  Yes.");
         } else {
-            System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
+            safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
         }
-        System.out.println("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
+       safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
     }
 
     public static String getCurrentTimeStamp() {
