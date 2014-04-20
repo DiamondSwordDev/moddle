@@ -38,11 +38,9 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         PlayButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        UsernameLabel = new javax.swing.JLabel();
+        PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
-        ModpackComboBox = new javax.swing.JComboBox();
         PasswordField = new javax.swing.JPasswordField();
         MainTabPane = new javax.swing.JTabbedPane();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -50,11 +48,23 @@ public class MainForm extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         NewsContentPane = new javax.swing.JTextPane();
+        CurrentUserLabel = new javax.swing.JLabel();
+        LoginButton = new javax.swing.JButton();
+        InstanceComboBox = new javax.swing.JComboBox();
+        DeleteInstanceButton = new javax.swing.JButton();
+        AddInstanceButton = new javax.swing.JButton();
+        BaseModpackComboBox = new javax.swing.JComboBox();
+        InstanceNameField = new javax.swing.JTextField();
+        InstanceLabel = new javax.swing.JLabel();
+        CreateInstanceButton = new javax.swing.JButton();
+        ModpackLabel = new javax.swing.JLabel();
+        InstanceNameLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
         setMaximumSize(new java.awt.Dimension(800, 450));
         setMinimumSize(new java.awt.Dimension(800, 450));
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -69,17 +79,15 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Modpack:");
+        UsernameLabel.setForeground(new java.awt.Color(128, 128, 128));
+        UsernameLabel.setText("Username:");
 
-        jLabel2.setText("Username:");
+        PasswordLabel.setForeground(new java.awt.Color(128, 128, 128));
+        PasswordLabel.setText("Password:");
 
-        jLabel3.setText("Password:");
+        UsernameField.setEnabled(false);
 
-        ModpackComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ModpackComboBoxActionPerformed(evt);
-            }
-        });
+        PasswordField.setEnabled(false);
 
         MainTabPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         MainTabPane.setName(""); // NOI18N
@@ -98,45 +106,99 @@ public class MainForm extends javax.swing.JFrame {
 
         MainTabPane.addTab("News", jScrollPane1);
 
+        CurrentUserLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        CurrentUserLabel.setText("SixteenLongUName");
+
+        LoginButton.setText("Log In");
+
+        DeleteInstanceButton.setText("Delete");
+
+        AddInstanceButton.setText("Add");
+
+        BaseModpackComboBox.setEnabled(false);
+
+        InstanceNameField.setEnabled(false);
+
+        InstanceLabel.setText("Instance:");
+
+        CreateInstanceButton.setText("Create");
+        CreateInstanceButton.setEnabled(false);
+
+        ModpackLabel.setForeground(new java.awt.Color(128, 128, 128));
+        ModpackLabel.setText("Modpack:");
+
+        InstanceNameLabel.setForeground(new java.awt.Color(128, 128, 128));
+        InstanceNameLabel.setText("Instance Name:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LoginButton)
+                    .addComponent(CurrentUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(PasswordLabel))
+                    .addComponent(UsernameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(UsernameField)
-                    .addComponent(PasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                    .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(InstanceNameLabel)
+                    .addComponent(ModpackLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BaseModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(CreateInstanceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(InstanceLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(AddInstanceButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DeleteInstanceButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(MainTabPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(MainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                .addComponent(MainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(UsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(UsernameLabel)
+                            .addComponent(UsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CurrentUserLabel)
+                            .addComponent(ModpackLabel)
+                            .addComponent(BaseModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(InstanceLabel)
+                            .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(ModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(PasswordLabel)
+                            .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LoginButton)
+                            .addComponent(InstanceNameLabel)
+                            .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CreateInstanceButton)
+                            .addComponent(AddInstanceButton)
+                            .addComponent(DeleteInstanceButton)))
+                    .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -146,7 +208,7 @@ public class MainForm extends javax.swing.JFrame {
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
         
             try {
-                FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + ModpackComboBox.getSelectedItem().toString());
+                FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + BaseModpackComboBox.getSelectedItem().toString());
             } catch (Exception ex) { }
 
             if (UsernameField.getText().equals("")) {
@@ -189,7 +251,7 @@ public class MainForm extends javax.swing.JFrame {
             
             try {
                 Logger.info("Applying pack-specific settings...");
-                String selectedPack = ModpackComboBox.getSelectedItem().toString();
+                String selectedPack = BaseModpackComboBox.getSelectedItem().toString();
                 if (new File("./users/" + login.Username + "/" + selectedPack + ".json").exists()) {
                     JSONObject selpackConfig = Util.readJSONFile("./users/" + login.Username + "/" + selectedPack + ".json");
                     launchArgs.loadSettings((JSONArray)selpackConfig.get("settings"));
@@ -200,7 +262,7 @@ public class MainForm extends javax.swing.JFrame {
             } catch (Exception ex) { }
 
             Logger.info("Invoking pack builder...");
-            Modpack pack = new Modpack(ModpackComboBox.getSelectedItem().toString(), UsernameField.getText());
+            Modpack pack = new Modpack(BaseModpackComboBox.getSelectedItem().toString(), UsernameField.getText());
             pack.build();
 
             Logger.info("Preparing to launch modpack...");
@@ -222,32 +284,24 @@ public class MainForm extends javax.swing.JFrame {
             }
             
             Logger.info("Startup", "Loading modpacks...");
-            DefaultListModel model = new DefaultListModel();
+            BaseModpackComboBox.addItem("");
             for (File f : Util.getFile("./packs").listFiles()) {
-                if (f.getName().endsWith(".zip")) {
-                    if (!Util.getFile("./tmp/launcher/" + f.getName().replace(".zip", "") + "/pack.png").exists()) {
-                        try {
-                            Util.decompressZipfile(f.getCanonicalPath(), "./tmp/launcher/" + f.getName().replace(".zip", ""));
-                        } catch (IOException ex) {
-                            Logger.warning("Startup", "Failed to load pack image for " + f.getName().replace(".zip", ""));
-                        }
-                    }
-                    ModpackComboBox.addItem(f.getName().replace(".zip", ""));
+                if (f.isDirectory()) {
+                    BaseModpackComboBox.addItem(f.getName());
                 }
             }
             
-            Logger.info("Startup", "Loading last login info...");
-            if (Util.getFile("./lastlogin.dat").exists()) {
-                String lastlogin = FileUtils.readFileToString(Util.getFile("./lastlogin.dat"));
-                String[] lastloginLines = lastlogin.split("\n");
+            /*Logger.info("Startup", "Loading last login info...");
+            if (new File("./lastlogin.json").exists()) {
+                JSONObject lastlogin = Util.readJSONFile("./lastlogin.dat");
                 UsernameField.setText(lastloginLines[0]);
                 PasswordField.setText(lastloginLines[1]);
-                ModpackComboBox.setSelectedItem(lastloginLines[2]);
-            }
+                BaseModpackComboBox.setSelectedItem(lastloginLines[2]);
+            }*/
             
             //<editor-fold defaultstate="collapsed" desc="Load modpack content">
             
-            String selectedPack = ModpackComboBox.getSelectedItem().toString();
+            String selectedPack = BaseModpackComboBox.getSelectedItem().toString();
             Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
             
             String contentLocation = "./tmp/launcher/" + selectedPack + "/";
@@ -384,67 +438,6 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowOpened
 
-    private void ModpackComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModpackComboBoxActionPerformed
-        try {
-
-            String selectedPack = ModpackComboBox.getSelectedItem().toString();
-            Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
-            
-            String contentLocation = "./tmp/launcher/" + selectedPack + "/";
-            List<String> contentLines = FileUtils.readLines(new File("./tmp/launcher/" + selectedPack + "/description.txt"));
-            SimpleAttributeSet keyWord = new SimpleAttributeSet();
-            ModpackDescriptionPane.setText("");
-            
-            for (String line : contentLines) {
-                
-                if (line.startsWith("${{") && line.endsWith("}}")) {
-                    String styleString = line.substring(3, line.length() - 2);
-                    for (String style : styleString.split(",")) {
-                        
-                        String styleArg = style.split(":")[0];
-                        String styleValue = style.split(":")[1];
-                        
-                        Logger.info("Style", style);
-                        
-                        if (styleArg.equalsIgnoreCase("image")) {
-                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
-                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
-                        } else if (styleArg.equalsIgnoreCase("reset")) {
-                            keyWord = new SimpleAttributeSet();
-                        } else {
-                            try {
-                                for (Method m : StyleConstants.class.getMethods()) {
-                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
-                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
-                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
-                                        } else if (Util.isNumeric(styleValue)) {
-                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
-                                        } else {
-                                            m.invoke(null, new Object[] { keyWord, styleValue });
-                                        }
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                Util.isNumeric("0");
-                            }
-                        }
-                        
-                    }
-                } else {
-                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
-                }
-                
-            }
-            
-            ModpackDescriptionPane.setCaretPosition(0);
-            
-            MainTabPane.setSelectedIndex(0);
-            
-        } catch (Exception ex) {
-            Logger.error("MainForm.ModpackComboBoxActionPerformed", ex.getMessage(), false, ex.getMessage());
-        }
-    }//GEN-LAST:event_ModpackComboBoxActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -481,16 +474,25 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddInstanceButton;
+    private javax.swing.JComboBox BaseModpackComboBox;
+    private javax.swing.JButton CreateInstanceButton;
+    private javax.swing.JLabel CurrentUserLabel;
+    private javax.swing.JButton DeleteInstanceButton;
+    private javax.swing.JComboBox InstanceComboBox;
+    private javax.swing.JLabel InstanceLabel;
+    private javax.swing.JTextField InstanceNameField;
+    private javax.swing.JLabel InstanceNameLabel;
+    private javax.swing.JButton LoginButton;
     private javax.swing.JTabbedPane MainTabPane;
-    private javax.swing.JComboBox ModpackComboBox;
     private javax.swing.JTextPane ModpackDescriptionPane;
+    private javax.swing.JLabel ModpackLabel;
     private javax.swing.JTextPane NewsContentPane;
     private javax.swing.JPasswordField PasswordField;
+    private javax.swing.JLabel PasswordLabel;
     private javax.swing.JButton PlayButton;
     private javax.swing.JTextField UsernameField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel UsernameLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
