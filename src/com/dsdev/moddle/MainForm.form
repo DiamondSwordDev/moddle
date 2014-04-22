@@ -42,10 +42,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
-                      <Component id="PasswordLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="PasswordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Component id="UsernameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -234,12 +231,13 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="11" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="SixteenLongUName"/>
+        <Property name="text" type="java.lang.String" value="Validating..."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="LoginButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Log In"/>
+        <Property name="text" type="java.lang.String" value="Log Out"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="InstanceComboBox">

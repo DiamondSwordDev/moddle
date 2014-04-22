@@ -1,0 +1,69 @@
+${{IMAGE:banner.png}}
+
+This is the primary pre-release test modpack for the Moddle Launcher, using Minecraft version 1.6.4 (Forge version 9.11.1.953).  It contains most, if not all of the mods provided in the default Moddle universal mod cache.
+
+It contains the following mods:
+
+- Forge
+  by the Forge Development Team
+  http://www.minecraftforge.net/
+
+- BuildCraft 4
+  by the BuildCraft Team
+  http://www.mod-buildcraft.com/
+
+- CoFHCore, ThermalExpansion 3, and Redstone Arsenal
+  by Team CoFH
+  http://www.minecraftforum.net/topic/1773528-164-team-cofh-mods-thermal-expansion-300b7a/
+
+- IndustrialCraft2
+  by the IC2 Dev Team
+  http://forum.industrial-craft.net/
+
+- CodeChickenCore, NotEnoughItems, EnderStorage, ChickenChunks, and WR-CBE
+  by ChickenBones
+  http://www.minecraftforum.net/topic/909223-164-smp-chickenbones-mods/
+
+- OpenBlocks
+  by the OpenMods Team
+  http://www.minecraftforum.net/topic/1941514-16x-openblocks-122/
+
+- Forestry
+  by SirSengir
+  http://forestry.sengir.net/
+
+- BiblioCraft and BiblioWoods
+  by Nuchaz
+  http://www.bibliocraftmod.com/
+
+- Biomes O Plenty
+  by the Biomes O Plenty Team
+  http://www.minecraftforum.net/topic/1495041-16x-forge-biomes-o-plenty-v112-1-year-anniversary/
+
+- IronChests
+  by cpw
+  http://www.minecraftforum.net/topic/981855-15-and-up-forge-universalironchests-50-minecraft-15-update/
+
+- Tinker's Construct
+  by mDiyo
+  http://www.minecraftforum.net/topic/1659892-164tinkers-construct/
+
+- Natura
+  by mDiyo
+  http://www.minecraftforum.net/topic/1753754-16xnatura/
+
+- ProjectRed
+  by the ProjectRed Contributors
+  http://projectredwiki.com/
+
+- Ars Magica 2
+  by Mithion
+  http://www.minecraftforum.net/topic/2028696-ars-magica-2-164-version-111c-updated-jan-3/
+
+- Applied Energistics
+  by AlgorithmX2
+  http://ae-mod.info/
+
+- Sync
+  by iChun
+  http://ichun.us/mods/sync/

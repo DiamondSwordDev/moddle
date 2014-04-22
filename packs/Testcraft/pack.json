@@ -1,0 +1,13 @@
+{
+    "name" : "TestCraft",
+    "version" : "0.1",
+    
+    "minecraftversion" : "1.6.4",
+    
+    "entries" : [
+        {
+            "name" : "minecraftforge",
+            "version" : "9.11.1.965"
+        }
+    ]
+}

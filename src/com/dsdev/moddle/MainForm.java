@@ -1,12 +1,12 @@
 package com.dsdev.moddle;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -107,9 +107,10 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane.addTab("News", jScrollPane1);
 
         CurrentUserLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        CurrentUserLabel.setText("SixteenLongUName");
+        CurrentUserLabel.setText("Validating...");
 
-        LoginButton.setText("Log In");
+        LoginButton.setText("Log Out");
+        LoginButton.setEnabled(false);
 
         DeleteInstanceButton.setText("Delete");
 
@@ -141,9 +142,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(CurrentUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(PasswordLabel))
+                    .addComponent(PasswordLabel)
                     .addComponent(UsernameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -270,61 +269,114 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
+        
+        Logger.info("MainForm.formWindowOpened", "Centering JFrame...");
+        this.setLocationRelativeTo(null);
 
-            Logger.info("Startup", "Centering...");
-            this.setLocationRelativeTo(null);
+        Logger.info("MainForm.formWindowOpened", "Loading icon...");
+        this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
 
-            Logger.info("Startup", "Loading icon...");
-            this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-
-            Logger.info("Startup", "Clearing temporary file cache...");
-            if (Util.getFile("./tmp").exists()) {
-                FileUtils.deleteDirectory(Util.getFile("./tmp"));
+        Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
+        if (new File("./tmp").exists()) {
+            try {
+            FileUtils.deleteDirectory(new File("./tmp"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.formWindowOpened", "Failed to clear temp file cache!", false, ex.getMessage());
             }
-            
-            Logger.info("Startup", "Loading modpacks...");
-            BaseModpackComboBox.addItem("");
-            for (File f : Util.getFile("./packs").listFiles()) {
-                if (f.isDirectory()) {
-                    BaseModpackComboBox.addItem(f.getName());
+        }
+
+        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
+        BaseModpackComboBox.addItem("<None>");
+        for (File f : new File("./packs").listFiles()) {
+            if (f.isDirectory()) {
+                BaseModpackComboBox.addItem(f.getName());
+            }
+        }
+
+        //<editor-fold defaultstate="collapsed" desc="Load previous UI state">
+
+        Logger.info("MainForm.formWindowOpened", "Restoring last login...");
+        InstanceComboBox.addItem("<None>");
+        if (new File("./lastlogin.json").exists()) {
+            try {
+                JSONObject lastlogin = Util.readJSONFile("./lastlogin.json");
+                if (LoginHelper.doPasswordLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"))) {
+                    UsernameField.setText((String)lastlogin.get("username"));
+                    PasswordField.setText((String)lastlogin.get("password"));
+                    CurrentUserLabel.setText(LoginHelper.Username);
+                    try {
+                        for (File f : new File("./users/" + UsernameField.getText().replace("@", "_")).listFiles()) {
+                            if (f.isDirectory()) {
+                                InstanceComboBox.addItem(f.getName());
+                            }
+                        }
+                    } catch (NullPointerException ex) { }
+                    InstanceComboBox.setSelectedItem((String)lastlogin.get("selectedInstance"));
+                } else {
+                    CurrentUserLabel.setText("Please log in  ------>");
+                    LoginButton.setText("Log In");
+                    UsernameLabel.setForeground(new Color(0, 0, 0));
+                    PasswordLabel.setForeground(new Color(0, 0, 0));
+                    UsernameField.setEnabled(true);
+                    PasswordField.setEnabled(true);
                 }
+            } catch (Exception ex) {
+                Logger.error("MainForm.formWindowOpened", "Failed to load last login!", false, ex.getMessage());
+                CurrentUserLabel.setText("Please log in  ------>");
+                LoginButton.setText("Log In");
+                UsernameLabel.setForeground(new Color(0, 0, 0));
+                PasswordLabel.setForeground(new Color(0, 0, 0));
+                UsernameField.setEnabled(true);
+                PasswordField.setEnabled(true);
             }
-            
-            /*Logger.info("Startup", "Loading last login info...");
-            if (new File("./lastlogin.json").exists()) {
-                JSONObject lastlogin = Util.readJSONFile("./lastlogin.dat");
-                UsernameField.setText(lastloginLines[0]);
-                PasswordField.setText(lastloginLines[1]);
-                BaseModpackComboBox.setSelectedItem(lastloginLines[2]);
-            }*/
-            
-            //<editor-fold defaultstate="collapsed" desc="Load modpack content">
-            
-            String selectedPack = BaseModpackComboBox.getSelectedItem().toString();
-            Logger.info("Startup", "Loading Modpack description pane content (" + selectedPack + ")...");
-            
-            String contentLocation = "./tmp/launcher/" + selectedPack + "/";
-            List<String> contentLines = FileUtils.readLines(new File("./tmp/launcher/" + selectedPack + "/description.txt"));
+        } else {
+            CurrentUserLabel.setText("Please log in  ------>");
+            LoginButton.setText("Log In");
+            UsernameLabel.setForeground(new Color(0, 0, 0));
+            PasswordLabel.setForeground(new Color(0, 0, 0));
+            UsernameField.setEnabled(true);
+            PasswordField.setEnabled(true);
+        }
+        LoginButton.setEnabled(true);
+
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Load modpack content">
+
+        String selectedPack = InstanceComboBox.getSelectedItem().toString();
+        String contentLocation = null;
+
+        if (!selectedPack.equals("<None>")) {
+            contentLocation = "./packs/" + selectedPack + "/";
+        } else {
+            contentLocation = "./data/content/nopack/";
+        }
+
+        if (!new File(contentLocation + "/description.txt").exists()) {
+            contentLocation = "./data/content/nodesc/";
+        }
+        
+        try {
+            List<String> contentLines = FileUtils.readLines(new File(contentLocation + "/description.txt"));
             SimpleAttributeSet keyWord = new SimpleAttributeSet();
             ModpackDescriptionPane.setText("");
-            
+
             for (String line : contentLines) {
-                
+
                 if (line.startsWith("${{") && line.endsWith("}}")) {
                     String styleString = line.substring(3, line.length() - 2);
                     for (String style : styleString.split(",")) {
-                        
+
                         String styleArg = style;
                         String styleValue = "";
-                        
+
                         try {
                             styleArg = style.split(":")[0];
                             styleValue = style.split(":")[1];
                         } catch (Exception ex) { }
-                        
+
                         Logger.info("Style", style);
-                        
+
                         if (styleArg.equalsIgnoreCase("image")) {
                             ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
                             ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
@@ -347,95 +399,94 @@ public class MainForm extends javax.swing.JFrame {
                                 Util.isNumeric("0");
                             }
                         }
-                        
+
                     }
                 } else {
                     ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
                 }
-                
+
             }
-            
-            ModpackDescriptionPane.setCaretPosition(0);
-            
-            //</editor-fold>
-            
-            //<editor-fold defaultstate="collapsed" desc="Load news content">
-            
-            Logger.info("Startup", "Fetching news...");
-            
-            InetAddress addr = InetAddress.getByName("sites.google.com");
-            if (addr.isReachable(600)) {
-                FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddleframework/news.zip"), new File("./news.zip"));
-            } else {
-                Logger.warning("Startup", "Failed to update news!");
-            }
-            
-            try {
-                Util.decompressZipfile("./news.zip", "./tmp/news/");
-            } catch (IOException ex) {
-                Logger.warning("Startup", "Failed to load news!");
-            }
-            
-            contentLocation = "./tmp/news/";
-            contentLines = FileUtils.readLines(new File("./tmp/news/content.txt"));
-            keyWord = new SimpleAttributeSet();
-            NewsContentPane.setText("");
-            
-            for (String line : contentLines) {
-                
-                if (line.startsWith("${{") && line.endsWith("}}")) {
-                    String styleString = line.substring(3, line.length() - 2);
-                    for (String style : styleString.split(",")) {
-                        
-                        String styleArg = style;
-                        String styleValue = "";
-                        
+        } catch (Exception ex) {
+            Logger.error("MainForm.formWindowOpened", "Failed to load content!", false, ex.getMessage());
+        }
+
+        ModpackDescriptionPane.setCaretPosition(0);
+
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Load news content">
+
+        /*Logger.info("Startup", "Fetching news...");
+
+        InetAddress addr = InetAddress.getByName("sites.google.com");
+        if (addr.isReachable(600)) {
+            FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddleframework/news.zip"), new File("./news.zip"));
+        } else {
+            Logger.warning("Startup", "Failed to update news!");
+        }
+
+        try {
+            Util.decompressZipfile("./news.zip", "./tmp/news/");
+        } catch (IOException ex) {
+            Logger.warning("Startup", "Failed to load news!");
+        }
+
+        contentLocation = "./tmp/news/";
+        contentLines = FileUtils.readLines(new File("./tmp/news/content.txt"));
+        keyWord = new SimpleAttributeSet();
+        NewsContentPane.setText("");
+
+        for (String line : contentLines) {
+
+            if (line.startsWith("${{") && line.endsWith("}}")) {
+                String styleString = line.substring(3, line.length() - 2);
+                for (String style : styleString.split(",")) {
+
+                    String styleArg = style;
+                    String styleValue = "";
+
+                    try {
+                        styleArg = style.split(":")[0];
+                        styleValue = style.split(":")[1];
+                    } catch (Exception ex) { }
+
+                    Logger.info("Style", style);
+
+                    if (styleArg.equalsIgnoreCase("image")) {
+                        NewsContentPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                        NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), "\n", keyWord);
+                    } else if (styleArg.equalsIgnoreCase("reset")) {
+                        keyWord = new SimpleAttributeSet();
+                    } else {
                         try {
-                            styleArg = style.split(":")[0];
-                            styleValue = style.split(":")[1];
-                        } catch (Exception ex) { }
-                        
-                        Logger.info("Style", style);
-                        
-                        if (styleArg.equalsIgnoreCase("image")) {
-                            NewsContentPane.insertIcon(new ImageIcon(contentLocation + styleValue));
-                            NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), "\n", keyWord);
-                        } else if (styleArg.equalsIgnoreCase("reset")) {
-                            keyWord = new SimpleAttributeSet();
-                        } else {
-                            try {
-                                for (Method m : StyleConstants.class.getMethods()) {
-                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
-                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
-                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
-                                        } else if (Util.isNumeric(styleValue)) {
-                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
-                                        } else {
-                                            m.invoke(null, new Object[] { keyWord, styleValue });
-                                        }
+                            for (Method m : StyleConstants.class.getMethods()) {
+                                if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
+                                    if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
+                                        m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
+                                    } else if (Util.isNumeric(styleValue)) {
+                                        m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
+                                    } else {
+                                        m.invoke(null, new Object[] { keyWord, styleValue });
                                     }
                                 }
-                            } catch (Exception ex) {
-                                Util.isNumeric("0");
                             }
+                        } catch (Exception ex) {
+                            Util.isNumeric("0");
                         }
-                        
                     }
-                } else {
-                    NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), line + "\n", keyWord);
-                }
-                
-            }
-            
-            NewsContentPane.setCaretPosition(0);
-            
-            //</editor-fold>
-            
-            Logger.info("Startup", "Finished loading.");
 
-        } catch (Exception ex) {
-            Logger.error("MainForm.formWindowOpened", ex.getMessage(), false, ex.getMessage());
+                }
+            } else {
+                NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), line + "\n", keyWord);
+            }
+
         }
+
+        NewsContentPane.setCaretPosition(0);*/
+
+        //</editor-fold>
+
+        Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
 
     /**
