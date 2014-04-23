@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.URL;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
@@ -255,8 +253,6 @@ public class MainForm extends javax.swing.JFrame {
                             styleValue = style.split(":")[1];
                         } catch (Exception ex) { }
 
-                        Logger.info("Style", style);
-
                         if (styleArg.equalsIgnoreCase("image")) {
                             ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
                             ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
@@ -312,9 +308,12 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     private void doLogin(String username, String password, String instance) {
+        Logger.info("MainForm.doLogin", "Logging in...");
         String loginResult = LoginHelper.doPasswordLogin(username, password);
         
         if (loginResult.equals("Success")) {
+            
+            Logger.info("MainForm.doLogin", "Login successful!");
             
             if (!UsernameField.getText().equals(username))
                 UsernameField.setText(username);
@@ -332,6 +331,7 @@ public class MainForm extends javax.swing.JFrame {
                 InstanceComboBox.setSelectedItem(instance);
             
         } else {
+            Logger.info("MainForm.doLogin", "Login failed!");
             InstanceComboBox.removeAllItems();
             InstanceComboBox.addItem("<None>");
             enableLoginFields();
@@ -341,14 +341,20 @@ public class MainForm extends javax.swing.JFrame {
     
     private void loadUserInstances(String username) {
         
+        Logger.info("MainForm.loadUserInstances", "Loading instances...");
+        
         InstanceComboBox.removeAllItems();
         InstanceComboBox.addItem("<None>");
         
         if (new File("./users/" + username.replace("@", "_")).isDirectory()) {
-            for (File f : new File("./users/" + username.replace("@", "_")).listFiles()) {
-                if (f.isDirectory()) {
-                    InstanceComboBox.addItem(f.getName());
+            if (new File("./users/" + username.replace("@", "_")).listFiles() != null) {
+                for (File f : new File("./users/" + username.replace("@", "_")).listFiles()) {
+                    if (f.isDirectory()) {
+                        InstanceComboBox.addItem(f.getName());
+                    }
                 }
+            } else {
+                Logger.warning("Weird error.");
             }
         } else {
             new File("./users/" + username.replace("@", "_")).mkdirs();
@@ -485,12 +491,16 @@ public class MainForm extends javax.swing.JFrame {
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         if (new File("./lastlogin.json").exists()) {
+            JSONObject lastlogin = null;
             try {
-                JSONObject lastlogin = Util.readJSONFile("./lastlogin.json");
-                doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"));
+                lastlogin = Util.readJSONFile("./lastlogin.json");
             } catch (Exception ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to load last login!", false, ex.getMessage());
+                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin!", false, ex.getMessage());
                 enableLoginFields();
+            }
+            
+            if (lastlogin != null) {
+                doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"));
             }
         } else {
             enableLoginFields();
@@ -499,6 +509,7 @@ public class MainForm extends javax.swing.JFrame {
 
         
         
+        Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
         String selectedInstance = InstanceComboBox.getSelectedItem().toString();
 
         if (UsernameField.getText() != null) {
@@ -597,17 +608,21 @@ public class MainForm extends javax.swing.JFrame {
 
     private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
         
-        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
+        try {
+        
+            String selectedInstance = InstanceComboBox.getSelectedItem().toString();
 
-        if (UsernameField.getText() != null) {
-            if (!selectedInstance.equals("<None>")) {
-                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+            if (UsernameField.getText() != null) {
+                if (!selectedInstance.equals("<None>")) {
+                    loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+                } else {
+                    loadModpackPaneContent("./data/content/nopack/");
+                }
             } else {
                 loadModpackPaneContent("./data/content/nopack/");
             }
-        } else {
-            loadModpackPaneContent("./data/content/nopack/");
-        }
+        
+        } catch (Exception ex) { }
         
     }//GEN-LAST:event_InstanceComboBoxActionPerformed
 
@@ -636,12 +651,13 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         try {
-            FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()));
+            FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/ark"));
         } catch (IOException ex) {
             Logger.error("MainForm.CreateInstanceButtonActionPerformed", "Failed to create instance!", false, ex.getMessage());
         }
         
         disableNewInstanceFields();
+        loadUserInstances(UsernameField.getText());
     }//GEN-LAST:event_CreateInstanceButtonActionPerformed
 
     /**
