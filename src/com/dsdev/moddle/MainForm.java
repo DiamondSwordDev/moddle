@@ -62,7 +62,6 @@ public class MainForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
-        setMaximumSize(new java.awt.Dimension(800, 450));
         setMinimumSize(new java.awt.Dimension(800, 450));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -313,7 +312,9 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     private void doLogin(String username, String password, String instance) {
-        if (LoginHelper.doPasswordLogin(username, password)) {
+        String loginResult = LoginHelper.doPasswordLogin(username, password);
+        
+        if (loginResult.equals("Success")) {
             
             if (!UsernameField.getText().equals(username))
                 UsernameField.setText(username);
@@ -323,23 +324,66 @@ public class MainForm extends javax.swing.JFrame {
             
             CurrentUserLabel.setText(LoginHelper.Username);
             
-            if (new File("./users/" + UsernameField.getText().replace("@", "_")).isDirectory()) {
-                for (File f : new File("./users/" + UsernameField.getText().replace("@", "_")).listFiles()) {
-                    if (f.isDirectory()) {
-                        InstanceComboBox.addItem(f.getName());
-                    }
-                }
-            } else {
-                new File("./users/" + UsernameField.getText().replace("@", "_")).mkdirs();
-            }
+            disableLoginFields();
+            
+            loadUserInstances(UsernameField.getText());
             
             if (instance != null)
                 InstanceComboBox.setSelectedItem(instance);
             
         } else {
+            InstanceComboBox.removeAllItems();
+            InstanceComboBox.addItem("<None>");
             enableLoginFields();
-            CurrentUserLabel.setText("Bad login!  ------>");
+            CurrentUserLabel.setText(loginResult + "  ---->");
         }
+    }
+    
+    private void loadUserInstances(String username) {
+        
+        InstanceComboBox.removeAllItems();
+        InstanceComboBox.addItem("<None>");
+        
+        if (new File("./users/" + username.replace("@", "_")).isDirectory()) {
+            for (File f : new File("./users/" + username.replace("@", "_")).listFiles()) {
+                if (f.isDirectory()) {
+                    InstanceComboBox.addItem(f.getName());
+                }
+            }
+        } else {
+            new File("./users/" + username.replace("@", "_")).mkdirs();
+        }
+        
+    }
+    
+    private boolean newInstanceEnabled = false;
+    
+    private void enableNewInstanceFields() {
+        ModpackLabel.setForeground(new Color(0, 0, 0));
+        InstanceNameLabel.setForeground(new Color(0, 0, 0));
+        BaseModpackComboBox.setEnabled(true);
+        InstanceNameField.setEnabled(true);
+        
+        CreateInstanceButton.setEnabled(true);
+        AddInstanceButton.setEnabled(false);
+        DeleteInstanceButton.setText("Cancel");
+        
+        InstanceComboBox.setEnabled(false);
+        InstanceLabel.setForeground(new Color(128, 128, 128));
+    }
+    
+    private void disableNewInstanceFields() {
+        ModpackLabel.setForeground(new Color(128, 128, 128));
+        InstanceNameLabel.setForeground(new Color(128, 128, 128));
+        BaseModpackComboBox.setEnabled(false);
+        InstanceNameField.setEnabled(false);
+        
+        CreateInstanceButton.setEnabled(false);
+        AddInstanceButton.setEnabled(true);
+        DeleteInstanceButton.setText("Delete");
+        
+        InstanceComboBox.setEnabled(true);
+        InstanceLabel.setForeground(new Color(0, 0, 0));
     }
     
     
@@ -440,7 +484,6 @@ public class MainForm extends javax.swing.JFrame {
 
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
-        InstanceComboBox.addItem("<None>");
         if (new File("./lastlogin.json").exists()) {
             try {
                 JSONObject lastlogin = Util.readJSONFile("./lastlogin.json");
@@ -569,15 +612,36 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_InstanceComboBoxActionPerformed
 
     private void AddInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddInstanceButtonActionPerformed
-        // TODO add your handling code here:
+        enableNewInstanceFields();
+        newInstanceEnabled = true;
     }//GEN-LAST:event_AddInstanceButtonActionPerformed
 
     private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
-        // TODO add your handling code here:
+        if (newInstanceEnabled) {
+            disableNewInstanceFields();
+            newInstanceEnabled = false;
+        } else {
+            try {
+                FileUtils.deleteDirectory(new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceComboBox.getSelectedItem().toString()));
+                loadUserInstances(UsernameField.getText());
+            } catch (IOException ex) {
+                Logger.error("MainForm.DeleteInstanceButtonActionPerformed", "Failed to delete instance!", false, ex.getMessage());
+            }
+        }
     }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
 
     private void CreateInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateInstanceButtonActionPerformed
-        // TODO add your handling code here:
+        if (BaseModpackComboBox.getSelectedItem().toString().equals("<None>")) {
+            return;
+        }
+        
+        try {
+            FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()));
+        } catch (IOException ex) {
+            Logger.error("MainForm.CreateInstanceButtonActionPerformed", "Failed to create instance!", false, ex.getMessage());
+        }
+        
+        disableNewInstanceFields();
     }//GEN-LAST:event_CreateInstanceButtonActionPerformed
 
     /**

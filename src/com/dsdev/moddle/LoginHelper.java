@@ -10,7 +10,7 @@ import org.json.simple.JSONValue;
  */
 public class LoginHelper {
     
-    public static boolean doPasswordLogin(String username, String password) {
+    public static String doPasswordLogin(String username, String password) {
         
         AccountName = username;
         Password = password;
@@ -30,7 +30,7 @@ public class LoginHelper {
             resultString = Util.doJSONPost("https://authserver.mojang.com/authenticate", payload);
         } catch (Exception ex) {
             Logger.error("LoginHelper.doPasswordLogin", "POST request failed!", false, ex.getMessage());
-            return false;
+            return "Request failed!";
         }
 
         JSONObject result = (JSONObject)JSONValue.parse(resultString);
@@ -59,10 +59,10 @@ public class LoginHelper {
             Logger.info("Login", "AccessToken " + AccessToken + " generated.");
         } else {
             Logger.warning("LoginHelper.doPasswordLogin", "Login failed with error '" + (String)result.get("error") + "'");
-            return false;
+            return "Bad Login!";
         }
         
-        return true;
+        return "Success";
     }
     
     public static void doSystemLogout() {
