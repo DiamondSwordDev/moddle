@@ -70,6 +70,7 @@ public class MainForm extends javax.swing.JFrame {
 
         PlayButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         PlayButton.setText("Play");
+        PlayButton.setEnabled(false);
         PlayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PlayButtonActionPerformed(evt);
@@ -396,26 +397,21 @@ public class MainForm extends javax.swing.JFrame {
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
         
             try {
-                FileUtils.writeStringToFile(Util.getFile("./lastlogin.dat"), UsernameField.getText() + "\n" + PasswordField.getText() + "\n" + BaseModpackComboBox.getSelectedItem().toString());
-            } catch (Exception ex) { }
+                JSONObject lastlogin = new JSONObject();
+                lastlogin.put("username", UsernameField.getText());
+                lastlogin.put("password", PasswordField.getText());
+                lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
+                FileUtils.writeStringToFile(new File("./lastlogin.dat"), lastlogin.toJSONString());
+            } catch (IOException ex) { }
 
-            if (UsernameField.getText().equals("")) {
-                Logger.error("MainForm.PlayButtonActionPerformed", "No account name given!", true, "None");
+            if (CurrentUserLabel.getText().endsWith("-->")) {
+                Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
                 return;
             }
             
-            if (PasswordField.getText().equals("")) {
-                Logger.error("MainForm.PlayButtonActionPerformed", "No password given!", true, "None");
-                return;
-            }
-            
-            Logger.info("Logging in...");
-            MinecraftLogin login = new MinecraftLogin();
-            login.doLogin(UsernameField.getText(), PasswordField.getText());
-
             LaunchArgs launchArgs = new LaunchArgs();
 
-            try {
+            /*try {
                 Logger.info("Applying global settings...");
                 if (new File("./users/global.json").exists()) {
                     JSONObject globalConfig = Util.readJSONFile("./users/global.json");
@@ -447,14 +443,14 @@ public class MainForm extends javax.swing.JFrame {
                     Util.assertDirectoryExistence("./users/" + login.Username);
                     FileUtils.writeStringToFile(new File("./users/" + login.Username + "/" + selectedPack + ".json"), "{ settings : [ ] }");
                 }
-            } catch (Exception ex) { }
+            } catch (Exception ex) { }*/
 
             Logger.info("Invoking pack builder...");
-            Modpack pack = new Modpack(BaseModpackComboBox.getSelectedItem().toString(), UsernameField.getText());
+            Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"));
             pack.build();
 
             Logger.info("Preparing to launch modpack...");
-            pack.run(launchArgs, login);
+            pack.run(launchArgs, null);
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -506,6 +502,7 @@ public class MainForm extends javax.swing.JFrame {
             enableLoginFields();
         }
         LoginButton.setEnabled(true);
+        PlayButton.setEnabled(true);
 
         
         

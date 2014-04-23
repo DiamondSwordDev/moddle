@@ -13,6 +13,12 @@ import org.json.simple.JSONObject;
  */
 public class LaunchArgs {
 
+    public LaunchArgs() {
+        
+    }
+    
+    public JSONObject jsonStruct = null;
+    
     //General Arguments
     public String MinecraftVersion = null;
     public String AppDataDirectory = null;
