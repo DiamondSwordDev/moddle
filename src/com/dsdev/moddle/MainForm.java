@@ -111,10 +111,31 @@ public class MainForm extends javax.swing.JFrame {
 
         LoginButton.setText("Log Out");
         LoginButton.setEnabled(false);
+        LoginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginButtonActionPerformed(evt);
+            }
+        });
+
+        InstanceComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InstanceComboBoxActionPerformed(evt);
+            }
+        });
 
         DeleteInstanceButton.setText("Delete");
+        DeleteInstanceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteInstanceButtonActionPerformed(evt);
+            }
+        });
 
         AddInstanceButton.setText("Add");
+        AddInstanceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddInstanceButtonActionPerformed(evt);
+            }
+        });
 
         BaseModpackComboBox.setEnabled(false);
 
@@ -124,6 +145,11 @@ public class MainForm extends javax.swing.JFrame {
 
         CreateInstanceButton.setText("Create");
         CreateInstanceButton.setEnabled(false);
+        CreateInstanceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateInstanceButtonActionPerformed(evt);
+            }
+        });
 
         ModpackLabel.setForeground(new java.awt.Color(128, 128, 128));
         ModpackLabel.setText("Modpack:");
@@ -204,6 +230,119 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void loadModpackPaneContent(String contentLocation) {
+        
+        if (!new File(contentLocation + "/description.txt").exists()) {
+            contentLocation = "./data/content/nodesc/";
+        }
+        
+        try {
+            List<String> contentLines = FileUtils.readLines(new File(contentLocation + "/description.txt"));
+            SimpleAttributeSet keyWord = new SimpleAttributeSet();
+            ModpackDescriptionPane.setText("");
+
+            for (String line : contentLines) {
+
+                if (line.startsWith("${{") && line.endsWith("}}")) {
+                    String styleString = line.substring(3, line.length() - 2);
+                    for (String style : styleString.split(",")) {
+
+                        String styleArg = style;
+                        String styleValue = "";
+
+                        try {
+                            styleArg = style.split(":")[0];
+                            styleValue = style.split(":")[1];
+                        } catch (Exception ex) { }
+
+                        Logger.info("Style", style);
+
+                        if (styleArg.equalsIgnoreCase("image")) {
+                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
+                        } else if (styleArg.equalsIgnoreCase("reset")) {
+                            keyWord = new SimpleAttributeSet();
+                        } else {
+                            try {
+                                for (Method m : StyleConstants.class.getMethods()) {
+                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
+                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
+                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
+                                        } else if (Util.isNumeric(styleValue)) {
+                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
+                                        } else {
+                                            m.invoke(null, new Object[] { keyWord, styleValue });
+                                        }
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                Util.isNumeric("0");
+                            }
+                        }
+
+                    }
+                } else {
+                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
+                }
+
+            }
+        } catch (Exception ex) {
+            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex.getMessage());
+        }
+
+        ModpackDescriptionPane.setCaretPosition(0);
+        
+    }
+    
+    private void disableLoginFields() {
+        LoginButton.setText("Log Out");
+        UsernameLabel.setForeground(new Color(128, 128, 128));
+        PasswordLabel.setForeground(new Color(128, 128, 128));
+        UsernameField.setEnabled(false);
+        PasswordField.setEnabled(false);
+    }
+    
+    private void enableLoginFields() {
+        CurrentUserLabel.setText("Please log in  ------>");
+        LoginButton.setText("Log In");
+        UsernameLabel.setForeground(new Color(0, 0, 0));
+        PasswordLabel.setForeground(new Color(0, 0, 0));
+        UsernameField.setEnabled(true);
+        PasswordField.setEnabled(true);
+    }
+    
+    private void doLogin(String username, String password, String instance) {
+        if (LoginHelper.doPasswordLogin(username, password)) {
+            
+            if (!UsernameField.getText().equals(username))
+                UsernameField.setText(username);
+            
+            if (!PasswordField.getText().equals(password))
+                PasswordField.setText(password);
+            
+            CurrentUserLabel.setText(LoginHelper.Username);
+            
+            if (new File("./users/" + UsernameField.getText().replace("@", "_")).isDirectory()) {
+                for (File f : new File("./users/" + UsernameField.getText().replace("@", "_")).listFiles()) {
+                    if (f.isDirectory()) {
+                        InstanceComboBox.addItem(f.getName());
+                    }
+                }
+            } else {
+                new File("./users/" + UsernameField.getText().replace("@", "_")).mkdirs();
+            }
+            
+            if (instance != null)
+                InstanceComboBox.setSelectedItem(instance);
+            
+        } else {
+            enableLoginFields();
+            CurrentUserLabel.setText("Bad login!  ------>");
+        }
+    }
+    
+    
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
         
             try {
@@ -279,7 +418,7 @@ public class MainForm extends javax.swing.JFrame {
         Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
         if (new File("./tmp").exists()) {
             try {
-            FileUtils.deleteDirectory(new File("./tmp"));
+                FileUtils.deleteDirectory(new File("./tmp"));
             } catch (IOException ex) {
                 Logger.error("MainForm.formWindowOpened", "Failed to clear temp file cache!", false, ex.getMessage());
             }
@@ -287,134 +426,49 @@ public class MainForm extends javax.swing.JFrame {
 
         Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
         BaseModpackComboBox.addItem("<None>");
-        for (File f : new File("./packs").listFiles()) {
-            if (f.isDirectory()) {
-                BaseModpackComboBox.addItem(f.getName());
+        if (new File("./packs").isDirectory()) {
+            for (File f : new File("./packs").listFiles()) {
+                if (f.isDirectory()) {
+                    BaseModpackComboBox.addItem(f.getName());
+                }
             }
+        } else {
+            Logger.info("MainForm.formWindowOpened", "Creating packs directory...");
+            new File("./packs").mkdirs();
         }
+        
 
-        //<editor-fold defaultstate="collapsed" desc="Load previous UI state">
-
+        
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         InstanceComboBox.addItem("<None>");
         if (new File("./lastlogin.json").exists()) {
             try {
                 JSONObject lastlogin = Util.readJSONFile("./lastlogin.json");
-                if (LoginHelper.doPasswordLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"))) {
-                    UsernameField.setText((String)lastlogin.get("username"));
-                    PasswordField.setText((String)lastlogin.get("password"));
-                    CurrentUserLabel.setText(LoginHelper.Username);
-                    try {
-                        for (File f : new File("./users/" + UsernameField.getText().replace("@", "_")).listFiles()) {
-                            if (f.isDirectory()) {
-                                InstanceComboBox.addItem(f.getName());
-                            }
-                        }
-                    } catch (NullPointerException ex) { }
-                    InstanceComboBox.setSelectedItem((String)lastlogin.get("selectedInstance"));
-                } else {
-                    CurrentUserLabel.setText("Please log in  ------>");
-                    LoginButton.setText("Log In");
-                    UsernameLabel.setForeground(new Color(0, 0, 0));
-                    PasswordLabel.setForeground(new Color(0, 0, 0));
-                    UsernameField.setEnabled(true);
-                    PasswordField.setEnabled(true);
-                }
+                doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"));
             } catch (Exception ex) {
                 Logger.error("MainForm.formWindowOpened", "Failed to load last login!", false, ex.getMessage());
-                CurrentUserLabel.setText("Please log in  ------>");
-                LoginButton.setText("Log In");
-                UsernameLabel.setForeground(new Color(0, 0, 0));
-                PasswordLabel.setForeground(new Color(0, 0, 0));
-                UsernameField.setEnabled(true);
-                PasswordField.setEnabled(true);
+                enableLoginFields();
             }
         } else {
-            CurrentUserLabel.setText("Please log in  ------>");
-            LoginButton.setText("Log In");
-            UsernameLabel.setForeground(new Color(0, 0, 0));
-            PasswordLabel.setForeground(new Color(0, 0, 0));
-            UsernameField.setEnabled(true);
-            PasswordField.setEnabled(true);
+            enableLoginFields();
         }
         LoginButton.setEnabled(true);
 
-        //</editor-fold>
+        
+        
+        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
 
-        //<editor-fold defaultstate="collapsed" desc="Load modpack content">
-
-        String selectedPack = InstanceComboBox.getSelectedItem().toString();
-        String contentLocation = null;
-
-        if (!selectedPack.equals("<None>")) {
-            contentLocation = "./packs/" + selectedPack + "/";
+        if (UsernameField.getText() != null) {
+            if (!selectedInstance.equals("<None>")) {
+                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+            } else {
+                loadModpackPaneContent("./data/content/nopack/");
+            }
         } else {
-            contentLocation = "./data/content/nopack/";
-        }
-
-        if (!new File(contentLocation + "/description.txt").exists()) {
-            contentLocation = "./data/content/nodesc/";
+            loadModpackPaneContent("./data/content/nopack/");
         }
         
-        try {
-            List<String> contentLines = FileUtils.readLines(new File(contentLocation + "/description.txt"));
-            SimpleAttributeSet keyWord = new SimpleAttributeSet();
-            ModpackDescriptionPane.setText("");
-
-            for (String line : contentLines) {
-
-                if (line.startsWith("${{") && line.endsWith("}}")) {
-                    String styleString = line.substring(3, line.length() - 2);
-                    for (String style : styleString.split(",")) {
-
-                        String styleArg = style;
-                        String styleValue = "";
-
-                        try {
-                            styleArg = style.split(":")[0];
-                            styleValue = style.split(":")[1];
-                        } catch (Exception ex) { }
-
-                        Logger.info("Style", style);
-
-                        if (styleArg.equalsIgnoreCase("image")) {
-                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
-                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
-                        } else if (styleArg.equalsIgnoreCase("reset")) {
-                            keyWord = new SimpleAttributeSet();
-                        } else {
-                            try {
-                                for (Method m : StyleConstants.class.getMethods()) {
-                                    if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
-                                        if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
-                                            m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
-                                        } else if (Util.isNumeric(styleValue)) {
-                                            m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
-                                        } else {
-                                            m.invoke(null, new Object[] { keyWord, styleValue });
-                                        }
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                Util.isNumeric("0");
-                            }
-                        }
-
-                    }
-                } else {
-                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
-                }
-
-            }
-        } catch (Exception ex) {
-            Logger.error("MainForm.formWindowOpened", "Failed to load content!", false, ex.getMessage());
-        }
-
-        ModpackDescriptionPane.setCaretPosition(0);
-
-        //</editor-fold>
-
-        //<editor-fold defaultstate="collapsed" desc="Load news content">
+        //<editor-fold defaultstate="collapsed" desc="Load news content (Old)">
 
         /*Logger.info("Startup", "Fetching news...");
 
@@ -488,6 +542,43 @@ public class MainForm extends javax.swing.JFrame {
 
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
+
+    private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
+        if (LoginButton.getText().equals("Log Out")) {
+            LoginHelper.doSystemLogout();
+            enableLoginFields();
+        } else {
+            doLogin(UsernameField.getText(), PasswordField.getText(), null);
+        }
+    }//GEN-LAST:event_LoginButtonActionPerformed
+
+    private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
+        
+        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
+
+        if (UsernameField.getText() != null) {
+            if (!selectedInstance.equals("<None>")) {
+                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+            } else {
+                loadModpackPaneContent("./data/content/nopack/");
+            }
+        } else {
+            loadModpackPaneContent("./data/content/nopack/");
+        }
+        
+    }//GEN-LAST:event_InstanceComboBoxActionPerformed
+
+    private void AddInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddInstanceButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AddInstanceButtonActionPerformed
+
+    private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
+
+    private void CreateInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateInstanceButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CreateInstanceButtonActionPerformed
 
     /**
      * @param args the command line arguments

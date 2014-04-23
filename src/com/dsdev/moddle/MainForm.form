@@ -239,6 +239,9 @@
         <Property name="text" type="java.lang.String" value="Log Out"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LoginButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="InstanceComboBox">
       <Properties>
@@ -246,16 +249,25 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InstanceComboBoxActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="DeleteInstanceButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteInstanceButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="AddInstanceButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddInstanceButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="BaseModpackComboBox">
       <Properties>
@@ -280,6 +292,9 @@
         <Property name="text" type="java.lang.String" value="Create"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CreateInstanceButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="ModpackLabel">
       <Properties>
