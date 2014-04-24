@@ -13,11 +13,7 @@ import org.json.simple.JSONObject;
  */
 public class LaunchArgs {
 
-    public LaunchArgs() {
-        
-    }
-    
-    public JSONArray jsonStruct = new JSONArray();
+    //public JSONArray jsonStruct = new JSONArray();
     
     //General Arguments
     public String MinecraftVersion = null;
@@ -136,13 +132,13 @@ public class LaunchArgs {
             JSONObject setting = (JSONObject) obj;
             setVariable((String)setting.get("name"), (String)setting.get("value"));
             
-            for (Object o : jsonStruct) {
+            /*for (Object o : jsonStruct) {
                 JSONObject oo = (JSONObject) o;
                 if (((String)oo.get("name")).equalsIgnoreCase(((String)setting.get("name")).toLowerCase())) {
                     oo.values().clear();
                     oo.values().add((String)setting.get("value"));
                 }
-            }
+            }*/
         }
     }
 }

@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -447,10 +446,15 @@ public class MainForm extends javax.swing.JFrame {
 
             Logger.info("Invoking pack builder...");
             Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"));
-            pack.build();
+            
+            if (!pack.IsInstallComplete) {
+                pack.build();
+            }
 
             Logger.info("Preparing to launch modpack...");
-            pack.run();
+            if (pack.run()) {
+               dispose(); 
+            }
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
