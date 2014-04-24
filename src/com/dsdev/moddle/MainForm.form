@@ -72,7 +72,15 @@
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="PlayButton" pref="171" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="PlayButton" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="ForceUpdateCheckBox" min="-2" pref="137" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="LoadingLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Component id="MainTabPane" alignment="0" max="32767" attributes="0"/>
@@ -81,32 +89,32 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="MainTabPane" pref="435" max="32767" attributes="0"/>
+              <Component id="MainTabPane" pref="432" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="UsernameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="UsernameField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="CurrentUserLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="ModpackLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="BaseModpackComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="InstanceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="InstanceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="PlayButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="UsernameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="UsernameField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="CurrentUserLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="ModpackLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="BaseModpackComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="InstanceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="InstanceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="PasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="PasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="LoginButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="InstanceNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="InstanceNameField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="CreateInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="AddInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="DeleteInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="PasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="PasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="LoginButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="InstanceNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="InstanceNameField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="CreateInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AddInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="DeleteInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="ForceUpdateCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="PlayButton" min="-2" pref="49" max="-2" attributes="0"/>
+                  <Component id="LoadingLabel" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -114,18 +122,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="PlayButton">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Tahoma" size="14" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Play"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PlayButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JLabel" name="UsernameLabel">
       <Properties>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -197,30 +193,6 @@
           </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
-        </Container>
-        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="News">
-                <Property name="tabTitle" type="java.lang.String" value="News"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-          <SubComponents>
-            <Component class="javax.swing.JTextPane" name="NewsContentPane">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="fa" green="fa" red="fa" type="rgb"/>
-                </Property>
-              </Properties>
-            </Component>
-          </SubComponents>
         </Container>
       </SubComponents>
     </Container>
@@ -308,6 +280,30 @@
           <Color blue="80" green="80" red="80" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Instance Name:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="ForceUpdateCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Force Update"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="PlayButton">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="12" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="0" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Play"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PlayButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="LoadingLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="(O)"/>
       </Properties>
     </Component>
   </SubComponents>
