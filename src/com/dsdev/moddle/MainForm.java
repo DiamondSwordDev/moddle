@@ -450,7 +450,7 @@ public class MainForm extends javax.swing.JFrame {
             pack.build();
 
             Logger.info("Preparing to launch modpack...");
-            pack.run(launchArgs, null);
+            pack.run();
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
