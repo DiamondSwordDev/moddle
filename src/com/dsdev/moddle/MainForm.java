@@ -241,6 +241,7 @@ public class MainForm extends javax.swing.JFrame {
     private void loadModpackPaneContent(String contentLocation) {
         
         if (!new File(contentLocation + "/description.txt").exists()) {
+            //This line was a really bad idea...
             contentLocation = "./data/content/nodesc/";
         }
         
@@ -479,7 +480,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         } else {
             Logger.info("MainForm.formWindowOpened", "Creating packs directory...");
-            new File("./packs").mkdirs();
+            (new File("./packs")).mkdirs();
         }
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
@@ -492,6 +493,7 @@ public class MainForm extends javax.swing.JFrame {
                 enableLoginFields();
                 disableInstanceFields();
                 PlayButton.setEnabled(false);
+                InstanceComboBox.addItem("<None>");
             }
             if (lastlogin != null) {
                 if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
@@ -506,6 +508,7 @@ public class MainForm extends javax.swing.JFrame {
             enableLoginFields();
             disableInstanceFields();
             PlayButton.setEnabled(false);
+            InstanceComboBox.addItem("<None>");
         }
         
         LoginButton.setEnabled(true);
