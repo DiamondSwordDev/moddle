@@ -34,7 +34,7 @@ public class Logger {
         try {
             if (instanceLoggerFile != null) {
                 String fileContent = FileUtils.readFileToString(new File(instanceLoggerFile));
-                FileUtils.writeStringToFile(new File(instanceLoggerFile), fileContent + line + "\n");
+                FileUtils.writeStringToFile(new File(instanceLoggerFile), fileContent + line + "\r\n");
             }
         } catch (Exception ex) {
             //Log failed.
@@ -64,6 +64,7 @@ public class Logger {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] (WARNING!) - " + message);
     }
 
+    //depreciated
     public static void error(String message) {
         System.out.println("[" + getCurrentTimeStamp() + "][Moddle][Error] - " + message);
     }

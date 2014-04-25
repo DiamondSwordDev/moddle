@@ -6,5 +6,6 @@
 /stderr.txt
 /stdout.txt
 /users/
-/lastlogin.dat
+/lastlogin.json
 /news.zip
+/logs/

@@ -99,6 +99,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        InstanceComboBox.setEnabled(false);
         InstanceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 InstanceComboBoxActionPerformed(evt);
@@ -106,6 +107,7 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         DeleteInstanceButton.setText("Delete");
+        DeleteInstanceButton.setEnabled(false);
         DeleteInstanceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DeleteInstanceButtonActionPerformed(evt);
@@ -113,6 +115,7 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         AddInstanceButton.setText("Add");
+        AddInstanceButton.setEnabled(false);
         AddInstanceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AddInstanceButtonActionPerformed(evt);
@@ -123,6 +126,7 @@ public class MainForm extends javax.swing.JFrame {
 
         InstanceNameField.setEnabled(false);
 
+        InstanceLabel.setForeground(new java.awt.Color(128, 128, 128));
         InstanceLabel.setText("Instance:");
 
         CreateInstanceButton.setText("Create");
@@ -144,6 +148,7 @@ public class MainForm extends javax.swing.JFrame {
         PlayButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         PlayButton.setForeground(new java.awt.Color(0, 0, 51));
         PlayButton.setText("Play");
+        PlayButton.setEnabled(false);
         PlayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PlayButtonActionPerformed(evt);
@@ -301,6 +306,9 @@ public class MainForm extends javax.swing.JFrame {
         PasswordLabel.setForeground(new Color(128, 128, 128));
         UsernameField.setEnabled(false);
         PasswordField.setEnabled(false);
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
     }
     
     private void enableLoginFields() {
@@ -310,9 +318,12 @@ public class MainForm extends javax.swing.JFrame {
         PasswordLabel.setForeground(new Color(0, 0, 0));
         UsernameField.setEnabled(true);
         PasswordField.setEnabled(true);
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
     }
     
-    private void doLogin(String username, String password, String instance) {
+    private boolean doLogin(String username, String password, String instance) {
         Logger.info("MainForm.doLogin", "Logging in...");
         String loginResult = LoginHelper.doPasswordLogin(username, password);
         
@@ -332,8 +343,9 @@ public class MainForm extends javax.swing.JFrame {
             
             loadUserInstances(UsernameField.getText());
             
-            if (instance != null)
-                InstanceComboBox.setSelectedItem(instance);
+            InstanceComboBox.setSelectedItem(instance);
+            
+            return true;
             
         } else {
             Logger.info("MainForm.doLogin", "Login failed!");
@@ -341,6 +353,7 @@ public class MainForm extends javax.swing.JFrame {
             InstanceComboBox.addItem("<None>");
             enableLoginFields();
             CurrentUserLabel.setText(loginResult + "  ---->");
+            return false;
         }
     }
     
@@ -381,6 +394,9 @@ public class MainForm extends javax.swing.JFrame {
         
         InstanceComboBox.setEnabled(false);
         InstanceLabel.setForeground(new Color(128, 128, 128));
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
     }
     
     private void disableNewInstanceFields() {
@@ -395,20 +411,53 @@ public class MainForm extends javax.swing.JFrame {
         
         InstanceComboBox.setEnabled(true);
         InstanceLabel.setForeground(new Color(0, 0, 0));
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
+    }
+    
+    private void enableInstanceFields() {
+        
+        AddInstanceButton.setEnabled(true);
+        DeleteInstanceButton.setEnabled(true);
+        
+        InstanceComboBox.setEnabled(true);
+        InstanceLabel.setForeground(new Color(0, 0, 0));
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
+    }
+    
+    private void disableInstanceFields() {
+        
+        AddInstanceButton.setEnabled(false);
+        DeleteInstanceButton.setEnabled(false);
+        
+        InstanceComboBox.setEnabled(false);
+        InstanceLabel.setForeground(new Color(128, 128, 128));
+        
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
+    }
+    
+    private void setLoadingSpinnerVisible(boolean state) {
+        LoadingLabel.setVisible(state);
+        this.getContentPane().validate();
+        this.getContentPane().repaint();
     }
     
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
+        Logger.begin();
+        
+        Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
         LoadingLabel.setText("");
         LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
+        setLoadingSpinnerVisible(true);
         
-        Logger.info("MainForm.formWindowOpened", "Centering JFrame...");
+        Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
         this.setLocationRelativeTo(null);
-
-        Logger.info("MainForm.formWindowOpened", "Loading icon...");
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
 
         Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
@@ -433,32 +482,36 @@ public class MainForm extends javax.swing.JFrame {
             new File("./packs").mkdirs();
         }
         
-
-        
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         if (new File("./lastlogin.json").exists()) {
             JSONObject lastlogin = null;
             try {
                 lastlogin = Util.readJSONFile("./lastlogin.json");
             } catch (Exception ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin!", false, ex.getMessage());
+                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin data!", false, ex.getMessage());
                 enableLoginFields();
+                disableInstanceFields();
+                PlayButton.setEnabled(false);
             }
-            
             if (lastlogin != null) {
-                doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"));
+                if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
+                    disableInstanceFields();
+                    PlayButton.setEnabled(false);
+                } else {
+                    enableInstanceFields();
+                    PlayButton.setEnabled(true);
+                }
             }
         } else {
             enableLoginFields();
+            disableInstanceFields();
+            PlayButton.setEnabled(false);
         }
+        
         LoginButton.setEnabled(true);
-        PlayButton.setEnabled(true);
 
-        
-        
         Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
         String selectedInstance = InstanceComboBox.getSelectedItem().toString();
-
         if (UsernameField.getText() != null) {
             if (!selectedInstance.equals("<None>")) {
                 loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
@@ -543,20 +596,27 @@ public class MainForm extends javax.swing.JFrame {
 
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
         
-        LoadingLabel.setVisible(false);
+        setLoadingSpinnerVisible(false);
     }//GEN-LAST:event_formWindowOpened
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         if (LoginButton.getText().equals("Log Out")) {
             LoginHelper.doSystemLogout();
             enableLoginFields();
+            disableNewInstanceFields();
+            disableInstanceFields();
+            PlayButton.setEnabled(false);
         } else {
-            doLogin(UsernameField.getText(), PasswordField.getText(), null);
+            if (doLogin(UsernameField.getText(), PasswordField.getText(), "<None>")) {
+                enableInstanceFields();
+                PlayButton.setEnabled(true);
+            }
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
         
+        //I wish I could do this try/catch better, but this segment just does crazy stuff   ~Greenlock
         try {
         
             String selectedInstance = InstanceComboBox.getSelectedItem().toString();
@@ -577,12 +637,14 @@ public class MainForm extends javax.swing.JFrame {
 
     private void AddInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddInstanceButtonActionPerformed
         enableNewInstanceFields();
+        PlayButton.setEnabled(false);
         newInstanceEnabled = true;
     }//GEN-LAST:event_AddInstanceButtonActionPerformed
 
     private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
         if (newInstanceEnabled) {
             disableNewInstanceFields();
+            PlayButton.setEnabled(true);
             newInstanceEnabled = false;
         } else {
             try {
@@ -595,6 +657,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
 
     private void CreateInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateInstanceButtonActionPerformed
+        
         if (BaseModpackComboBox.getSelectedItem().toString().equals("<None>")) {
             return;
         }
@@ -606,32 +669,35 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         disableNewInstanceFields();
+        PlayButton.setEnabled(true);
         loadUserInstances(UsernameField.getText());
     }//GEN-LAST:event_CreateInstanceButtonActionPerformed
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
-        LoadingLabel.setText("");
-        LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
-        LoadingLabel.setVisible(true);
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
+        setLoadingSpinnerVisible(true);
         
         try {
             JSONObject lastlogin = new JSONObject();
             lastlogin.put("username", UsernameField.getText());
             lastlogin.put("password", PasswordField.getText());
             lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
-            FileUtils.writeStringToFile(new File("./lastlogin.dat"), lastlogin.toJSONString());
-        } catch (IOException ex) { }
+            FileUtils.writeStringToFile(new File("./lastlogin.json"), lastlogin.toJSONString());
+        } catch (IOException ex) {
+            Logger.error("MainForm.PlayButtonActionPerformed", "Failed to write lastlogin data to file!", false, ex.getMessage());
+        }
 
         if (CurrentUserLabel.getText().endsWith("-->")) {
             Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
             return;
         }
+        
+        if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+            Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
+            return;
+        }
 
-        LaunchArgs launchArgs = new LaunchArgs();
-
+        // This is the old settings code...
         /*try {
             Logger.info("Applying global settings...");
             if (new File("./users/global.json").exists()) {
@@ -671,15 +737,15 @@ public class MainForm extends javax.swing.JFrame {
 
         if (!pack.IsInstallComplete) {
             pack.build();
+        } else if (ForceUpdateCheckBox.isSelected()) {
+            pack.build();
         }
 
         Logger.info("Preparing to launch modpack...");
         if (pack.run()) {
             dispose();
         } else {
-            LoadingLabel.setVisible(false);
-            this.getContentPane().validate();
-            this.getContentPane().repaint();
+            setLoadingSpinnerVisible(false);
         }
     }//GEN-LAST:event_PlayButtonActionPerformed
 

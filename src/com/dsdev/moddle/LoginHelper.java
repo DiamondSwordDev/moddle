@@ -56,7 +56,7 @@ public class LoginHelper {
                 }
             }
 
-            Logger.info("Login", "AccessToken " + AccessToken + " generated.");
+            Logger.info("LoginHelper.doPasswordLogin", "AccessToken " + AccessToken + " generated.");
         } else {
             Logger.warning("LoginHelper.doPasswordLogin", "Login failed with error '" + (String)result.get("error") + "'");
             return "Bad Login!";
