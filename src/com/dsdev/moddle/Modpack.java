@@ -201,6 +201,11 @@ public class Modpack {
     }
 
     public void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality) {
+        if (ExcludedEntries.contains(entryName)) {
+            Logger.warning("Modpack.getCacheEntry", "Entry is marked for exclusion.  Skipping...");
+            return;
+        }
+        
         if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
             try {
                 Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
@@ -247,9 +252,34 @@ public class Modpack {
             }
         }
         
-        JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
-        LaunchArguments.loadSettings(settingsArray);
+        if (entryConfig.get("settings") != null) {
+            JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
+            LaunchArguments.loadSettings(settingsArray);
+        }
         
+        if (entryConfig.get("dependencies") != null) {
+            JSONArray dependenciesArray = (JSONArray) entryConfig.get("dependencies");
+            for (Object obj : dependenciesArray) {
+                JSONObject dep = (JSONObject) obj;
+                if (!InstalledEntries.contains((String)dep.get("name"))) {
+                    Logger.info("Modpack.getCacheEntry", "Installing dependency entry " + (String)dep.get("name"));
+                    getCacheEntry((String)dep.get("name"), (String)dep.get("version"), targetDir, fatality);
+                }
+            }
+        }
+        
+        if (entryConfig.get("exclusions") != null) {
+            JSONArray exclusionsArray = (JSONArray) entryConfig.get("exclusions");
+            for (Object obj : exclusionsArray) {
+                JSONObject exclude = (JSONObject) obj;
+                ExcludedEntries.add((String)exclude.get("name"));
+                if (InstalledEntries.contains((String)exclude.get("name"))) {
+                    Logger.warning("Modpack.getCacheEntry", "Incompatibility detected! All of the things might break!");
+                }
+            }
+        }
+        
+        InstalledEntries.add(entryName);
     }
     
     public void getPseudoEntry(String entryName, String entryVersion, boolean fatality) {
