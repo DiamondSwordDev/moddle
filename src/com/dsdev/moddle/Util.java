@@ -3,7 +3,6 @@ package com.dsdev.moddle;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,18 +25,18 @@ import org.json.simple.JSONValue;
  */
 public class Util {
 
-    public static File getFile(String path) {
+    /*public static File getFile(String path) {
         return new File(path);
-    }
+    }*/
 
-    public static URL getURL(String uri) {
+    /*public static URL getURL(String uri) {
         try {
             return new URL(uri);
-        } catch (Exception ex) {
+        } catch (MalformedUrlException ex) {
             Logger.error("Util.getURL", ex.getMessage(), false, ex.getMessage());
             return null;
         }
-    }
+    }*/
 
     public static void assertDirectoryExistence(String path) {
         File dir = new File(path);
@@ -61,8 +60,8 @@ public class Util {
     }
     
     public static void decompressZipfile(String file, String outputDir) throws IOException {
-        if (!Util.getFile(outputDir).exists()) {
-            Util.getFile(outputDir).mkdirs();
+        if (!new File(outputDir).exists()) {
+            new File(outputDir).mkdirs();
         }
         ZipFile zipFile = new ZipFile(file);
         Enumeration<? extends ZipEntry> entries = zipFile.entries();

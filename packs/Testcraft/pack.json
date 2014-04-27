@@ -8,6 +8,10 @@
         {
             "name" : "minecraftforge",
             "version" : "9.11.1.965"
+        },
+        {
+            "name" : "thermalexpansion",
+            "version" : "3.0.0.5"
         }
     ]
 }

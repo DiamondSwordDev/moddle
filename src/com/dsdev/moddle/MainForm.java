@@ -666,7 +666,13 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         try {
-            FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/ark"));
+            if (!new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()).exists()) {
+                new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()).mkdirs();
+            }
+            JSONObject instanceConfig = new JSONObject();
+            instanceConfig.put("pack", BaseModpackComboBox.getSelectedItem().toString());
+            FileUtils.writeStringToFile(new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/instance.json"), instanceConfig.toJSONString());
+            //FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/ark"));
         } catch (IOException ex) {
             Logger.error("MainForm.CreateInstanceButtonActionPerformed", "Failed to create instance!", false, ex.getMessage());
         }
@@ -736,7 +742,7 @@ public class MainForm extends javax.swing.JFrame {
         } catch (Exception ex) { }*/
 
         Logger.info("Invoking pack builder...");
-        Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"));
+        Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
 
         if (!pack.IsInstallComplete) {
             pack.build();

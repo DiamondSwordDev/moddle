@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 /**
  * The mod pack compiler.
@@ -30,7 +29,7 @@ public class Modpack {
 
     public Modpack() { }
     
-    public Modpack(String name, String player) {
+    public Modpack(String name, String player, boolean forceUpdate) {
         
         this.ModpackName = name;
         this.PlayerOwner = player;
@@ -55,6 +54,24 @@ public class Modpack {
             }
         } else {
             IsInstallComplete = true;
+        }
+        
+        if (!IsInstallComplete || forceUpdate) {
+            JSONObject instanceConfig = null;
+            try {
+                instanceConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/instance.json");
+            } catch (IOException ex) {
+                Logger.error("Modpack (const)", "Instance config not found!", true, ex.getMessage());
+                return;
+            }
+            if (instanceConfig != null) {
+                try {
+                    FileUtils.copyDirectory(new File("./packs/" + (String)instanceConfig.get("pack")), new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark"));
+                } catch (IOException ex) {
+                    Logger.error("Modpack (const)", "Failed to copy modpack template!", true, ex.getMessage());
+                    return;
+                }
+            }
         }
     }
 
@@ -84,23 +101,7 @@ public class Modpack {
 
         //</editor-fold>
         
-        /*Logger.info("Extracting pack archive...");
-        try {
-            Util.decompressZipfile("./packs/" + ModpackName + ".zip", "./tmp/pack/");
-        } catch (IOException ex) {
-            Logger.error("Modpack.build", "Failed to extract pack archive!", true, ex.getMessage());
-            return;
-        }*/
-        
         JSONObject packConfig = null;
-        /*if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/pack.json").exists())) {
-            try {
-                FileUtils.copyFile(new File("./tmp/pack/pack.json"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/pack.json"));
-            } catch (IOException ex) {
-                Logger.error("Modpack.build", "Failed to copy pack config file!", true, ex.getMessage());
-                return;
-            }
-        }*/
         try {
             packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
         } catch (IOException ex) {
@@ -121,7 +122,7 @@ public class Modpack {
 
         Logger.info("Obtaining Minecraft jarfile...");
         Util.assertDirectoryExistence("./data/versions");
-        if (!Util.getFile("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists()) {
+        if (!(new File("./data/versions/" + packConfig.get("minecraftversion") + ".jar").exists())) {
             Logger.info("Version does not exist.  Downloading...");
             try {
                 FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar"), new File("./data/versions/" + packConfig.get("minecraftversion") + ".jar"));
@@ -145,16 +146,6 @@ public class Modpack {
             Logger.info("Installing entry " + (String)entryObj.get("name") + "...");
             getCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
         }
-        
-        /*Logger.info("Writing JSON launch data...");
-        try {
-            JSONObject container = new JSONObject();
-            container.put("settings", LaunchArguments.jsonStruct);
-            FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/launchargs.json"), container.toJSONString());
-        } catch (IOException ex) {
-            Logger.error("Modpack.build", "Failed to write launchargs.json!", true, ex.getMessage());
-            return;
-        }*/
         
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation (complete)">
         
@@ -206,30 +197,32 @@ public class Modpack {
             return;
         }
         
-        if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+        if (!new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion).exists()) {
+            if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                try {
+                    Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
+                } catch (IOException ex) {
+                    Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                    return;
+                }
+            } else if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                try {
+                    Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
+                } catch (IOException ex) {
+                    Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                    return;
+                }
+            } else if (new File("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+                try {
+                    Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
+                } catch (IOException ex) {
+                    Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
+                    return;
+                }
+            } else {
+                Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
                 return;
             }
-        } else if (Util.getFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
-                return;
-            }
-        } else if (Util.getFile("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
-                return;
-            }
-        } else {
-            Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
-            return;
         }
 
         JSONObject entryConfig = null;
@@ -244,8 +237,17 @@ public class Modpack {
         for (Object obj : filesArray) {
             JSONObject file = (JSONObject) obj;
             try {
+                if (!new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name")).exists()) {
+                    FileUtils.copyURLToFile(new URL((String)file.get("url")), new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name")));
+                }
+            } catch (IOException ex) {
+                Logger.error("Modpack.getCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex.getMessage());
+            }
+            try {
                 if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
                     Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
+                    FileUtils.copyFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
                 }
             } catch (IOException ex) {
                 Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
@@ -371,7 +373,7 @@ public class Modpack {
 
             Logger.info("    DJavaLibPathArgument");
             if (LaunchArguments.UseDJavaLibPathArgument) {
-                args.add("-Djava.library.path=\"" + Util.getFile(LaunchArguments.parseString(LaunchArguments.DJavaLibPathArgument)).getCanonicalPath() + "\"");
+                args.add("-Djava.library.path=\"" + new File(LaunchArguments.parseString(LaunchArguments.DJavaLibPathArgument)).getCanonicalPath() + "\"");
             }
 
             Logger.info("    ClassPathArgument");
@@ -521,7 +523,7 @@ public class Modpack {
         try {
 
             String ret = "";
-            for (File item : Util.getFile(dir).listFiles()) {
+            for (File item : new File(dir).listFiles()) {
                 if (item.isDirectory()) {
                     ret += getLibraryJarfiles(item.getCanonicalPath());
                 } else {
