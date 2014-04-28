@@ -140,11 +140,35 @@ public class Modpack {
         
         //</editor-fold>
 
+        try {
+            Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar", "./users/" + PlayerOwner + "/" + ModpackName + "/mcjar");
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Could not extract minecraft jarfile!", true, ex.getMessage());
+            return;
+        }
+        
+        /*try {
+            FileUtils.deleteDirectory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/mcjar/META-INF/"));
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Could not remove META-INF!", true, ex.getMessage());
+            return;
+        }*/
+        
+        Logger.info("Installing Moddle jarmod...");
+        getCacheEntry("moddlejarmod", "0.2", "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
+        
         JSONArray entriesArray = (JSONArray)packConfig.get("entries");
         for (Object obj : entriesArray) {
             JSONObject entryObj = (JSONObject)obj;
             Logger.info("Installing entry " + (String)entryObj.get("name") + "...");
             getCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
+        }
+        
+        try {
+            Util.compressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/mcjar/", "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + packConfig.get("minecraftversion") + "/" + packConfig.get("minecraftversion") + ".jar");
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Could not compress minecraft jarfile!", true, ex.getMessage());
+            return;
         }
         
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation (complete)">
@@ -248,6 +272,10 @@ public class Modpack {
                     Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
                     FileUtils.copyFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
+                } else if (((String) file.get("action")).equalsIgnoreCase("patch-jar-zip")) {
+                    Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name"), "./users/" + PlayerOwner + "/" + ModpackName + "/mcjar" + (String) file.get("target"));
+                } else if (((String) file.get("action")).equalsIgnoreCase("patch-jar-file")) {
+                    FileUtils.copyFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File("./users/" + PlayerOwner + "/" + ModpackName + "/mcjar" + (String) file.get("target")));
                 }
             } catch (IOException ex) {
                 Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
@@ -506,8 +534,8 @@ public class Modpack {
             env.put("APPDATA", LaunchArguments.AppDataDirectory);
 
             Logger.info("Launching process!");
-            //launcher.redirectOutput(Util.getFile("./stdout.txt"));
-            //launcher.redirectError(Util.getFile("./stderr.txt"));
+            //launcher.redirectOutput(new File("./stdout.txt"));
+            //launcher.redirectError(new File("./stderr.txt"));
             launcher.directory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft"));
             launcher.start();
 
