@@ -3,21 +3,15 @@ package com.dsdev.moddle;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -27,19 +21,6 @@ import org.json.simple.JSONValue;
  * @author Greenlock28
  */
 public class Util {
-
-    /*public static File getFile(String path) {
-        return new File(path);
-    }*/
-
-    /*public static URL getURL(String uri) {
-        try {
-            return new URL(uri);
-        } catch (MalformedUrlException ex) {
-            Logger.error("Util.getURL", ex.getMessage(), false, ex.getMessage());
-            return null;
-        }
-    }*/
 
     public static void assertDirectoryExistence(String path) {
         File dir = new File(path);
@@ -62,7 +43,7 @@ public class Util {
         return (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(path)));
     }
     
-    public static void decompressZipfile(String file, String outputDir) throws IOException {
+    /*public static void decompressZipfile(String file, String outputDir) throws IOException {
         if (!new File(outputDir).exists()) {
             new File(outputDir).mkdirs();
         }
@@ -112,6 +93,30 @@ public class Util {
                 in.close();
             }
         }
+    }*/
+    
+    public static void decompressZipfile(String zipFile, String outputDir) throws ZipException {
+        ZipFile zip = new ZipFile(zipFile);
+        zip.extractAll(outputDir);
+    }
+    
+    public static void compressZipfile(String sourceDir, String outputFile) throws ZipException {
+        ZipFile zip = new ZipFile(outputFile);
+        ZipParameters params = new ZipParameters();
+        params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+		params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+        for (File f : new File(sourceDir).listFiles()) {
+            if (f.isDirectory()) {
+                zip.addFolder(f, params);
+            } else {
+                zip.addFile(f, params);
+            }
+        }
+    }
+    
+    public static void removeFileFromZipfile(String zipFile, String fileName) throws ZipException {
+        ZipFile zip = new ZipFile(zipFile);
+        zip.removeFile(fileName);
     }
     
     //Method from 'mclauncher-api'
@@ -150,14 +155,10 @@ public class Util {
         return result.toString();
     }
     
-    public static boolean isNumeric(String str)  
-    {  
-        try  
-        {  
+    public static boolean isNumeric(String str) {  
+        try {  
             double d = Double.parseDouble(str);  
-        }  
-        catch(NumberFormatException nfe)  
-        {  
+        } catch(NumberFormatException nfe) {  
             return false;  
         }  
         return true;  
