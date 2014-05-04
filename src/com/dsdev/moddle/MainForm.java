@@ -665,17 +665,7 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         
-        try {
-            if (!new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()).exists()) {
-                new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText()).mkdirs();
-            }
-            JSONObject instanceConfig = new JSONObject();
-            instanceConfig.put("pack", BaseModpackComboBox.getSelectedItem().toString());
-            FileUtils.writeStringToFile(new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/instance.json"), instanceConfig.toJSONString());
-            //FileUtils.copyDirectory(new File("./packs/" + BaseModpackComboBox.getSelectedItem().toString()), new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceNameField.getText() + "/ark"));
-        } catch (IOException ex) {
-            Logger.error("MainForm.CreateInstanceButtonActionPerformed", "Failed to create instance!", false, ex.getMessage());
-        }
+        Modpack.createInstance(InstanceNameField.getText(), UsernameField.getText().replace("@", "_"), BaseModpackComboBox.getSelectedItem().toString());
         
         disableNewInstanceFields();
         PlayButton.setEnabled(true);

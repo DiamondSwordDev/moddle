@@ -103,8 +103,8 @@ public class Util {
     public static void compressZipfile(String sourceDir, String outputFile) throws ZipException {
         ZipFile zip = new ZipFile(outputFile);
         ZipParameters params = new ZipParameters();
-        params.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-		params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+        params.setCompressionMethod(Zip4jConstants.COMP_STORE);
+		//params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
         for (File f : new File(sourceDir).listFiles()) {
             if (f.isDirectory()) {
                 zip.addFolder(f, params);
