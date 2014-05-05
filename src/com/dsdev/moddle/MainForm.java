@@ -335,7 +335,7 @@ public class MainForm extends javax.swing.JFrame {
             if (!UsernameField.getText().equals(username))
                 UsernameField.setText(username);
             
-            if (!PasswordField.getText().equals(password))
+            if (!(new String(PasswordField.getPassword())).equals(password))
                 PasswordField.setText(password);
             
             CurrentUserLabel.setText(LoginHelper.Username);
@@ -610,7 +610,7 @@ public class MainForm extends javax.swing.JFrame {
             disableInstanceFields();
             PlayButton.setEnabled(false);
         } else {
-            if (doLogin(UsernameField.getText(), PasswordField.getText(), "<None>")) {
+            if (doLogin(UsernameField.getText(), (new String(PasswordField.getPassword())), "<None>")) {
                 enableInstanceFields();
                 PlayButton.setEnabled(true);
             }
@@ -679,7 +679,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             JSONObject lastlogin = new JSONObject();
             lastlogin.put("username", UsernameField.getText());
-            lastlogin.put("password", PasswordField.getText());
+            lastlogin.put("password", new String(PasswordField.getPassword()));
             lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
             FileUtils.writeStringToFile(new File("./lastlogin.json"), lastlogin.toJSONString());
         } catch (IOException ex) {
