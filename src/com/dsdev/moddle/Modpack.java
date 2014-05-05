@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import com.dsdev.assets.AssetBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -58,7 +59,7 @@ public class Modpack {
     }
     
     public boolean getSettingBool(String key) {
-        return "true".equalsIgnoreCase(key);
+        return "true".equalsIgnoreCase(Settings.get(key));
     }
     
     public void setSetting(String key, String value) {
@@ -207,6 +208,22 @@ public class Modpack {
         }
         
         //</editor-fold>
+        
+        Logger.info("Modpack.build", "Installing assets...");
+        if (!new File("./data/assets").isDirectory()) {
+            try {
+                AssetBuilder.buildAssets("./data/assets/");
+            } catch (IOException ex) {
+                Logger.error("Modpack.build", "Failed to download assets!", false, ex.getMessage());
+            }
+        }
+        if (new File("./data/assets").isDirectory()) {
+            try {
+                FileUtils.copyDirectory(new File("./data/assets/legacy"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/assets"));
+            } catch (IOException ex) {
+                Logger.error("Modpack.build", "Failed to install assets!", false, ex.getMessage());
+            }
+        }
         
         List<String> installQueue = new ArrayList();
         List<String> excludeQueue = new ArrayList();
