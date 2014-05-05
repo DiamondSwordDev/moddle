@@ -213,7 +213,7 @@ public class Modpack {
         Logger.info("Modpack.build", "Installing assets...");
         if (!new File("./data/assets").isDirectory()) {
             try {
-                AssetBuilder.buildAssets("./data/assets/");
+                AssetBuilder.updateAssets("./data/assets/");
             } catch (IOException ex) {
                 Logger.error("Modpack.build", "Failed to download assets!", false, ex.getMessage());
             }
