@@ -22,7 +22,7 @@ public class AssetBuilder {
      * @param directory A String representing the directory where the assets
      * should be created. MAKE SURE THAT IT ENDS WITH A / CHARCTER OR THIS CODE
      * WILL GO BOOM!
-     * @throws java.io.IOException Of course. :P
+     * @throws java.io.IOException
      */
     public static void buildAssets(String directory) throws IOException {
         Logger.info("Assets", "Building Minecraft assets at " + directory);
@@ -88,16 +88,26 @@ public class AssetBuilder {
     }
 
     /**
-     * Checks the assetDef.json's SHA1 against a fresh copy from Mojang's
+     * Checks the assetDef.json's SHA-512 against a fresh copy from Mojang's
      * servers to determine if it's up-to-date.
      *
      * @param directory A String representing the directory where the assets
      * should be created. MAKE SURE THAT IT ENDS WITH A / CHARCTER OR THIS CODE
      * WILL GO BOOM!
      * @return A boolean representing whether the assets are up-to-date or not.
+     * @throws java.io.IOException
      */
-    public static boolean checkAssets(String directory) {
-        //TODO: Create a method to compare the assetDef.json SHA1s and determine if the assets are up-to-date
+    public static boolean assetsUpdateRequired(String directory) throws IOException {
+        Logger.info("Assets Checker", "Fetching asset definition file...");
+        File defFileCurrent = File.createTempFile("assets", ".json");
+        URL defWeb = new URL("https://s3.amazonaws.com/Minecraft.Download/indexes/legacy.json");
+        FileUtils.copyURLToFile(defWeb, defFileCurrent);
+        
+        File defFileExisting = new File(directory + "assetDef.json");
+        if (defFileExisting.exists() && defFileExisting.isFile()) {
+            
+        }
+        
         return false;
     }
 }
