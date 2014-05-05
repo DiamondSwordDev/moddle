@@ -179,6 +179,7 @@ public class Modpack {
         
         Logger.info("Modpack.build", "Building skeleton installation...");
         evaluateCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), null, null);
+        parseCacheEntry("minecraft", Settings.get("general.MinecraftVersion"));
         getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true);
 
         //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
@@ -257,6 +258,7 @@ public class Modpack {
         for (String entry : finalQueue) {
             String[] entryData = entry.split(",");
             Logger.info("Installing entry " + entryData[0] + "...");
+            parseCacheEntry(entryData[0], entryData[1]);
             getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
         }
         
@@ -371,6 +373,36 @@ public class Modpack {
         }
     }
     
+    public void parseCacheEntry(String entryName, String entryVersion) {
+        String entryLocation = "";
+        if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            entryLocation = "./data/";
+        } else if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            entryLocation = "./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/";
+        } else if (new File("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
+            entryLocation = "./cache/";
+        } else {
+            Logger.error("Modpack.evaluateCacheEntry", "Cache entry was not found!", false, "None");
+            return;
+        }
+        
+        JSONObject entryConfig = null;
+        try {
+            entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
+        } catch (IOException ex) {
+            Logger.error("Modpack.evaluateCacheEntry", "Cache entry was not found!", false, "None");
+            return;
+        }
+
+        if (entryConfig.get("settings") != null) {
+            JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
+            for (Object obj : settingsArray) {
+                JSONObject setting = (JSONObject) obj;
+                setSetting((String) setting.get("name"), (String) setting.get("value"));
+            }
+        }
+    }
+    
     public void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality) {
         String entryLocation = "";
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -460,10 +492,56 @@ public class Modpack {
     public boolean run() {
         try {
 
-            /*if (LaunchArguments == null) {
-                Logger.info("Performing pseudo-build...");
-                pseudoBuild();
-            }*/
+            if (LaunchArguments == null) {
+                setSetting("launch.AppDataDirectory", Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName));
+                
+                JSONObject packConfig = null;
+                try {
+                    packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
+                } catch (IOException ex) {
+                    Logger.error("Modpack.run", "Failed to read pack.json!", true, ex.getMessage());
+                    return false;
+                }
+                
+                setSetting("general.MinecraftVersion", (String) packConfig.get("minecraftversion"));
+                
+                List<String> installQueue = new ArrayList();
+                List<String> excludeQueue = new ArrayList();
+
+                JSONArray entriesArray = (JSONArray)packConfig.get("entries");
+                for (Object obj : entriesArray) {
+                    JSONObject entryObj = (JSONObject)obj;
+                    Logger.info("Modpack.build", "Evaluating entry '" + (String) entryObj.get("name") + "'...");
+                    evaluateCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), installQueue, excludeQueue);
+                }
+
+                Logger.info("Modpack.build", "Evaluating entry 'moddleassets'...");
+                evaluateCacheEntry("moddleassets", "0.2", installQueue, excludeQueue);
+
+                List<String> finalQueue = new ArrayList();
+
+                Logger.info("Modpack.build", "Building installation queue...");
+                for (String entry : installQueue) {
+                    boolean install = true;
+                    for (String exclusion : excludeQueue) {
+                        if (entry.startsWith(exclusion)) {
+                            install = false;
+                            break;
+                        }
+                    }
+                    if (install) {
+                        finalQueue.add(entry);
+                    }
+                }
+
+                parseCacheEntry("minecraft", (String)packConfig.get("minecraftversion"));
+                
+                for (String entry : finalQueue) {
+                    String[] entryData = entry.split(",");
+                    Logger.info("Installing entry " + entryData[0] + "...");
+                    parseCacheEntry(entryData[0], entryData[1]);
+                }
+            }
             
             Logger.info("Building process arguments...");
             List<String> args = new ArrayList();
@@ -622,8 +700,6 @@ public class Modpack {
             env.put("APPDATA", getSetting("launch.AppDataDirectory"));
 
             Logger.info("Launching process!");
-            launcher.redirectOutput(new File("./stdout.txt"));
-            launcher.redirectError(new File("./stderr.txt"));
             launcher.directory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft"));
             launcher.start();
 
