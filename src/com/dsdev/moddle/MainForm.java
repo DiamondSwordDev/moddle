@@ -373,7 +373,7 @@ public class MainForm extends javax.swing.JFrame {
                     }
                 }
             } else {
-                Logger.warning("Weird error.");
+                Logger.warning("MainForm.loadUserInstances", "Weird error.");
             }
         } else {
             new File("./users/" + username.replace("@", "_")).mkdirs();
@@ -731,7 +731,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         } catch (Exception ex) { }*/
 
-        Logger.info("Invoking pack builder...");
+        Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
         Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
 
         if (!pack.IsInstallComplete) {
@@ -740,7 +740,7 @@ public class MainForm extends javax.swing.JFrame {
             pack.build();
         }
 
-        Logger.info("Preparing to launch modpack...");
+        Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
         if (pack.run()) {
             dispose();
         } else {

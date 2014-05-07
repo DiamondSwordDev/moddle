@@ -257,7 +257,7 @@ public class Modpack {
         
         for (String entry : finalQueue) {
             String[] entryData = entry.split(",");
-            Logger.info("Installing entry " + entryData[0] + "...");
+            Logger.info("Modpack.build", "Installing entry " + entryData[0] + "...");
             parseCacheEntry(entryData[0], entryData[1]);
             getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
         }
@@ -538,39 +538,39 @@ public class Modpack {
                 
                 for (String entry : finalQueue) {
                     String[] entryData = entry.split(",");
-                    Logger.info("Installing entry " + entryData[0] + "...");
+                    Logger.info("Modpack.run", "Installing entry " + entryData[0] + "...");
                     parseCacheEntry(entryData[0], entryData[1]);
                 }
             }
             
-            Logger.info("Building process arguments...");
+            Logger.info("Modpack.run", "Building process arguments...");
             List<String> args = new ArrayList();
 
             //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
             
-            Logger.info("    JavaExecutablePath");
+            Logger.info("Modpack.run", "Parsing JavaExecutablePath...");
             if (!getSetting("launch.JavaExecutablePath").equals("null")) {
                 args.add(getSetting("launch.JavaExecutablePath"));
             } else {
                 args.add("javaw.exe");
             }
 
-            Logger.info("    XmxArgument");
+            Logger.info("Modpack.run", "Parsing XmxArgument...");
             if (getSettingBool("launch.UseXmxArgument")) {
                 args.add("-Xmx" + getSetting("launch.XmxArgument") + "M");
             }
 
-            Logger.info("    XmsArgument");
+            Logger.info("Modpack.run", "Parsing XmsArgument...");
             if (getSettingBool("launch.UseXmsArgument")) {
                 args.add("-Xms" + getSetting("launch.XmsArgument") + "M");
             }
 
-            Logger.info("    DJavaLibPathArgument");
+            Logger.info("Modpack.run", "Parsing DJavaLibPathArgument...");
             if (getSettingBool("launch.UseDJavaLibPathArgument")) {
                 args.add("-Djava.library.path=\"" + Util.getFullPath(getSetting("launch.DJavaLibPathArgument")) + "\"");
             }
 
-            Logger.info("    ClassPathArgument");
+            Logger.info("Modpack.run", "Parsing ClassPathArgument...");
             if (getSettingBool("launch.UseClassPathArgument")) {
                 String cpArg = "";//"\"";
                 if (getSettingBool("launch.GetLibraryClassPaths")) {
@@ -596,12 +596,12 @@ public class Modpack {
                 args.add("\"" + cpArg + "\"");
             }
 
-            Logger.info("    MainClassArgument");
+            Logger.info("Modpack.run", "Parsing MainClassArgument...");
             if (getSettingBool("launch.UseMainClassArgument")) {
                 args.add(getSetting("launch.MainClassArgument"));
             }
 
-            Logger.info("    AdditionalCoreArguments");
+            Logger.info("Modpack.run", "Parsing AdditionalCoreArguments...");
             if (!AdditionalCoreLaunchArguments.isEmpty()) {
                 for (String additionalArg : AdditionalCoreLaunchArguments) {
                     args.add(parseSettingsString(additionalArg));
@@ -612,73 +612,73 @@ public class Modpack {
             
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
             
-            Logger.info("    UseLegacyUsernameAndSession");
+            Logger.info("Modpack.run", "Parsing UseLegacyUsernameAndSession...");
             if (getSettingBool("launch.UseLegacyUsernameAndSession")) {
                 args.add(LoginHelper.Username);
                 args.add(LoginHelper.AccessToken);
             }
 
-            Logger.info("    UseGameDirArgument");
+            Logger.info("Modpack.run", "Parsing UseGameDirArgument...");
             if (getSettingBool("launch.UseGameDirArgument")) {
                 args.add("--gameDir");
                 args.add(getSetting("launch.GameDirArgument"));
             }
 
-            Logger.info("    UseAssetDirArgument");
+            Logger.info("Modpack.run", "Parsing UseAssetDirArgument...");
             if (getSettingBool("launch.UseAssetDirArgument")) {
                 args.add("--assetDir");
                 args.add(getSetting("launch.AssetDirArgument"));
             }
 
-            Logger.info("    UseVersionArgument");
+            Logger.info("Modpack.run", "Parsing UseVersionArgument...");
             if (getSettingBool("launch.UseVersionArgument")) {
                 args.add("--version");
                 args.add(getSetting("launch.VersionArgument"));
             }
 
-            Logger.info("    UseUsernameArgument");
+            Logger.info("Modpack.run", "Parsing UseUsernameArgument...");
             if (getSettingBool("launch.UseUsernameArgument")) {
                 args.add("--username");
                 args.add(LoginHelper.Username);
             }
 
-            Logger.info("    UseSessionArgument");
+            Logger.info("Modpack.run", "Parsing UseSessionArgument...");
             if (getSettingBool("launch.UseSessionArgument")) {
                 args.add("--session");
                 args.add(LoginHelper.AccessToken);
             }
 
-            Logger.info("    UseUUIDArgument");
+            Logger.info("Modpack.run", "Parsing UseUUIDArgument...");
             if (getSettingBool("launch.UseUUIDArgument")) {
                 args.add("--uuid");
                 args.add(LoginHelper.UUID);
             }
 
-            Logger.info("    UseAccessTokenArgument");
+            Logger.info("Modpack.run", "Parsing UseAccessTokenArgument...");
             if (getSettingBool("launch.UseAccessTokenArgument")) {
                 args.add("--accessToken");
                 args.add(LoginHelper.AccessToken);
             }
 
-            Logger.info("    UseUserPropertiesArgument");
+            Logger.info("Modpack.run", "Parsing UseUserPropertiesArgument...");
             if (getSettingBool("launch.UseUserPropertiesArgument")) {
                 args.add("--userProperties");
                 args.add(LoginHelper.UserProperties);
             }
 
-            Logger.info("    UseUserTypeArgument");
+            Logger.info("Modpack.run", "Parsing UseUserTypeArgument...");
             if (getSettingBool("launch.UseUserTypeArgument")) {
                 args.add("--userType");
                 args.add(LoginHelper.UserType);
             }
 
-            Logger.info("    UseTweakClassArgument");
+            Logger.info("Modpack.run", "Parsing UseTweakClassArgument...");
             if (getSettingBool("launch.UseTweakClassArgument")) {
                 args.add("--tweakClass");
                 args.add(getSetting("launch.TweakClassArgument"));
             }
             
-            Logger.info("    AdditionalMinecraftArguments");
+            Logger.info("Modpack.run", "Parsing AdditionalMinecraftArguments...");
             if (!AdditionalMinecraftLaunchArguments.isEmpty()) {
                 for (String additionalArg : AdditionalMinecraftLaunchArguments) {
                     args.add(parseSettingsString(additionalArg));
@@ -694,12 +694,12 @@ public class Modpack {
 
             ProcessBuilder launcher = new ProcessBuilder(argArray);
 
-            Logger.info("Setting environment variables...");
+            Logger.info("Modpack.run", "Setting environment variables...");
             Map<String, String> env = launcher.environment();
             //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
             env.put("APPDATA", getSetting("launch.AppDataDirectory"));
 
-            Logger.info("Launching process!");
+            Logger.info("Modpack.run", "Launching process!");
             launcher.directory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft"));
             launcher.start();
 

@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.URL;
 import org.apache.commons.io.FileUtils;
 import com.dsdev.moddle.*;
-import java.util.logging.Level;
 
 /**
  * This class contains all of the tools required to build and maintain a copy of
@@ -28,7 +27,7 @@ public class AssetBuilder {
         try {
             Thread.sleep(15000);
         } catch (InterruptedException ex) {
-            Logger.error("Temporary sleep before crash interrupted");
+            Logger.error("Assets", "Temporary sleep before crash interrupted");
         }
         System.exit(101);
     }
