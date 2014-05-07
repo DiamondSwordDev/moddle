@@ -39,7 +39,23 @@ public class Modpack {
     
     
     public String parseSettingsString(String s) {
+        /*String ret = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (s.toCharArray()[i] == '$' && s.toCharArray()[i+1] == '{') {
+                for (int ii = i; i < s.length(); i++) {
+                    if (s.toCharArray()[ii] == '}') {
+                        String functionString = s.substring(i, ii);
+                        i = ii;
+                        break;
+                    }
+                }
+            } else {
+                ret += s.toCharArray()[i];
+            }
+        }*/
+        
         String ret = s;
+        
         for (Entry<String, String> entry : Settings.entrySet()) {
             ret = ret.replace("${" + entry.getKey() + "}", entry.getValue());
         }
@@ -144,9 +160,6 @@ public class Modpack {
     
     public void build() {
         
-        //LaunchArguments = new LaunchArgs();
-        
-        //LaunchArguments.AppDataDirectory = Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName);
         setSetting("launch.AppDataDirectory", Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName));
 
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation">
@@ -182,6 +195,14 @@ public class Modpack {
         parseCacheEntry("minecraft", Settings.get("general.MinecraftVersion"));
         getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true);
 
+        if (packConfig.get("settings") != null) {
+            JSONArray settingsArray = (JSONArray) packConfig.get("settings");
+            for (Object obj : settingsArray) {
+                JSONObject setting = (JSONObject) obj;
+                setSetting((String) setting.get("name"), (String) setting.get("value"));
+            }
+        }
+        
         //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
 
         Logger.info("Modpack.build", "Creating '.minecraft/versions/' ...");
@@ -210,10 +231,10 @@ public class Modpack {
         
         //</editor-fold>
         
-        Logger.info("Modpack.build", "Installing assets...");
+        /*Logger.info("Modpack.build", "Installing assets...");
         if (!new File("./data/assets").isDirectory()) {
             try {
-                AssetBuilder.updateAssets("./data/assets/");
+                AssetBuilder.buildAssets("./data/assets/");//.updateAssets("./data/assets/");
             } catch (IOException ex) {
                 Logger.error("Modpack.build", "Failed to download assets!", false, ex.getMessage());
             }
@@ -224,7 +245,7 @@ public class Modpack {
             } catch (IOException ex) {
                 Logger.error("Modpack.build", "Failed to install assets!", false, ex.getMessage());
             }
-        }
+        }*/
         
         List<String> installQueue = new ArrayList();
         List<String> excludeQueue = new ArrayList();
@@ -281,33 +302,6 @@ public class Modpack {
         //</editor-fold>
     }
     
-    public void pseudoBuild() {
-        
-        LaunchArguments = new LaunchArgs();
-        
-        LaunchArguments.AppDataDirectory = Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName);
-
-        JSONObject packConfig = null;
-        try {
-            packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
-        } catch (IOException ex) {
-            Logger.error("Modpack.pseudoBuild", "Failed to read pack.json!", true, ex.getMessage());
-            return;
-        }
-        
-        Logger.info("Modpack.pseudoBuild", "Building skeleton pseudoinstallation...");
-        getPseudoEntry("minecraft", (String) packConfig.get("minecraftversion"), true);
-
-        getPseudoEntry("moddlejarmod", "0.2", false);
-        
-        JSONArray entriesArray = (JSONArray)packConfig.get("entries");
-        for (Object obj : entriesArray) {
-            JSONObject entryObj = (JSONObject)obj;
-            Logger.info("Modpack.pseudoBuild", "Installing pseudoentry " + (String)entryObj.get("name") + "...");
-            getPseudoEntry((String)entryObj.get("name"), (String)entryObj.get("version"), false);
-        }
-    }
-
     public void evaluateCacheEntry(String entryName, String entryVersion, List<String> installQueue, List<String> excludeQueue) {
         String entryLocation = "";
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -439,6 +433,8 @@ public class Modpack {
                     Util.decompressZipfile(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
                     FileUtils.copyFile(new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
+                } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
+                    copyTextFileWithVariables(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                 }
             } catch (Exception ex) {
                 Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
@@ -447,44 +443,15 @@ public class Modpack {
         
     }
     
-    public void getPseudoEntry(String entryName, String entryVersion, boolean fatality) {
-        /*if (Util.getFile("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./data/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
-                return;
-            }
-        } else if (Util.getFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
-                return;
-            }
-        } else if (Util.getFile("./cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
-            try {
-                Util.decompressZipfile("./cache/" + entryName + "-" + entryVersion + ".zip", "./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion);
-            } catch (IOException ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to extract entry archive!", fatality, ex.getMessage());
-                return;
-            }
-        } else {
-            Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
-            return;
-        }*/
-
-        JSONObject entryConfig = null;
-        try {
-            entryConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/entries/" + entryName + "-" + entryVersion + "/entry.json");
-        } catch (IOException ex) {
-            Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
-            return;
+    public void copyTextFileWithVariables(String sourceFile, String destFile) throws IOException {
+        List<String> sourceText = FileUtils.readLines(new File(sourceFile));
+        String destText = "";
+        for (String line : sourceText) {
+            destText += parseSettingsString(line) + "\n";
         }
-
-        JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
-        LaunchArguments.loadSettings(settingsArray);
-        
+        destText = destText.substring(0, destText.length() - 2);
+        new File(destFile).getParentFile().mkdirs();
+        FileUtils.writeStringToFile(new File(destFile), destText);
     }
     
     
