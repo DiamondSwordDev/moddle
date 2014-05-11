@@ -1,4 +1,4 @@
-package com.dsdev.assets;
+package com.dsdev.moddle;
 
 import java.io.IOException;
 

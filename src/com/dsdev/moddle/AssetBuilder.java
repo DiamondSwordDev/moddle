@@ -1,4 +1,4 @@
-package com.dsdev.assets;
+package com.dsdev.moddle;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
