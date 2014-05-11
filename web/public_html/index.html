@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>Moddle</title>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="scripts/jquery.onepage-scroll.js"></script>
+<link rel="stylesheet" type="text/css" href="styles/onepage-scroll.css" />
+
+<link rel="stylesheet" type="text/css" href="styles/styles.css" />
+
+<script>
+$(document).ready(function(){
+$(".main").onepage_scroll({
+   sectionContainer: "section",                               // sectionContainer accepts any kind of selector in case you don't want to use section
+   easing: "cubic-bezier(0.86, 0, 0.07, 1)",                  // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in", 
+                                                              // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
+   animationTime: 500,                                        // AnimationTime let you define how long each section takes to animate
+   pagination: true,                                          // You can either show or hide the pagination. Toggle true for show, false for hide.
+   updateURL: true,                                           // Toggle this true if you want the URL to be updated automatically when the user scroll to each page.
+   beforeMove: function(index) {},                            // This option accepts a callback function. The function will be called before the page moves.
+   afterMove: function(index) {},                             // This option accepts a callback function. The function will be called after the page moves.
+   loop: true,                                                // You can have the page loop back to the top/bottom when the user navigates at up/down on the first/last page.
+   keyboard: true,                                            // You can activate the keyboard controls
+   responsiveFallback: 750                                    // You can fallback to normal page scroll by defining the width of the browser in which
+                                                              // you want the responsive fallback to be triggered. For example, set this to 600 and whenever 
+                                                              // the browser's width is less than 600, the fallback will kick in.
+});
+});
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48051413-1', 'moddle.github.io');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body>
+<div class="main">
+
+<section id="main">
+<img id="titleimage" src="images/titlelogo.svg" alt="Moddle Logo" width="300" height="114">
+<p id="mainflavor">Moddle is an open-source Minecraft launcher and modpack creation framework.  Its purpose is to make modpack creation a quick and easy process for anyone and everyone who wants to make their own modpack.  It also provides a simple and straightforward method of modpack distribution by serving as a standard platform for building modpacks.  Moddle's core libraries are also completely available to and for anyone who wants to take advantage of their functionalities and integrate them into their own Minecraft launcher!</p>
+</section>
+
+<section id="download">
+<h1>Download Moddle</h1>
+<p id="downloadflavor">The easiest way to get the open alpha version of Moddle is by using Mince, the Moddle installer. Note that you must have <a href="http://www.python.org/download/">Python 3</a> for Moddle to work in addition to <a href="http://www.microsoft.com/en-us/download/details.aspx?id=17851">.NET 3 or later</a> for the graphical launcher if you are on Windows.</p>
+<p id="supportedarch">While Moddle supports all platforms, the graphical launcher is currently only available on Windows. We're working on bringing the full Moddle experience to everyone, though! Until then, you'll launch into the Moddle Shell on Mac or Linux, which is fairly easy to use and is documented <a href="shelldocs.html">here</a>.</p>
+<form class="wrapper" action="dist/mince.py">
+<input id="button" type="submit" value="Get Mince">
+</form>
+</section>
+
+</div>
+</body>
+
+</html>
