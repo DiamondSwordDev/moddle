@@ -39,29 +39,45 @@ public class Modpack {
     
     
     public String parseSettingsString(String s) {
-        /*String ret = "";
+        
+        List<String> variableStrings = new ArrayList();
+        
         for (int i = 0; i < s.length(); i++) {
             if (s.toCharArray()[i] == '$' && s.toCharArray()[i+1] == '{') {
-                for (int ii = i; i < s.length(); i++) {
+                for (int ii = i; ii < s.length(); ii++) {
                     if (s.toCharArray()[ii] == '}') {
-                        String functionString = s.substring(i, ii);
+                        String functionString = s.substring(i, ii+1);
+                        variableStrings.add(functionString);
                         i = ii;
                         break;
                     }
                 }
-            } else {
-                ret += s.toCharArray()[i];
             }
-        }*/
+        }
         
         String ret = s;
         
-        for (Entry<String, String> entry : Settings.entrySet()) {
-            ret = ret.replace("${" + entry.getKey() + "}", entry.getValue());
+        for (String clause : variableStrings) {
+            String fullclause = clause.substring(2, clause.length() - 1);
+            String name = "";
+            String defaultval = "";
+            if (fullclause.contains(":")) {
+                name = fullclause.split(":")[0];
+                defaultval = fullclause.split(":")[1];
+            } else {
+                name = fullclause;
+            }
+            if (!getSetting(name).equals("null")) {
+                ret = ret.replace(clause, getSetting(name));
+            } else {
+                ret = ret.replace(clause, defaultval);
+            }
         }
+        
         if (ret.contains("${")) {
             ret = parseSettingsString(ret);
         }
+        
         return ret;
     }
     
@@ -83,6 +99,8 @@ public class Modpack {
             AdditionalClassPathEntries.add(value);
         } else if (key.equalsIgnoreCase("addcorelaunchargument")) {
             AdditionalCoreLaunchArguments.add(value);
+        } else if (key.equalsIgnoreCase("addminecraftlaunchargument")) {
+            AdditionalMinecraftLaunchArguments.add(value);
         } else {
             Settings.put(key, value);
         }
@@ -193,7 +211,7 @@ public class Modpack {
         Logger.info("Modpack.build", "Building skeleton installation...");
         evaluateCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), null, null);
         parseCacheEntry("minecraft", Settings.get("general.MinecraftVersion"));
-        getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true);
+        getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true, null);
 
         if (packConfig.get("settings") != null) {
             JSONArray settingsArray = (JSONArray) packConfig.get("settings");
@@ -280,7 +298,7 @@ public class Modpack {
             String[] entryData = entry.split(",");
             Logger.info("Modpack.build", "Installing entry " + entryData[0] + "...");
             parseCacheEntry(entryData[0], entryData[1]);
-            getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false);
+            getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false, finalQueue);
         }
         
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation (complete)">
@@ -397,7 +415,7 @@ public class Modpack {
         }
     }
     
-    public void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality) {
+    public void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality, List<String> installQueue) {
         String entryLocation = "";
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
             entryLocation = "./data/";
@@ -434,7 +452,7 @@ public class Modpack {
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
                     FileUtils.copyFile(new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
-                    copyTextFileWithVariables(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                    copyTextFileWithVariables(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"), installQueue);
                 }
             } catch (Exception ex) {
                 Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
@@ -443,11 +461,50 @@ public class Modpack {
         
     }
     
-    public void copyTextFileWithVariables(String sourceFile, String destFile) throws IOException {
+    public void copyTextFileWithVariables(String sourceFile, String destFile, List<String> installQueue) throws IOException {
         List<String> sourceText = FileUtils.readLines(new File(sourceFile));
         String destText = "";
+        boolean isSkipping = false;
         for (String line : sourceText) {
-            destText += parseSettingsString(line) + "\n";
+            
+                if (line.equalsIgnoreCase("$[[end]]")) {
+                    isSkipping = false;
+                }
+                else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
+                    String functionString = line.substring(3, line.length() - 2);
+                    if (functionString.split(":")[0].equalsIgnoreCase("if")) {
+                        if (!getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                            isSkipping = true;
+                        }
+                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifnot")) {
+                        if (getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                            isSkipping = true;
+                        }
+                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifinstalled")) {
+                        boolean isInstalled = false;
+                        for (String item : installQueue) {
+                            if (item.startsWith(functionString.split(":")[1])) {
+                                isInstalled = true;
+                            }
+                        }
+                        if (!isInstalled) {
+                            isSkipping = true;
+                        }
+                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotinstalled")) {
+                        boolean isInstalled = false;
+                        for (String item : installQueue) {
+                            if (item.startsWith(functionString.split(":")[1])) {
+                                isInstalled = true;
+                            }
+                        }
+                        if (isInstalled) {
+                            isSkipping = true;
+                        }
+                    }
+                } else {
+                    destText += parseSettingsString(line) + "\n";
+                }
+            
         }
         destText = destText.substring(0, destText.length() - 2);
         new File(destFile).getParentFile().mkdirs();

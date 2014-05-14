@@ -252,7 +252,7 @@ public class MainForm extends javax.swing.JFrame {
 
             for (String line : contentLines) {
 
-                if (line.startsWith("${{") && line.endsWith("}}")) {
+                if (line.startsWith("$[[") && line.endsWith("]]")) {
                     String styleString = line.substring(3, line.length() - 2);
                     for (String style : styleString.split(",")) {
 
