@@ -1,4 +1,4 @@
-${{IMAGE:banner.png}}
+$[[IMAGE:banner.png]]
 
 This is the primary pre-release test modpack for the Moddle Launcher, using Minecraft version 1.6.4 (Forge version 9.11.1.953).  It contains most, if not all of the mods provided in the default Moddle universal mod cache.
 
