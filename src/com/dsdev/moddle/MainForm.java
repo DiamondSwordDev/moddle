@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import org.apache.commons.io.FileUtils;
@@ -34,6 +35,10 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        progressDialog = new javax.swing.JDialog();
+        mainScrollPane = new javax.swing.JScrollPane();
+        consolePane = new javax.swing.JTextPane();
+        progressBar = new javax.swing.JProgressBar();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
@@ -56,6 +61,35 @@ public class MainForm extends javax.swing.JFrame {
         ForceUpdateCheckBox = new javax.swing.JCheckBox();
         PlayButton = new javax.swing.JButton();
         LoadingLabel = new javax.swing.JLabel();
+
+        progressDialog.setMinimumSize(new java.awt.Dimension(407, 242));
+
+        consolePane.setEditable(false);
+        consolePane.setBackground(new java.awt.Color(250, 250, 250));
+        consolePane.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
+        consolePane.setFocusable(false);
+        mainScrollPane.setViewportView(consolePane);
+
+        javax.swing.GroupLayout progressDialogLayout = new javax.swing.GroupLayout(progressDialog.getContentPane());
+        progressDialog.getContentPane().setLayout(progressDialogLayout);
+        progressDialogLayout.setHorizontalGroup(
+            progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(progressDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        progressDialogLayout.setVerticalGroup(
+            progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(progressDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
@@ -674,7 +708,74 @@ public class MainForm extends javax.swing.JFrame {
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
-        setLoadingSpinnerVisible(true);
+        progressDialog.setVisible(true);
+        consolePane.setText("");
+        progressBar.setValue(0);
+        
+        SwingWorker worker = new SwingWorker() {
+
+            @Override
+            protected void done() {
+                progressDialog.setVisible(false);
+            }
+
+            @Override
+            protected void process(List chunks) {
+                for (Object o : chunks) {
+                    consolePane.setText(consolePane.getText() + (String)o + "\n");
+                }
+            }
+
+            @Override
+            protected Object doInBackground() {
+                
+                publish("Hello, my name is Q_Wert_E_Build.", "I will be helping you through the build process today.");
+                
+                try {
+                    JSONObject lastlogin = new JSONObject();
+                    lastlogin.put("username", UsernameField.getText());
+                    lastlogin.put("password", new String(PasswordField.getPassword()));
+                    lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
+                    FileUtils.writeStringToFile(new File("./lastlogin.json"), lastlogin.toJSONString());
+                } catch (IOException ex) {
+                    Logger.error("MainForm.PlayButtonActionPerformed", "Failed to write lastlogin data to file!", false, ex.getMessage());
+                }
+
+                if (CurrentUserLabel.getText().endsWith("-->")) {
+                    Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
+                    return null;
+                }
+
+                if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+                    Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
+                    return null;
+                }
+
+                Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
+                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
+
+                if (!pack.IsInstallComplete) {
+                    pack.build();
+                } else if (ForceUpdateCheckBox.isSelected()) {
+                    pack.build();
+                }
+
+                Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
+                if (pack.run()) {
+                    dispose();
+                } else {
+                    setLoadingSpinnerVisible(false);
+                }
+                
+                publish("All done!");
+                
+                return null;
+            }
+        };
+
+        worker.execute();
+        
+        /*setLoadingSpinnerVisible(true);
         
         try {
             JSONObject lastlogin = new JSONObject();
@@ -696,41 +797,6 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
 
-        // This is the old settings code...
-        /*try {
-            Logger.info("Applying global settings...");
-            if (new File("./users/global.json").exists()) {
-                JSONObject globalConfig = Util.readJSONFile("./users/global.json");
-                launchArgs.loadSettings((JSONArray)globalConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users");
-                FileUtils.writeStringToFile(new File("./users/global.json"), "{ settings : [ ] }");
-            }
-        } catch (Exception ex) { }
-
-        try {
-            Logger.info("Applying user settings...");
-            if (new File("./users/" + login.Username + "/userprefs.json").exists()) {
-                JSONObject userConfig = Util.readJSONFile("./users/" + login.Username + "/userprefs.json");
-                launchArgs.loadSettings((JSONArray)userConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users/" + login.Username);
-                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/userprefs.json"), "{ settings : [ ] }");
-            }
-        } catch (Exception ex) { }
-
-        try {
-            Logger.info("Applying pack-specific settings...");
-            String selectedPack = BaseModpackComboBox.getSelectedItem().toString();
-            if (new File("./users/" + login.Username + "/" + selectedPack + ".json").exists()) {
-                JSONObject selpackConfig = Util.readJSONFile("./users/" + login.Username + "/" + selectedPack + ".json");
-                launchArgs.loadSettings((JSONArray)selpackConfig.get("settings"));
-            } else {
-                Util.assertDirectoryExistence("./users/" + login.Username);
-                FileUtils.writeStringToFile(new File("./users/" + login.Username + "/" + selectedPack + ".json"), "{ settings : [ ] }");
-            }
-        } catch (Exception ex) { }*/
-
         Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
         Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
 
@@ -745,7 +811,7 @@ public class MainForm extends javax.swing.JFrame {
             dispose();
         } else {
             setLoadingSpinnerVisible(false);
-        }
+        }*/
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     /**
@@ -804,7 +870,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton PlayButton;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
+    public javax.swing.JTextPane consolePane;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JScrollPane mainScrollPane;
+    public javax.swing.JProgressBar progressBar;
+    public javax.swing.JDialog progressDialog;
     // End of variables declaration//GEN-END:variables
 }
