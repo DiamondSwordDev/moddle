@@ -3,6 +3,9 @@ package com.dsdev.moddle;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -13,13 +16,22 @@ import org.apache.commons.io.FileUtils;
 public class Logger {
 
     public static String instanceLoggerFile = null;
+    public static DefaultListModel redirectionList = null;
+    public static JLabel statusLabel = null;
+    public static JProgressBar statusBar = null;
 
     public static void info(String method, String message) {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] - " + message);
+        if (statusLabel != null) {
+            statusLabel.setText(message);
+        }
     }
 
     public static void warning(String method, String message) {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "][WARNING] - " + message);
+        if (statusLabel != null) {
+            statusLabel.setText("Warning: " + message);
+        }
     }
 
     public static void error(String method, String message) {
@@ -36,11 +48,17 @@ public class Logger {
             safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
         }
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
+        if (statusLabel != null) {
+            statusLabel.setText("Error: " + message);
+        }
     }
 
     private static void safelyLog(String line) {
         System.out.println(line);
         safelyLogToFile(line);
+        if (redirectionList != null) {
+            redirectionList.addElement(line);
+        }
     }
 
     public static void begin() {
@@ -70,6 +88,22 @@ public class Logger {
         }
     }
 
+    public static void setProgress(int progress) {
+        if (statusBar != null) {
+            statusBar.setValue(progress);
+        }
+    }
+    
+    public static void incrementProgress(int progress) {
+        if (statusBar != null) {
+            if (progress > 100 || statusBar.getValue() + progress > 100) {
+                statusBar.setValue(100);
+            } else {
+                statusBar.setValue(statusBar.getValue() + progress);
+            }
+        }
+    }
+    
     private static String getCurrentTimeStamp() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
         Date now = new Date();

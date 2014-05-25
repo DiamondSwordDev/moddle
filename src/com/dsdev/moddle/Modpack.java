@@ -198,6 +198,8 @@ public class Modpack {
 
         //</editor-fold>
         
+        Logger.setProgress(5);
+        
         JSONObject packConfig = null;
         try {
             packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
@@ -206,13 +208,18 @@ public class Modpack {
             return;
         }
         
+        Logger.setProgress(10);
+        
         setSetting("general.MinecraftVersion", (String) packConfig.get("minecraftversion"));
         
         Logger.info("Modpack.build", "Building skeleton installation...");
         evaluateCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), null, null);
+        Logger.setProgress(15);
         parseCacheEntry("minecraft", Settings.get("general.MinecraftVersion"));
+        Logger.setProgress(20);
         getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true, null);
-
+        Logger.setProgress(40);
+        
         if (packConfig.get("settings") != null) {
             JSONArray settingsArray = (JSONArray) packConfig.get("settings");
             for (Object obj : settingsArray) {
@@ -220,6 +227,8 @@ public class Modpack {
                 setSetting((String) setting.get("name"), (String) setting.get("value"));
             }
         }
+        
+        Logger.setProgress(60);
         
         //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
 
@@ -249,6 +258,8 @@ public class Modpack {
         
         //</editor-fold>
         
+        Logger.setProgress(100);
+        
         /*Logger.info("Modpack.build", "Installing assets...");
         if (!new File("./data/assets").isDirectory()) {
             try {
@@ -265,15 +276,25 @@ public class Modpack {
             }
         }*/
         
+        Logger.setProgress(0);
+        
         List<String> installQueue = new ArrayList();
         List<String> excludeQueue = new ArrayList();
         
+        int progressIncrement = 0;
+        
         JSONArray entriesArray = (JSONArray)packConfig.get("entries");
+        
+        progressIncrement = 100 / entriesArray.toArray().length;
+        if (progressIncrement < 1) { progressIncrement = 1; }
+        
         for (Object obj : entriesArray) {
             JSONObject entryObj = (JSONObject)obj;
             Logger.info("Modpack.build", "Evaluating entry '" + (String) entryObj.get("name") + "'...");
             evaluateCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), installQueue, excludeQueue);
+            Logger.incrementProgress(progressIncrement);
         }
+        Logger.setProgress(0);
         
         Logger.info("Modpack.build", "Evaluating entry 'moddleassets'...");
         evaluateCacheEntry("moddleassets", "0.2", installQueue, excludeQueue);
@@ -299,6 +320,7 @@ public class Modpack {
             Logger.info("Modpack.build", "Installing entry " + entryData[0] + "...");
             parseCacheEntry(entryData[0], entryData[1]);
             getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false, finalQueue);
+            Logger.incrementProgress(progressIncrement);
         }
         
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation (complete)">

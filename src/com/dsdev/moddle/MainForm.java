@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -36,9 +38,8 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         progressDialog = new javax.swing.JDialog();
-        mainScrollPane = new javax.swing.JScrollPane();
-        consolePane = new javax.swing.JTextPane();
         progressBar = new javax.swing.JProgressBar();
+        statusLabel = new javax.swing.JLabel();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
@@ -62,13 +63,9 @@ public class MainForm extends javax.swing.JFrame {
         PlayButton = new javax.swing.JButton();
         LoadingLabel = new javax.swing.JLabel();
 
-        progressDialog.setMinimumSize(new java.awt.Dimension(407, 242));
+        progressDialog.setMinimumSize(new java.awt.Dimension(430, 100));
 
-        consolePane.setEditable(false);
-        consolePane.setBackground(new java.awt.Color(250, 250, 250));
-        consolePane.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
-        consolePane.setFocusable(false);
-        mainScrollPane.setViewportView(consolePane);
+        statusLabel.setText("Smoke...");
 
         javax.swing.GroupLayout progressDialogLayout = new javax.swing.GroupLayout(progressDialog.getContentPane());
         progressDialog.getContentPane().setLayout(progressDialogLayout);
@@ -77,17 +74,17 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mainScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+                    .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
                 .addContainerGap())
         );
         progressDialogLayout.setVerticalGroup(
             progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -485,6 +482,8 @@ public class MainForm extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
         Logger.begin();
+        Logger.statusLabel = statusLabel;
+        Logger.statusBar = progressBar;
         
         Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
         LoadingLabel.setText("");
@@ -708,8 +707,9 @@ public class MainForm extends javax.swing.JFrame {
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
+        Logger.info("MainForm.PlayButtonActionPerformed", "Starting execution...");
         progressDialog.setVisible(true);
-        consolePane.setText("");
+        progressDialog.setLocationRelativeTo(null);
         progressBar.setValue(0);
         
         SwingWorker worker = new SwingWorker() {
@@ -721,15 +721,13 @@ public class MainForm extends javax.swing.JFrame {
 
             @Override
             protected void process(List chunks) {
-                for (Object o : chunks) {
-                    consolePane.setText(consolePane.getText() + (String)o + "\n");
-                }
+                //for (Object o : chunks) {
+                //    consolePane.setText(consolePane.getText() + (String)o + "\n");
+                //}
             }
 
             @Override
             protected Object doInBackground() {
-                
-                publish("Hello, my name is Q_Wert_E_Build.", "I will be helping you through the build process today.");
                 
                 try {
                     JSONObject lastlogin = new JSONObject();
@@ -762,12 +760,12 @@ public class MainForm extends javax.swing.JFrame {
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
                 if (pack.run()) {
-                    dispose();
+                    System.exit(0);
                 } else {
+                    progressDialog.setVisible(false);
+                    Logger.setProgress(0);
                     setLoadingSpinnerVisible(false);
                 }
-                
-                publish("All done!");
                 
                 return null;
             }
@@ -870,11 +868,10 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton PlayButton;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
-    public javax.swing.JTextPane consolePane;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JScrollPane mainScrollPane;
     public javax.swing.JProgressBar progressBar;
     public javax.swing.JDialog progressDialog;
+    private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
 }
