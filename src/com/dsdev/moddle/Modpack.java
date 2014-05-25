@@ -1,6 +1,5 @@
 package com.dsdev.moddle;
 
-import com.dsdev.assets.AssetBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
@@ -524,7 +522,7 @@ public class Modpack {
                         }
                     }
                 } else {
-                    destText += parseSettingsString(line) + "\n";
+                    destText += parseSettingsString(line) + "\n\r";
                 }
             
         }
