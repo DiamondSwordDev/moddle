@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonToken;
 import java.io.*;
 import java.net.URL;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * This class contains all of the tools required to build and maintain a copy of
@@ -22,13 +23,14 @@ public class AssetBuilder {
      * @throws java.io.IOException
      */
     public static void updateAssets(String directory) throws IOException {
-        Logger.error("Assets", "The asset builder is being refactored. Please load assets manually for now. Thanks, Nathan2055", true, "Manual");
-        try {
-            Thread.sleep(15000);
-        } catch (InterruptedException ex) {
-            Logger.error("Assets", "Temporary sleep before crash interrupted");
+        Logger.info("Assets", "Checking for updated assets...");
+        if (assetsUpdateRequired(directory)) {
+            Logger.info("Assets", "Assets not up-to-date. Redownloading...");
+            buildAssets(directory);
         }
-        System.exit(101);
+        else {
+            Logger.info("Assets", "Assets already up-to-date.");
+        }
     }
     
     /**
@@ -120,22 +122,37 @@ public class AssetBuilder {
      * servers to determine if it's up-to-date.
      *
      * @param directory A String representing the directory where the assets
-     * should be created. MAKE SURE THAT IT ENDS WITH A / CHARCTER OR THIS CODE
-     * WILL GO BOOM!
+     * should be checked.
      * @return A boolean representing whether the assets are up-to-date or not.
      * @throws java.io.IOException
      */
     private static boolean assetsUpdateRequired(String directory) throws IOException {
-        Logger.info("Assets Checker", "Fetching asset definition file...");
+        // Ensure they added a / at the end like they were supposed to and if not try and fix it
+        String finalChar = directory.substring(directory.length() - 1);
+        if (!finalChar.equals("/")) {
+            Logger.warning("Assets", "A slash was not added at the end of the asset directory to check for updates. Attempting to fix...");
+            directory = directory + "/";
+        }
+        
         File defFileCurrent = File.createTempFile("assets", ".json");
         URL defWeb = new URL("https://s3.amazonaws.com/Minecraft.Download/indexes/legacy.json");
         FileUtils.copyURLToFile(defWeb, defFileCurrent);
         
         File defFileExisting = new File(directory + "assetDef.json");
         if (defFileExisting.exists() && defFileExisting.isFile()) {
-            
+            String defFileExistingString = FileUtils.readFileToString(defFileExisting);
+            String defFileCurrentString = FileUtils.readFileToString(defFileCurrent);
+            String defFileExistingHash = DigestUtils.md5Hex(defFileExistingString);
+            String defFileCurrentHash = DigestUtils.md5Hex(defFileCurrentString);
+            if (defFileExistingHash.equals(defFileCurrentHash)) {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
-        
-        return false;
+        else {
+            return true;
+        }
     }
 }
