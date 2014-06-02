@@ -42,9 +42,7 @@ public class AssetBuilder {
      * @throws java.io.IOException
      */
     private static void buildAssets(String directory) throws IOException {
-        // Ensure they added a / at the end like they were supposed to and if not try and fix it
-        String finalChar = directory.substring(directory.length() - 1);
-        if (!finalChar.equals("/")) {
+        if (!(directory.endsWith("/")||directory.endsWith("\\"))) {
             Logger.warning("Assets", "A slash was not added at the end of the asset output directory. Attempting to fix...");
             directory = directory + "/";
         }
@@ -127,9 +125,7 @@ public class AssetBuilder {
      * @throws java.io.IOException
      */
     private static boolean assetsUpdateRequired(String directory) throws IOException {
-        // Ensure they added a / at the end like they were supposed to and if not try and fix it
-        String finalChar = directory.substring(directory.length() - 1);
-        if (!finalChar.equals("/")) {
+        if (!(directory.endsWith("/")||directory.endsWith("\\"))) {
             Logger.warning("Assets", "A slash was not added at the end of the asset directory to check for updates. Attempting to fix...");
             directory = directory + "/";
         }
