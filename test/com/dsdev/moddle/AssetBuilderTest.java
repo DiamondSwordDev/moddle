@@ -1,4 +1,4 @@
-package com.dsdev.assets;
+package com.dsdev.moddle;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class AssetBuilderTest {
         try {
             String home = System.getProperty("user.home");
             String directory = home + "\\Desktop\\assets\\";
-            AssetBuilder.buildAssets(directory);
+            AssetBuilder.updateAssets(directory);
         } catch (IOException ex) {
             System.err.println("An error was encountered. Printing stack trace...");
             ex.printStackTrace(System.err);
