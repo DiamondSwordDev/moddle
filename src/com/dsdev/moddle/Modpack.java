@@ -62,6 +62,7 @@ public class Modpack {
         }
         
         String ret = s;
+        String settingName = "null";
         
         for (String clause : variableStrings) {
             String fullclause = clause.substring(2, clause.length() - 1);
@@ -78,6 +79,7 @@ public class Modpack {
             } else {
                 ret = ret.replace(clause, defaultval);
             }
+            settingName = name;
         }
         
         if (ret.contains("${")) {
@@ -85,7 +87,10 @@ public class Modpack {
         }
         
         if (ret.contains("##") && ret.split("##")[0].equalsIgnoreCase("id")) {
-            
+            String id = IDHelper.getID(settingName);
+            if (id != null) {
+                ret = id;
+            }
         }
         
         return ret;
