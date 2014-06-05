@@ -123,13 +123,8 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="PlayButton" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="ForceUpdateCheckBox" min="-2" pref="137" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="LoadingLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="PlayButton" pref="171" max="32767" attributes="0"/>
+                  <Component id="ForceUpdateCheckBox" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -152,19 +147,16 @@
                   <Component id="PlayButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="PasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="PasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="LoginButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="InstanceNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="InstanceNameField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="CreateInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="AddInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="DeleteInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ForceUpdateCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="LoadingLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="PasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="PasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="LoginButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="InstanceNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="InstanceNameField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="CreateInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="AddInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="DeleteInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="ForceUpdateCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -357,11 +349,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PlayButtonActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="LoadingLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="(O)"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

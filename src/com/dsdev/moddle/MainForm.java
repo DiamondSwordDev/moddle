@@ -61,7 +61,6 @@ public class MainForm extends javax.swing.JFrame {
         InstanceNameLabel = new javax.swing.JLabel();
         ForceUpdateCheckBox = new javax.swing.JCheckBox();
         PlayButton = new javax.swing.JButton();
-        LoadingLabel = new javax.swing.JLabel();
 
         progressDialog.setMinimumSize(new java.awt.Dimension(430, 100));
 
@@ -186,8 +185,6 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        LoadingLabel.setText("(O)");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,12 +223,8 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(DeleteInstanceButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(ForceUpdateCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(LoadingLabel)
-                        .addGap(0, 12, Short.MAX_VALUE)))
+                    .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(ForceUpdateCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addComponent(MainTabPane)
         );
@@ -250,18 +243,16 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PlayButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(PasswordLabel)
-                        .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(LoginButton)
-                        .addComponent(InstanceNameLabel)
-                        .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(CreateInstanceButton)
-                        .addComponent(AddInstanceButton)
-                        .addComponent(DeleteInstanceButton)
-                        .addComponent(ForceUpdateCheckBox))
-                    .addComponent(LoadingLabel))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PasswordLabel)
+                    .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LoginButton)
+                    .addComponent(InstanceNameLabel)
+                    .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CreateInstanceButton)
+                    .addComponent(AddInstanceButton)
+                    .addComponent(DeleteInstanceButton)
+                    .addComponent(ForceUpdateCheckBox))
                 .addContainerGap())
         );
 
@@ -473,7 +464,7 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     private void setLoadingSpinnerVisible(boolean state) {
-        LoadingLabel.setVisible(state);
+        //LoadingLabel.setVisible(state);
         this.getContentPane().validate();
         this.getContentPane().repaint();
     }
@@ -485,14 +476,15 @@ public class MainForm extends javax.swing.JFrame {
         Logger.statusLabel = statusLabel;
         Logger.statusBar = progressBar;
         
-        Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
+        /*Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
         LoadingLabel.setText("");
         LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
-        setLoadingSpinnerVisible(true);
+        setLoadingSpinnerVisible(true);*/
         
         Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
         this.setLocationRelativeTo(null);
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
 
         Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
         if (new File("./tmp").exists()) {
@@ -558,81 +550,9 @@ public class MainForm extends javax.swing.JFrame {
             loadModpackPaneContent("./data/content/nopack/");
         }
         
-        //<editor-fold defaultstate="collapsed" desc="Load news content (Old)">
-
-        /*Logger.info("Startup", "Fetching news...");
-
-        InetAddress addr = InetAddress.getByName("sites.google.com");
-        if (addr.isReachable(600)) {
-            FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddleframework/news.zip"), new File("./news.zip"));
-        } else {
-            Logger.warning("Startup", "Failed to update news!");
-        }
-
-        try {
-            Util.decompressZipfile("./news.zip", "./tmp/news/");
-        } catch (IOException ex) {
-            Logger.warning("Startup", "Failed to load news!");
-        }
-
-        contentLocation = "./tmp/news/";
-        contentLines = FileUtils.readLines(new File("./tmp/news/content.txt"));
-        keyWord = new SimpleAttributeSet();
-        NewsContentPane.setText("");
-
-        for (String line : contentLines) {
-
-            if (line.startsWith("${{") && line.endsWith("}}")) {
-                String styleString = line.substring(3, line.length() - 2);
-                for (String style : styleString.split(",")) {
-
-                    String styleArg = style;
-                    String styleValue = "";
-
-                    try {
-                        styleArg = style.split(":")[0];
-                        styleValue = style.split(":")[1];
-                    } catch (Exception ex) { }
-
-                    Logger.info("Style", style);
-
-                    if (styleArg.equalsIgnoreCase("image")) {
-                        NewsContentPane.insertIcon(new ImageIcon(contentLocation + styleValue));
-                        NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), "\n", keyWord);
-                    } else if (styleArg.equalsIgnoreCase("reset")) {
-                        keyWord = new SimpleAttributeSet();
-                    } else {
-                        try {
-                            for (Method m : StyleConstants.class.getMethods()) {
-                                if (m.getName().toLowerCase().equalsIgnoreCase("set" + styleArg)) {
-                                    if (styleValue.equalsIgnoreCase("true") || styleValue.equalsIgnoreCase("false")) {
-                                        m.invoke(null, new Object[] { keyWord, styleValue.equalsIgnoreCase("true") });
-                                    } else if (Util.isNumeric(styleValue)) {
-                                        m.invoke(null, new Object[] { keyWord, Integer.parseInt(styleValue) });
-                                    } else {
-                                        m.invoke(null, new Object[] { keyWord, styleValue });
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Util.isNumeric("0");
-                        }
-                    }
-
-                }
-            } else {
-                NewsContentPane.getStyledDocument().insertString(NewsContentPane.getStyledDocument().getLength(), line + "\n", keyWord);
-            }
-
-        }
-
-        NewsContentPane.setCaretPosition(0);*/
-
-        //</editor-fold>
-
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
         
-        setLoadingSpinnerVisible(false);
+        //setLoadingSpinnerVisible(false);
     }//GEN-LAST:event_formWindowOpened
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
@@ -708,9 +628,9 @@ public class MainForm extends javax.swing.JFrame {
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
         Logger.info("MainForm.PlayButtonActionPerformed", "Starting execution...");
+        Logger.setProgress(0);
         progressDialog.setVisible(true);
         progressDialog.setLocationRelativeTo(null);
-        progressBar.setValue(0);
         
         SwingWorker worker = new SwingWorker() {
 
@@ -763,8 +683,7 @@ public class MainForm extends javax.swing.JFrame {
                     System.exit(0);
                 } else {
                     progressDialog.setVisible(false);
-                    Logger.setProgress(0);
-                    setLoadingSpinnerVisible(false);
+                    //setLoadingSpinnerVisible(false);
                 }
                 
                 return null;
@@ -858,7 +777,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel InstanceLabel;
     private javax.swing.JTextField InstanceNameField;
     private javax.swing.JLabel InstanceNameLabel;
-    private javax.swing.JLabel LoadingLabel;
     private javax.swing.JButton LoginButton;
     private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JTextPane ModpackDescriptionPane;

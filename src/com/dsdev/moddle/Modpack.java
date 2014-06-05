@@ -43,11 +43,10 @@ public class Modpack {
         for (int i = 0; i < s.length(); i++) {
             if (s.toCharArray()[i] == '$' && s.toCharArray()[i+1] == '{') {
                 int depth = 0;
-                for (int ii = i; ii < s.length(); ii++) {
-                    if (s.toCharArray()[i] == '$' && s.toCharArray()[i+1] == '{') {
+                for (int ii = i+2; ii < s.length(); ii++) {
+                    if (s.toCharArray()[ii] == '$' && s.toCharArray()[ii+1] == '{') {
                         depth++;
-                    }
-                    else if (s.toCharArray()[ii] == '}') {
+                    } else if (s.toCharArray()[ii] == '}') {
                         if (depth == 0) {
                             String functionString = s.substring(i, ii+1);
                             variableStrings.add(functionString);
@@ -90,6 +89,8 @@ public class Modpack {
             String id = IDHelper.getID(settingName);
             if (id != null) {
                 ret = id;
+            } else {
+                ret = ret.split("##")[1];
             }
         }
         
