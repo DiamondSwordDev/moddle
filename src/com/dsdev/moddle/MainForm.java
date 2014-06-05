@@ -2,16 +2,17 @@ package com.dsdev.moddle;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 
 /**
@@ -469,6 +470,45 @@ public class MainForm extends javax.swing.JFrame {
         this.getContentPane().repaint();
     }
     
+    private void loadDataFromResource() {
+        
+        Logger.info("MainForm.loadDataFromResource", "Initializing...");
+        Logger.setProgress(0);
+        progressDialog.setVisible(true);
+        progressDialog.setLocationRelativeTo(null);
+        
+        SwingWorker worker = new SwingWorker() {
+
+            @Override
+            protected void done() {
+                progressDialog.setVisible(false);
+            }
+
+            @Override
+            protected void process(List chunks) {
+                
+            }
+
+            @Override
+            protected Object doInBackground() {
+                
+                Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
+                Logger.setProgress(20);
+                
+                
+                
+                Logger.info("MainForm.loadDataFromResource", "Done!");
+                Logger.setProgress(100);
+                
+                progressDialog.setVisible(false);
+                return null;
+            }
+        };
+
+        worker.execute();
+        
+    }
+    
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
@@ -486,6 +526,26 @@ public class MainForm extends javax.swing.JFrame {
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
 
+        if (!new File("./data").isDirectory()) {
+            
+            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
+            
+            try {
+                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
+            }
+
+            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
+
+            try {
+                Util.decompressZipfile("./data.zip", "./");
+            } catch (ZipException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
+            }
+        }
+        
+        //Do we even USE the temporary file cache any more...?  o_o
         Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
         if (new File("./tmp").exists()) {
             try {
@@ -509,10 +569,10 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
-        if (new File("./lastlogin.json").exists()) {
+        if (new File("./data/lastlogin.json").exists()) {
             JSONObject lastlogin = null;
             try {
-                lastlogin = Util.readJSONFile("./lastlogin.json");
+                lastlogin = Util.readJSONFile("./data/lastlogin.json");
             } catch (Exception ex) {
                 Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin data!", false, ex.getMessage());
                 enableLoginFields();
@@ -654,7 +714,7 @@ public class MainForm extends javax.swing.JFrame {
                     lastlogin.put("username", UsernameField.getText());
                     lastlogin.put("password", new String(PasswordField.getPassword()));
                     lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
-                    FileUtils.writeStringToFile(new File("./lastlogin.json"), lastlogin.toJSONString());
+                    FileUtils.writeStringToFile(new File("./data/lastlogin.json"), lastlogin.toJSONString());
                 } catch (IOException ex) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "Failed to write lastlogin data to file!", false, ex.getMessage());
                 }

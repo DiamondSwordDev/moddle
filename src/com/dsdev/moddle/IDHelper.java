@@ -17,7 +17,7 @@ public class IDHelper {
         
         if (IDConfig == null) {
             try {
-                IDConfig = Util.readJSONFile("./ids.json");
+                IDConfig = Util.readJSONFile("./data/ids.json");
             } catch (IOException ex) {
                 Logger.error("IDHelper.loadIDs", "Failed to load 'ids.json'!", false, ex.getMessage());
                 return null;
