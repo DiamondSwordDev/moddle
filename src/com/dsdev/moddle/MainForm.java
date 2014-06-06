@@ -581,6 +581,8 @@ public class MainForm extends javax.swing.JFrame {
                 InstanceComboBox.addItem("<None>");
             }
             if (lastlogin != null) {
+                UsernameField.setText((String)lastlogin.get("username"));
+                PasswordField.setText((String)lastlogin.get("password"));
                 if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
                     disableInstanceFields();
                     PlayButton.setEnabled(false);
