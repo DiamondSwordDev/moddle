@@ -12,6 +12,10 @@
         {
             "name" : "thermalexpansion",
             "version" : "3.0.0.5"
+        },
+        {
+            "name" : "buildcraft",
+            "version" : "4.2.2"
         }
     ]
 }

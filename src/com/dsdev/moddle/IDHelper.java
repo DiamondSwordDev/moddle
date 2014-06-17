@@ -69,7 +69,7 @@ public class IDHelper {
             return null;
         }
         
-        JSONArray modsArray = (JSONArray)IDConfig.get("mode");
+        JSONArray modsArray = (JSONArray)file.get("mode");
         
         if (modsArray != null) {
             for (Object obj : modsArray.toArray()) {

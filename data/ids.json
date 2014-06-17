@@ -1,3 +1,7 @@
 {
-    "mode" : "default"
+    "mode" : "default",
+    
+    "universal" : [
+        { "name" : "thermalexpansion", "range" : "1000" }
+    ]
 }

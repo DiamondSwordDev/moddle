@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,8 +40,15 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         progressDialog = new javax.swing.JDialog();
-        progressBar = new javax.swing.JProgressBar();
-        statusLabel = new javax.swing.JLabel();
+        progressDialogStatusBar = new javax.swing.JProgressBar();
+        progresDialogStatusLabel = new javax.swing.JLabel();
+        loginDialog = new javax.swing.JDialog();
+        loginDialogUsernameLabel = new javax.swing.JLabel();
+        loginDialogPasswordLabel = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        loginDialogLoginButton = new javax.swing.JButton();
+        popupDialog = new javax.swing.JDialog();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
@@ -64,8 +72,21 @@ public class MainForm extends javax.swing.JFrame {
         PlayButton = new javax.swing.JButton();
 
         progressDialog.setMinimumSize(new java.awt.Dimension(430, 100));
+        progressDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                progressDialogWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                progressDialogWindowLostFocus(evt);
+            }
+        });
+        progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                progressDialogWindowOpened(evt);
+            }
+        });
 
-        statusLabel.setText("Smoke...");
+        progresDialogStatusLabel.setText("Smoke...");
 
         javax.swing.GroupLayout progressDialogLayout = new javax.swing.GroupLayout(progressDialog.getContentPane());
         progressDialog.getContentPane().setLayout(progressDialogLayout);
@@ -74,18 +95,103 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
+                    .addComponent(progresDialogStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(progressDialogStatusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
                 .addContainerGap())
         );
         progressDialogLayout.setVerticalGroup(
             progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(statusLabel)
+                .addComponent(progresDialogStatusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressDialogStatusBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        loginDialog.setTitle("Log In");
+        loginDialog.setMinimumSize(new java.awt.Dimension(400, 130));
+        loginDialog.setModal(true);
+        loginDialog.setResizable(false);
+        loginDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                loginDialogWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                loginDialogWindowLostFocus(evt);
+            }
+        });
+        loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                loginDialogWindowOpened(evt);
+            }
+        });
+
+        loginDialogUsernameLabel.setText("Username:");
+
+        loginDialogPasswordLabel.setText("Password:");
+
+        loginDialogLoginButton.setText("Log In");
+
+        javax.swing.GroupLayout loginDialogLayout = new javax.swing.GroupLayout(loginDialog.getContentPane());
+        loginDialog.getContentPane().setLayout(loginDialogLayout);
+        loginDialogLayout.setHorizontalGroup(
+            loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(loginDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(loginDialogLayout.createSequentialGroup()
+                        .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(loginDialogUsernameLabel)
+                            .addComponent(loginDialogPasswordLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                            .addComponent(jPasswordField1)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginDialogLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(loginDialogLoginButton)))
+                .addContainerGap())
+        );
+        loginDialogLayout.setVerticalGroup(
+            loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(loginDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginDialogUsernameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginDialogPasswordLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loginDialogLoginButton)
+                .addContainerGap())
+        );
+
+        popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                popupDialogWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                popupDialogWindowLostFocus(evt);
+            }
+        });
+        popupDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                popupDialogWindowOpened(evt);
+            }
+        });
+
+        javax.swing.GroupLayout popupDialogLayout = new javax.swing.GroupLayout(popupDialog.getContentPane());
+        popupDialog.getContentPane().setLayout(popupDialogLayout);
+        popupDialogLayout.setHorizontalGroup(
+            popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        popupDialogLayout.setVerticalGroup(
+            popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -381,6 +487,18 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
     
+    private void setLastLogin() {
+        try {
+            JSONObject lastlogin = new JSONObject();
+            lastlogin.put("username", UsernameField.getText());
+            lastlogin.put("password", new String(PasswordField.getPassword()));
+            lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
+            FileUtils.writeStringToFile(new File("./data/lastlogin.json"), lastlogin.toJSONString());
+        } catch (IOException ex) {
+            Logger.error("MainForm.setLastLogin", "Failed to write lastlogin data to file!", false, ex.getMessage());
+        }
+    }
+    
     private void loadUserInstances(String username) {
         
         Logger.info("MainForm.loadUserInstances", "Loading instances...");
@@ -513,8 +631,8 @@ public class MainForm extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
         Logger.begin();
-        Logger.statusLabel = statusLabel;
-        Logger.statusBar = progressBar;
+        Logger.statusLabel = progresDialogStatusLabel;
+        Logger.statusBar = progressDialogStatusBar;
         
         /*Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
         LoadingLabel.setText("");
@@ -525,7 +643,9 @@ public class MainForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-
+        
+        loginDialog.setVisible(true);
+        
         if (!new File("./data").isDirectory()) {
             
             Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
@@ -624,10 +744,12 @@ public class MainForm extends javax.swing.JFrame {
             disableNewInstanceFields();
             disableInstanceFields();
             PlayButton.setEnabled(false);
+            setLastLogin();
         } else {
             if (doLogin(UsernameField.getText(), (new String(PasswordField.getPassword())), "<None>")) {
                 enableInstanceFields();
                 PlayButton.setEnabled(true);
+                setLastLogin();
             }
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
@@ -711,15 +833,7 @@ public class MainForm extends javax.swing.JFrame {
             @Override
             protected Object doInBackground() {
                 
-                try {
-                    JSONObject lastlogin = new JSONObject();
-                    lastlogin.put("username", UsernameField.getText());
-                    lastlogin.put("password", new String(PasswordField.getPassword()));
-                    lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
-                    FileUtils.writeStringToFile(new File("./data/lastlogin.json"), lastlogin.toJSONString());
-                } catch (IOException ex) {
-                    Logger.error("MainForm.PlayButtonActionPerformed", "Failed to write lastlogin data to file!", false, ex.getMessage());
-                }
+                setLastLogin();
 
                 if (CurrentUserLabel.getText().endsWith("-->")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
@@ -753,45 +867,46 @@ public class MainForm extends javax.swing.JFrame {
         };
 
         worker.execute();
-        
-        /*setLoadingSpinnerVisible(true);
-        
-        try {
-            JSONObject lastlogin = new JSONObject();
-            lastlogin.put("username", UsernameField.getText());
-            lastlogin.put("password", new String(PasswordField.getPassword()));
-            lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
-            FileUtils.writeStringToFile(new File("./lastlogin.json"), lastlogin.toJSONString());
-        } catch (IOException ex) {
-            Logger.error("MainForm.PlayButtonActionPerformed", "Failed to write lastlogin data to file!", false, ex.getMessage());
-        }
-
-        if (CurrentUserLabel.getText().endsWith("-->")) {
-            Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
-            return;
-        }
-        
-        if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-            Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
-            return;
-        }
-
-        Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
-        Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
-
-        if (!pack.IsInstallComplete) {
-            pack.build();
-        } else if (ForceUpdateCheckBox.isSelected()) {
-            pack.build();
-        }
-
-        Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
-        if (pack.run()) {
-            dispose();
-        } else {
-            setLoadingSpinnerVisible(false);
-        }*/
     }//GEN-LAST:event_PlayButtonActionPerformed
+
+    
+    private void loginDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowOpened
+        loginDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_loginDialogWindowOpened
+
+    private void loginDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowGainedFocus
+        loginDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_loginDialogWindowGainedFocus
+
+    private void loginDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowLostFocus
+        loginDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_loginDialogWindowLostFocus
+
+    
+    private void progressDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowOpened
+        progressDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_progressDialogWindowOpened
+
+    private void progressDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowLostFocus
+        progressDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_progressDialogWindowLostFocus
+
+    private void progressDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowGainedFocus
+        progressDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_progressDialogWindowGainedFocus
+
+    
+    private void popupDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_popupDialogWindowOpened
+        popupDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_popupDialogWindowOpened
+
+    private void popupDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_popupDialogWindowGainedFocus
+        popupDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_popupDialogWindowGainedFocus
+
+    private void popupDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_popupDialogWindowLostFocus
+        popupDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_popupDialogWindowLostFocus
 
     /**
      * @param args the command line arguments
@@ -803,20 +918,16 @@ public class MainForm extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+            SeaGlassLookAndFeel laf = new SeaGlassLookAndFeel();
+            javax.swing.UIManager.setLookAndFeel(laf);
+            //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
             /*for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
              if ("Nimbus".equals(info.getName())) {
              javax.swing.UIManager.setLookAndFeel(info.getClassName());
              break;
              }
              }*/
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -848,10 +959,17 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton PlayButton;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JProgressBar progressBar;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JDialog loginDialog;
+    private javax.swing.JButton loginDialogLoginButton;
+    private javax.swing.JLabel loginDialogPasswordLabel;
+    private javax.swing.JLabel loginDialogUsernameLabel;
+    private javax.swing.JDialog popupDialog;
+    private javax.swing.JLabel progresDialogStatusLabel;
     public javax.swing.JDialog progressDialog;
-    private javax.swing.JLabel statusLabel;
+    public javax.swing.JProgressBar progressDialogStatusBar;
     // End of variables declaration//GEN-END:variables
 }

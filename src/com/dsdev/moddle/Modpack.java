@@ -65,7 +65,7 @@ public class Modpack {
         
         for (String clause : variableStrings) {
             String fullclause = clause.substring(2, clause.length() - 1);
-            String name = "";
+            String name;
             String defaultval = "";
             if (fullclause.contains(":")) {
                 name = fullclause.split(":")[0];
@@ -85,12 +85,14 @@ public class Modpack {
             ret = parseSettingsString(ret);
         }
         
-        if (ret.contains("##") && ret.split("##")[0].equalsIgnoreCase("id")) {
-            String id = IDHelper.getID(settingName);
-            if (id != null) {
-                ret = id;
-            } else {
-                ret = ret.split("##")[1];
+        if (ret.contains("##")) {
+            if (ret.split("##")[0].equalsIgnoreCase("id")) {
+                String id = IDHelper.getID(settingName);
+                if (id != null) {
+                    ret = id;
+                } else {
+                    ret = ret.split("##")[1];
+                }
             }
         }
         
@@ -140,21 +142,10 @@ public class Modpack {
         Logger.info("Modpack (const)", "Asserting entries directory...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
         
-        if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists())) {
-            IsInstallComplete = false;
-            if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").exists())) {
-                try {
-                    FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall"), "");
-                } catch (IOException ex) {
-                    Logger.error("Modpack (const)", "Failed to create partialinstall file!", false, ex.getMessage());
-                }
-            }
-        } else {
-            IsInstallComplete = true;
-        }
+        IsInstallComplete = new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists();
         
         if (!IsInstallComplete || forceUpdate) {
-            JSONObject instanceConfig = null;
+            JSONObject instanceConfig;
             try {
                 instanceConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/instance.json");
             } catch (IOException ex) {
@@ -216,7 +207,7 @@ public class Modpack {
         
         Logger.setProgress(5);
         
-        JSONObject packConfig = null;
+        JSONObject packConfig;
         try {
             packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
         } catch (IOException ex) {
@@ -266,7 +257,10 @@ public class Modpack {
             }
         }
         try {
-        FileUtils.copyFile(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar"));
+            if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").exists()) {
+                new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").delete();
+            }
+            FileUtils.copyFile(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar"));
         } catch (IOException ex) {
             Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex.getMessage());
             return;
@@ -297,7 +291,7 @@ public class Modpack {
         List<String> installQueue = new ArrayList();
         List<String> excludeQueue = new ArrayList();
         
-        int progressIncrement = 0;
+        int progressIncrement;
         
         JSONArray entriesArray = (JSONArray)packConfig.get("entries");
         
@@ -380,7 +374,7 @@ public class Modpack {
             }
         }
 
-        JSONObject entryConfig = null;
+        JSONObject entryConfig;
         try {
             entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
         } catch (IOException ex) {
@@ -424,7 +418,7 @@ public class Modpack {
     }
     
     public void parseCacheEntry(String entryName, String entryVersion) {
-        String entryLocation = "";
+        String entryLocation;
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
             entryLocation = "./data/";
         } else if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark/cache/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -436,7 +430,7 @@ public class Modpack {
             return;
         }
         
-        JSONObject entryConfig = null;
+        JSONObject entryConfig;
         try {
             entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
         } catch (IOException ex) {
@@ -466,7 +460,7 @@ public class Modpack {
             return;
         }
         
-        JSONObject entryConfig = null;
+        JSONObject entryConfig;
         try {
             entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
         } catch (IOException ex) {
@@ -486,14 +480,23 @@ public class Modpack {
             }
             try {
                 if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
+                    if (new File(targetDir + (String) file.get("target")).isDirectory()) {
+                        FileUtils.deleteDirectory(new File(targetDir + (String) file.get("target")));
+                    }
                     Util.decompressZipfile(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
+                    if (new File(targetDir + (String) file.get("target")).isFile()) {
+                        new File(targetDir + (String) file.get("target")).delete();
+                    }
                     FileUtils.copyFile(new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
+                    if (new File(targetDir + (String) file.get("target")).isFile()) {
+                        new File(targetDir + (String) file.get("target")).delete();
+                    }
                     copyTextFileWithVariables(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"), installQueue);
                 }
             } catch (Exception ex) {
-                Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getMessage());
+                Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getClass().getSimpleName() + ": " + ex.getMessage());
             }
         }
         
@@ -507,8 +510,7 @@ public class Modpack {
             
                 if (line.equalsIgnoreCase("$[[end]]")) {
                     isSkipping = false;
-                }
-                else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
+                } else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
                     String functionString = line.substring(3, line.length() - 2);
                     if (functionString.split(":")[0].equalsIgnoreCase("if")) {
                         if (!getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
@@ -557,7 +559,7 @@ public class Modpack {
             if (LaunchArguments == null) {
                 setSetting("launch.AppDataDirectory", Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName));
                 
-                JSONObject packConfig = null;
+                JSONObject packConfig;
                 try {
                     packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
                 } catch (IOException ex) {
@@ -600,7 +602,7 @@ public class Modpack {
                 
                 for (String entry : finalQueue) {
                     String[] entryData = entry.split(",");
-                    Logger.info("Modpack.run", "Installing entry " + entryData[0] + "...");
+                    Logger.info("Modpack.run", "Parsing entry " + entryData[0] + "...");
                     parseCacheEntry(entryData[0], entryData[1]);
                 }
             }
