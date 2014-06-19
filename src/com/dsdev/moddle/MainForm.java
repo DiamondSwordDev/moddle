@@ -49,14 +49,18 @@ public class MainForm extends javax.swing.JFrame {
         jPasswordField1 = new javax.swing.JPasswordField();
         loginDialogLoginButton = new javax.swing.JButton();
         popupDialog = new javax.swing.JDialog();
+        popupDialogCaptionLabel = new javax.swing.JLabel();
+        popupDialogOkButton = new javax.swing.JButton();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
         PasswordField = new javax.swing.JPasswordField();
         MainTabPane = new javax.swing.JTabbedPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        ModpackPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         ModpackDescriptionPane = new javax.swing.JTextPane();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        NewsPanel = new javax.swing.JPanel();
+        SettingsPanel = new javax.swing.JPanel();
         CurrentUserLabel = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
         InstanceComboBox = new javax.swing.JComboBox();
@@ -169,6 +173,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        popupDialog.setMinimumSize(new java.awt.Dimension(372, 76));
         popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 popupDialogWindowGainedFocus(evt);
@@ -183,21 +188,43 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        popupDialogOkButton.setText("Ok");
+
         javax.swing.GroupLayout popupDialogLayout = new javax.swing.GroupLayout(popupDialog.getContentPane());
         popupDialog.getContentPane().setLayout(popupDialogLayout);
         popupDialogLayout.setHorizontalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(popupDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(popupDialogLayout.createSequentialGroup()
+                        .addGap(0, 289, Short.MAX_VALUE)
+                        .addComponent(popupDialogOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         popupDialogLayout.setVerticalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(popupDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(popupDialogOkButton)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
         setMinimumSize(new java.awt.Dimension(800, 450));
         setResizable(false);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -217,13 +244,46 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         MainTabPane.setName(""); // NOI18N
 
-        ModpackDescriptionPane.setEditable(false);
-        ModpackDescriptionPane.setBackground(new java.awt.Color(250, 250, 250));
-        ModpackDescriptionPane.setBorder(null);
-        jScrollPane3.setViewportView(ModpackDescriptionPane);
+        jScrollPane1.setViewportView(ModpackDescriptionPane);
 
-        MainTabPane.addTab("Modpack", jScrollPane3);
-        MainTabPane.addTab("Settings", jTabbedPane1);
+        javax.swing.GroupLayout ModpackPanelLayout = new javax.swing.GroupLayout(ModpackPanel);
+        ModpackPanel.setLayout(ModpackPanelLayout);
+        ModpackPanelLayout.setHorizontalGroup(
+            ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 895, Short.MAX_VALUE)
+        );
+        ModpackPanelLayout.setVerticalGroup(
+            ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+        );
+
+        MainTabPane.addTab("Modpacks", ModpackPanel);
+
+        javax.swing.GroupLayout NewsPanelLayout = new javax.swing.GroupLayout(NewsPanel);
+        NewsPanel.setLayout(NewsPanelLayout);
+        NewsPanelLayout.setHorizontalGroup(
+            NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 895, Short.MAX_VALUE)
+        );
+        NewsPanelLayout.setVerticalGroup(
+            NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 404, Short.MAX_VALUE)
+        );
+
+        MainTabPane.addTab("News", NewsPanel);
+
+        javax.swing.GroupLayout SettingsPanelLayout = new javax.swing.GroupLayout(SettingsPanel);
+        SettingsPanel.setLayout(SettingsPanelLayout);
+        SettingsPanelLayout.setHorizontalGroup(
+            SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 895, Short.MAX_VALUE)
+        );
+        SettingsPanelLayout.setVerticalGroup(
+            SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 404, Short.MAX_VALUE)
+        );
+
+        MainTabPane.addTab("Settings", SettingsPanel);
 
         CurrentUserLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         CurrentUserLabel.setText("Validating...");
@@ -330,7 +390,7 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(DeleteInstanceButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ForceUpdateCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addComponent(MainTabPane)
@@ -338,7 +398,7 @@ public class MainForm extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(MainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+                .addComponent(MainTabPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(UsernameLabel)
@@ -626,116 +686,6 @@ public class MainForm extends javax.swing.JFrame {
         worker.execute();
         
     }
-    
-    
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        
-        Logger.begin();
-        Logger.statusLabel = progresDialogStatusLabel;
-        Logger.statusBar = progressDialogStatusBar;
-        
-        /*Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
-        LoadingLabel.setText("");
-        LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
-        setLoadingSpinnerVisible(true);*/
-        
-        Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
-        this.setLocationRelativeTo(null);
-        this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        
-        loginDialog.setVisible(true);
-        
-        if (!new File("./data").isDirectory()) {
-            
-            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
-            
-            try {
-                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
-            } catch (IOException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
-            }
-
-            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
-
-            try {
-                Util.decompressZipfile("./data.zip", "./");
-            } catch (ZipException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
-            }
-        }
-        
-        //Do we even USE the temporary file cache any more...?  o_o
-        Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
-        if (new File("./tmp").exists()) {
-            try {
-                FileUtils.deleteDirectory(new File("./tmp"));
-            } catch (IOException ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to clear temp file cache!", false, ex.getMessage());
-            }
-        }
-
-        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
-        BaseModpackComboBox.addItem("<None>");
-        if (new File("./packs").isDirectory()) {
-            for (File f : new File("./packs").listFiles()) {
-                if (f.isDirectory()) {
-                    BaseModpackComboBox.addItem(f.getName());
-                }
-            }
-        } else {
-            Logger.info("MainForm.formWindowOpened", "Creating packs directory...");
-            (new File("./packs")).mkdirs();
-        }
-        
-        Logger.info("MainForm.formWindowOpened", "Restoring last login...");
-        if (new File("./data/lastlogin.json").exists()) {
-            JSONObject lastlogin = null;
-            try {
-                lastlogin = Util.readJSONFile("./data/lastlogin.json");
-            } catch (Exception ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin data!", false, ex.getMessage());
-                enableLoginFields();
-                disableInstanceFields();
-                PlayButton.setEnabled(false);
-                InstanceComboBox.addItem("<None>");
-            }
-            if (lastlogin != null) {
-                UsernameField.setText((String)lastlogin.get("username"));
-                PasswordField.setText((String)lastlogin.get("password"));
-                if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
-                    disableInstanceFields();
-                    PlayButton.setEnabled(false);
-                } else {
-                    enableInstanceFields();
-                    PlayButton.setEnabled(true);
-                }
-            }
-        } else {
-            enableLoginFields();
-            disableInstanceFields();
-            PlayButton.setEnabled(false);
-            InstanceComboBox.addItem("<None>");
-        }
-        
-        LoginButton.setEnabled(true);
-
-        Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
-        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
-        if (UsernameField.getText() != null) {
-            if (!selectedInstance.equals("<None>")) {
-                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
-            } else {
-                loadModpackPaneContent("./data/content/nopack/");
-            }
-        } else {
-            loadModpackPaneContent("./data/content/nopack/");
-        }
-        
-        Logger.info("MainForm.formWindowOpened", "Finished loading.");
-        
-        //setLoadingSpinnerVisible(false);
-    }//GEN-LAST:event_formWindowOpened
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         if (LoginButton.getText().equals("Log Out")) {
@@ -869,7 +819,127 @@ public class MainForm extends javax.swing.JFrame {
         worker.execute();
     }//GEN-LAST:event_PlayButtonActionPerformed
 
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        
+        this.getContentPane().setBackground(new Color(152, 174, 196));
+        
+        Logger.begin();
+        Logger.statusLabel = progresDialogStatusLabel;
+        Logger.statusBar = progressDialogStatusBar;
+        
+        /*Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
+        LoadingLabel.setText("");
+        LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
+        setLoadingSpinnerVisible(true);*/
+        
+        Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
+        this.setLocationRelativeTo(null);
+        this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        
+        loginDialog.setVisible(true);
+        
+        if (!new File("./data").isDirectory()) {
+            
+            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
+            
+            try {
+                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
+            }
+
+            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
+
+            try {
+                Util.decompressZipfile("./data.zip", "./");
+            } catch (ZipException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
+            }
+        }
+        
+        //Do we even USE the temporary file cache any more...?  o_o
+        Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
+        if (new File("./tmp").exists()) {
+            try {
+                FileUtils.deleteDirectory(new File("./tmp"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.formWindowOpened", "Failed to clear temp file cache!", false, ex.getMessage());
+            }
+        }
+
+        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
+        BaseModpackComboBox.addItem("<None>");
+        if (new File("./packs").isDirectory()) {
+            for (File f : new File("./packs").listFiles()) {
+                if (f.isDirectory()) {
+                    BaseModpackComboBox.addItem(f.getName());
+                }
+            }
+        } else {
+            Logger.info("MainForm.formWindowOpened", "Creating packs directory...");
+            (new File("./packs")).mkdirs();
+        }
+        
+        Logger.info("MainForm.formWindowOpened", "Restoring last login...");
+        if (new File("./data/lastlogin.json").exists()) {
+            JSONObject lastlogin = null;
+            try {
+                lastlogin = Util.readJSONFile("./data/lastlogin.json");
+            } catch (Exception ex) {
+                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin data!", false, ex.getMessage());
+                enableLoginFields();
+                disableInstanceFields();
+                PlayButton.setEnabled(false);
+                InstanceComboBox.addItem("<None>");
+            }
+            if (lastlogin != null) {
+                UsernameField.setText((String)lastlogin.get("username"));
+                PasswordField.setText((String)lastlogin.get("password"));
+                if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
+                    disableInstanceFields();
+                    PlayButton.setEnabled(false);
+                } else {
+                    enableInstanceFields();
+                    PlayButton.setEnabled(true);
+                }
+            }
+        } else {
+            enableLoginFields();
+            disableInstanceFields();
+            PlayButton.setEnabled(false);
+            InstanceComboBox.addItem("<None>");
+        }
+        
+        LoginButton.setEnabled(true);
+
+        Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
+        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
+        if (UsernameField.getText() != null) {
+            if (!selectedInstance.equals("<None>")) {
+                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+            } else {
+                loadModpackPaneContent("./data/content/nopack/");
+            }
+        } else {
+            loadModpackPaneContent("./data/content/nopack/");
+        }
+        
+        Logger.info("MainForm.formWindowOpened", "Finished loading.");
+        
+        //setLoadingSpinnerVisible(false);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        this.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+        this.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_formWindowLostFocus
     
+
     private void loginDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowOpened
         loginDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_loginDialogWindowOpened
@@ -887,13 +957,13 @@ public class MainForm extends javax.swing.JFrame {
         progressDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_progressDialogWindowOpened
 
-    private void progressDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowLostFocus
-        progressDialog.getContentPane().setBackground(new Color(225, 225, 225));
-    }//GEN-LAST:event_progressDialogWindowLostFocus
-
     private void progressDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowGainedFocus
         progressDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_progressDialogWindowGainedFocus
+
+    private void progressDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowLostFocus
+        progressDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_progressDialogWindowLostFocus
 
     
     private void popupDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_popupDialogWindowOpened
@@ -954,20 +1024,24 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JLabel ModpackLabel;
+    private javax.swing.JPanel ModpackPanel;
+    private javax.swing.JPanel NewsPanel;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JLabel PasswordLabel;
     private javax.swing.JButton PlayButton;
+    private javax.swing.JPanel SettingsPanel;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JButton loginDialogLoginButton;
     private javax.swing.JLabel loginDialogPasswordLabel;
     private javax.swing.JLabel loginDialogUsernameLabel;
     private javax.swing.JDialog popupDialog;
+    private javax.swing.JLabel popupDialogCaptionLabel;
+    private javax.swing.JButton popupDialogOkButton;
     private javax.swing.JLabel progresDialogStatusLabel;
     public javax.swing.JDialog progressDialog;
     public javax.swing.JProgressBar progressDialogStatusBar;
