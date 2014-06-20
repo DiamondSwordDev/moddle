@@ -13,42 +13,40 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * The mod pack compiler.
+ * The mod pack compiler
  *
- * @author Greenlock28
+ * @author Diamond Sword Development
  */
 public class Modpack {
 
     private String ModpackName = "";
     private String PlayerOwner = "";
-    
+
     public boolean IsInstallComplete = false;
-    
+
     private LaunchArgs LaunchArguments = null;
-    
+
     public Map<String, String> Settings = new HashMap<String, String>();
     public List<String> AdditionalClassPathEntries = new ArrayList();
     public List<String> AdditionalCoreLaunchArguments = new ArrayList();
     public List<String> AdditionalMinecraftLaunchArguments = new ArrayList();
-    
+
     public List<String> InstalledEntries = new ArrayList();
     public List<String> ExcludedEntries = new ArrayList();
 
-    
-    
     public String parseSettingsString(String s) {
-        
+
         List<String> variableStrings = new ArrayList();
-        
+
         for (int i = 0; i < s.length(); i++) {
-            if (s.toCharArray()[i] == '$' && s.toCharArray()[i+1] == '{') {
+            if (s.toCharArray()[i] == '$' && s.toCharArray()[i + 1] == '{') {
                 int depth = 0;
-                for (int ii = i+2; ii < s.length(); ii++) {
-                    if (s.toCharArray()[ii] == '$' && s.toCharArray()[ii+1] == '{') {
+                for (int ii = i + 2; ii < s.length(); ii++) {
+                    if (s.toCharArray()[ii] == '$' && s.toCharArray()[ii + 1] == '{') {
                         depth++;
                     } else if (s.toCharArray()[ii] == '}') {
                         if (depth == 0) {
-                            String functionString = s.substring(i, ii+1);
+                            String functionString = s.substring(i, ii + 1);
                             variableStrings.add(functionString);
                             i = ii;
                             break;
@@ -59,10 +57,10 @@ public class Modpack {
                 }
             }
         }
-        
+
         String ret = s;
         String settingName = "null";
-        
+
         for (String clause : variableStrings) {
             String fullclause = clause.substring(2, clause.length() - 1);
             String name;
@@ -80,11 +78,11 @@ public class Modpack {
             }
             settingName = name;
         }
-        
+
         if (ret.contains("${")) {
             ret = parseSettingsString(ret);
         }
-        
+
         if (ret.contains("##")) {
             if (ret.split("##")[0].equalsIgnoreCase("id")) {
                 String id = IDHelper.getID(settingName);
@@ -95,10 +93,10 @@ public class Modpack {
                 }
             }
         }
-        
+
         return ret;
     }
-    
+
     public String getSetting(String key) {
         String value = Settings.get(key);
         if (value != null) {
@@ -107,11 +105,11 @@ public class Modpack {
             return "null";
         }
     }
-    
+
     public boolean getSettingBool(String key) {
         return "true".equalsIgnoreCase(Settings.get(key));
     }
-    
+
     public void setSetting(String key, String value) {
         if (key.equalsIgnoreCase("addclasspathentry")) {
             AdditionalClassPathEntries.add(value);
@@ -123,27 +121,26 @@ public class Modpack {
             Settings.put(key, value);
         }
     }
-    
-    
-    
-    public Modpack() { }
-    
+
+    public Modpack() {
+    }
+
     public Modpack(String name, String player, boolean forceUpdate) {
-        
+
         this.ModpackName = name;
         this.PlayerOwner = player;
-        
+
         Logger.info("Modpack (const)", "Asserting pack directory...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName);
-        
+
         Logger.info("Modpack (const)", "Asserting .minecraft directory...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft");
-        
+
         Logger.info("Modpack (const)", "Asserting entries directory...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
-        
+
         IsInstallComplete = new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists();
-        
+
         if (!IsInstallComplete || forceUpdate) {
             JSONObject instanceConfig;
             try {
@@ -157,7 +154,7 @@ public class Modpack {
                     if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark").isDirectory()) {
                         FileUtils.deleteDirectory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark"));
                     }
-                    FileUtils.copyDirectory(new File("./packs/" + (String)instanceConfig.get("pack")), new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark"));
+                    FileUtils.copyDirectory(new File("./packs/" + (String) instanceConfig.get("pack")), new File("./users/" + PlayerOwner + "/" + ModpackName + "/ark"));
                 } catch (IOException ex) {
                     Logger.error("Modpack (const)", "Failed to copy modpack template!", true, ex.getMessage());
                     return;
@@ -165,7 +162,7 @@ public class Modpack {
             }
         }
     }
-    
+
     public static void createInstance(String name, String player, String base) {
         try {
             if (!new File("./users/" + player + "/" + name).exists()) {
@@ -180,21 +177,18 @@ public class Modpack {
             Logger.error("Modpack.createInstance", "Failed to create instance!", false, ex.getMessage());
         }
     }
-    
-    
-    
+
     public void build() {
-        
+
         setSetting("launch.AppDataDirectory", Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName));
 
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation">
-        
         if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists()) {
             if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").delete())) {
                 Logger.error("Modpack.build", "Failed to delete completeinstall file!", false, "None");
             }
         }
-        
+
         if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").exists())) {
             try {
                 FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall"), "");
@@ -204,9 +198,8 @@ public class Modpack {
         }
 
         //</editor-fold>
-        
         Logger.setProgress(5);
-        
+
         JSONObject packConfig;
         try {
             packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
@@ -214,11 +207,11 @@ public class Modpack {
             Logger.error("Modpack.build", "Failed to read pack.json!", true, ex.getMessage());
             return;
         }
-        
+
         Logger.setProgress(10);
-        
+
         setSetting("general.MinecraftVersion", (String) packConfig.get("minecraftversion"));
-        
+
         Logger.info("Modpack.build", "Building skeleton installation...");
         evaluateCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), null, null);
         Logger.setProgress(15);
@@ -226,7 +219,7 @@ public class Modpack {
         Logger.setProgress(20);
         getCacheEntry("minecraft", Settings.get("general.MinecraftVersion"), "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", true, null);
         Logger.setProgress(40);
-        
+
         if (packConfig.get("settings") != null) {
             JSONArray settingsArray = (JSONArray) packConfig.get("settings");
             for (Object obj : settingsArray) {
@@ -234,11 +227,10 @@ public class Modpack {
                 setSetting((String) setting.get("name"), (String) setting.get("value"));
             }
         }
-        
-        Logger.setProgress(60);
-        
-        //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
 
+        Logger.setProgress(60);
+
+        //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
         Logger.info("Modpack.build", "Creating '.minecraft/versions/' ...");
         Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions");
 
@@ -265,52 +257,52 @@ public class Modpack {
             Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex.getMessage());
             return;
         }
-        
+
         //</editor-fold>
-        
         Logger.setProgress(100);
-        
+
         /*Logger.info("Modpack.build", "Installing assets...");
-        if (!new File("./data/assets").isDirectory()) {
-            try {
-                AssetBuilder.buildAssets("./data/assets/");//.updateAssets("./data/assets/");
-            } catch (IOException ex) {
-                Logger.error("Modpack.build", "Failed to download assets!", false, ex.getMessage());
-            }
-        }
-        if (new File("./data/assets").isDirectory()) {
-            try {
-                FileUtils.copyDirectory(new File("./data/assets/legacy"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/assets"));
-            } catch (IOException ex) {
-                Logger.error("Modpack.build", "Failed to install assets!", false, ex.getMessage());
-            }
-        }*/
-        
+         if (!new File("./data/assets").isDirectory()) {
+         try {
+         AssetBuilder.buildAssets("./data/assets/");//.updateAssets("./data/assets/");
+         } catch (IOException ex) {
+         Logger.error("Modpack.build", "Failed to download assets!", false, ex.getMessage());
+         }
+         }
+         if (new File("./data/assets").isDirectory()) {
+         try {
+         FileUtils.copyDirectory(new File("./data/assets/legacy"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/assets"));
+         } catch (IOException ex) {
+         Logger.error("Modpack.build", "Failed to install assets!", false, ex.getMessage());
+         }
+         }*/
         Logger.setProgress(0);
-        
+
         List<String> installQueue = new ArrayList();
         List<String> excludeQueue = new ArrayList();
-        
+
         int progressIncrement;
-        
-        JSONArray entriesArray = (JSONArray)packConfig.get("entries");
-        
+
+        JSONArray entriesArray = (JSONArray) packConfig.get("entries");
+
         progressIncrement = 100 / entriesArray.toArray().length;
-        if (progressIncrement < 1) { progressIncrement = 1; }
-        
+        if (progressIncrement < 1) {
+            progressIncrement = 1;
+        }
+
         for (Object obj : entriesArray) {
-            JSONObject entryObj = (JSONObject)obj;
+            JSONObject entryObj = (JSONObject) obj;
             Logger.info("Modpack.build", "Evaluating entry '" + (String) entryObj.get("name") + "'...");
-            evaluateCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), installQueue, excludeQueue);
+            evaluateCacheEntry((String) entryObj.get("name"), (String) entryObj.get("version"), installQueue, excludeQueue);
             Logger.incrementProgress(progressIncrement);
         }
         Logger.setProgress(0);
-        
+
         Logger.info("Modpack.build", "Evaluating entry 'moddleassets'...");
         evaluateCacheEntry("moddleassets", "0.2", installQueue, excludeQueue);
-        
+
         List<String> finalQueue = new ArrayList();
-        
+
         Logger.info("Modpack.build", "Building installation queue...");
         for (String entry : installQueue) {
             boolean install = true;
@@ -324,7 +316,7 @@ public class Modpack {
                 finalQueue.add(entry);
             }
         }
-        
+
         for (String entry : finalQueue) {
             String[] entryData = entry.split(",");
             Logger.info("Modpack.build", "Installing entry " + entryData[0] + "...");
@@ -332,15 +324,14 @@ public class Modpack {
             getCacheEntry(entryData[0], entryData[1], "./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft", false, finalQueue);
             Logger.incrementProgress(progressIncrement);
         }
-        
+
         //<editor-fold defaultstate="collapsed" desc="Installion status file manipulation (complete)">
-        
         if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").exists()) {
             if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/partialinstall").delete())) {
                 Logger.error("Modpack.build", "Failed to delete partialinstall file!", false, "None");
             }
         }
-        
+
         if (!(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists())) {
             try {
                 FileUtils.writeStringToFile(new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall"), "");
@@ -351,7 +342,7 @@ public class Modpack {
 
         //</editor-fold>
     }
-    
+
     public void evaluateCacheEntry(String entryName, String entryVersion, List<String> installQueue, List<String> excludeQueue) {
         String entryLocation = "";
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -364,7 +355,7 @@ public class Modpack {
             Logger.error("Modpack.evaluateCacheEntry", "Cache entry was not found!", false, "None");
             return;
         }
-        
+
         if (!new File(entryLocation + entryName + "-" + entryVersion).isDirectory()) {
             try {
                 Util.decompressZipfile(entryLocation + entryName + "-" + entryVersion + ".zip", entryLocation + entryName + "-" + entryVersion);
@@ -385,7 +376,7 @@ public class Modpack {
         if (installQueue != null) {
             installQueue.add(entryName + "," + entryVersion);
         }
-        
+
         if (entryConfig.get("settings") != null) {
             JSONArray settingsArray = (JSONArray) entryConfig.get("settings");
             for (Object obj : settingsArray) {
@@ -393,13 +384,13 @@ public class Modpack {
                 setSetting((String) setting.get("name"), (String) setting.get("value"));
             }
         }
-        
+
         if (installQueue != null) {
             if (entryConfig.get("dependencies") != null) {
                 JSONArray dependenciesArray = (JSONArray) entryConfig.get("dependencies");
                 for (Object obj : dependenciesArray) {
                     JSONObject dep = (JSONObject) obj;
-                    if (!installQueue.contains((String)dep.get("name"))) {
+                    if (!installQueue.contains((String) dep.get("name"))) {
                         evaluateCacheEntry((String) dep.get("name"), (String) dep.get("version"), installQueue, excludeQueue);
                     }
                 }
@@ -409,14 +400,14 @@ public class Modpack {
                 JSONArray exclusionsArray = (JSONArray) entryConfig.get("exclusions");
                 for (Object obj : exclusionsArray) {
                     JSONObject exclude = (JSONObject) obj;
-                    if (!excludeQueue.contains((String)exclude.get("name"))) {
+                    if (!excludeQueue.contains((String) exclude.get("name"))) {
                         excludeQueue.add((String) exclude.get("name"));
                     }
                 }
             }
         }
     }
-    
+
     public void parseCacheEntry(String entryName, String entryVersion) {
         String entryLocation;
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -429,7 +420,7 @@ public class Modpack {
             Logger.error("Modpack.evaluateCacheEntry", "Cache entry was not found!", false, "None");
             return;
         }
-        
+
         JSONObject entryConfig;
         try {
             entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
@@ -446,7 +437,7 @@ public class Modpack {
             }
         }
     }
-    
+
     public void getCacheEntry(String entryName, String entryVersion, String targetDir, boolean fatality, List<String> installQueue) {
         String entryLocation = "";
         if (new File("./data/" + entryName + "-" + entryVersion + ".zip").exists()) {
@@ -459,7 +450,7 @@ public class Modpack {
             Logger.error("Modpack.getCacheEntry", "Cache entry was not found!", fatality, "None");
             return;
         }
-        
+
         JSONObject entryConfig;
         try {
             entryConfig = Util.readJSONFile(entryLocation + entryName + "-" + entryVersion + "/entry.json");
@@ -473,7 +464,7 @@ public class Modpack {
             JSONObject file = (JSONObject) obj;
             try {
                 if (!new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")).exists()) {
-                    FileUtils.copyURLToFile(new URL((String)file.get("url")), new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")));
+                    FileUtils.copyURLToFile(new URL((String) file.get("url")), new File(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name")));
                 }
             } catch (IOException ex) {
                 Logger.error("Modpack.getCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex.getMessage());
@@ -499,66 +490,64 @@ public class Modpack {
                 Logger.error("Modpack.getCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getClass().getSimpleName() + ": " + ex.getMessage());
             }
         }
-        
+
     }
-    
+
     public void copyTextFileWithVariables(String sourceFile, String destFile, List<String> installQueue) throws IOException {
         List<String> sourceText = FileUtils.readLines(new File(sourceFile));
         String destText = "";
         boolean isSkipping = false;
         for (String line : sourceText) {
-            
-                if (line.equalsIgnoreCase("$[[end]]")) {
-                    isSkipping = false;
-                } else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
-                    String functionString = line.substring(3, line.length() - 2);
-                    if (functionString.split(":")[0].equalsIgnoreCase("if")) {
-                        if (!getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
-                            isSkipping = true;
-                        }
-                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifnot")) {
-                        if (getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
-                            isSkipping = true;
-                        }
-                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifinstalled")) {
-                        boolean isInstalled = false;
-                        for (String item : installQueue) {
-                            if (item.startsWith(functionString.split(":")[1])) {
-                                isInstalled = true;
-                            }
-                        }
-                        if (!isInstalled) {
-                            isSkipping = true;
-                        }
-                    } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotinstalled")) {
-                        boolean isInstalled = false;
-                        for (String item : installQueue) {
-                            if (item.startsWith(functionString.split(":")[1])) {
-                                isInstalled = true;
-                            }
-                        }
-                        if (isInstalled) {
-                            isSkipping = true;
+
+            if (line.equalsIgnoreCase("$[[end]]")) {
+                isSkipping = false;
+            } else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
+                String functionString = line.substring(3, line.length() - 2);
+                if (functionString.split(":")[0].equalsIgnoreCase("if")) {
+                    if (!getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                        isSkipping = true;
+                    }
+                } else if (functionString.split(":")[0].equalsIgnoreCase("ifnot")) {
+                    if (getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                        isSkipping = true;
+                    }
+                } else if (functionString.split(":")[0].equalsIgnoreCase("ifinstalled")) {
+                    boolean isInstalled = false;
+                    for (String item : installQueue) {
+                        if (item.startsWith(functionString.split(":")[1])) {
+                            isInstalled = true;
                         }
                     }
-                } else {
-                    destText += parseSettingsString(line) + "\n\r";
+                    if (!isInstalled) {
+                        isSkipping = true;
+                    }
+                } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotinstalled")) {
+                    boolean isInstalled = false;
+                    for (String item : installQueue) {
+                        if (item.startsWith(functionString.split(":")[1])) {
+                            isInstalled = true;
+                        }
+                    }
+                    if (isInstalled) {
+                        isSkipping = true;
+                    }
                 }
-            
+            } else {
+                destText += parseSettingsString(line) + "\n\r";
+            }
+
         }
         destText = destText.substring(0, destText.length() - 2);
         new File(destFile).getParentFile().mkdirs();
         FileUtils.writeStringToFile(new File(destFile), destText);
     }
-    
-    
-    
+
     public boolean run() {
         try {
 
             if (LaunchArguments == null) {
                 setSetting("launch.AppDataDirectory", Util.getFullPath("./users/" + PlayerOwner + "/" + ModpackName));
-                
+
                 JSONObject packConfig;
                 try {
                     packConfig = Util.readJSONFile("./users/" + PlayerOwner + "/" + ModpackName + "/ark/pack.json");
@@ -566,17 +555,17 @@ public class Modpack {
                     Logger.error("Modpack.run", "Failed to read pack.json!", true, ex.getMessage());
                     return false;
                 }
-                
+
                 setSetting("general.MinecraftVersion", (String) packConfig.get("minecraftversion"));
-                
+
                 List<String> installQueue = new ArrayList();
                 List<String> excludeQueue = new ArrayList();
 
-                JSONArray entriesArray = (JSONArray)packConfig.get("entries");
+                JSONArray entriesArray = (JSONArray) packConfig.get("entries");
                 for (Object obj : entriesArray) {
-                    JSONObject entryObj = (JSONObject)obj;
+                    JSONObject entryObj = (JSONObject) obj;
                     Logger.info("Modpack.build", "Evaluating entry '" + (String) entryObj.get("name") + "'...");
-                    evaluateCacheEntry((String)entryObj.get("name"), (String)entryObj.get("version"), installQueue, excludeQueue);
+                    evaluateCacheEntry((String) entryObj.get("name"), (String) entryObj.get("version"), installQueue, excludeQueue);
                 }
 
                 Logger.info("Modpack.build", "Evaluating entry 'moddleassets'...");
@@ -598,20 +587,19 @@ public class Modpack {
                     }
                 }
 
-                parseCacheEntry("minecraft", (String)packConfig.get("minecraftversion"));
-                
+                parseCacheEntry("minecraft", (String) packConfig.get("minecraftversion"));
+
                 for (String entry : finalQueue) {
                     String[] entryData = entry.split(",");
                     Logger.info("Modpack.run", "Parsing entry " + entryData[0] + "...");
                     parseCacheEntry(entryData[0], entryData[1]);
                 }
             }
-            
+
             Logger.info("Modpack.run", "Building process arguments...");
             List<String> args = new ArrayList();
 
             //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
-            
             Logger.info("Modpack.run", "Parsing JavaExecutablePath...");
             if (!getSetting("launch.JavaExecutablePath").equals("null")) {
                 args.add(getSetting("launch.JavaExecutablePath"));
@@ -673,9 +661,7 @@ public class Modpack {
             }
 
             //</editor-fold>
-            
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
-            
             Logger.info("Modpack.run", "Parsing UseLegacyUsernameAndSession...");
             if (getSettingBool("launch.UseLegacyUsernameAndSession")) {
                 args.add(LoginHelper.Username);
@@ -741,7 +727,7 @@ public class Modpack {
                 args.add("--tweakClass");
                 args.add(getSetting("launch.TweakClassArgument"));
             }
-            
+
             Logger.info("Modpack.run", "Parsing AdditionalMinecraftArguments...");
             if (!AdditionalMinecraftLaunchArguments.isEmpty()) {
                 for (String additionalArg : AdditionalMinecraftLaunchArguments) {
@@ -750,7 +736,6 @@ public class Modpack {
             }
 
             //</editor-fold>
-            
             String[] argArray = new String[args.toArray().length];
             for (int i = 0; i < argArray.length; i++) {
                 argArray[i] = args.get(i);

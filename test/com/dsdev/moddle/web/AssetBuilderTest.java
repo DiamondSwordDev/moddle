@@ -1,17 +1,17 @@
-package com.dsdev.moddle;
+package com.dsdev.moddle.web;
 
 import java.io.IOException;
 
 /**
- * This class provides the test methods for AssetBuilder.
+ * This class provides the test methods for AssetBuilder
  *
- * @author Nathan2055
+ * @author Diamond Sword Development
  */
 public class AssetBuilderTest {
 
     /**
      * Builds a copy of the Minecraft assets to a folder called "assets" on the
-     * user's desktop.
+     * user's desktop
      *
      * @param args the command line arguments
      */

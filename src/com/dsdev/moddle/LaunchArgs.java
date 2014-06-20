@@ -7,14 +7,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * This class contains fields required for modifying launch arguments.
- * 
- * @author Greenlock28
+ * This class contains fields required for modifying launch arguments
+ *
+ * @author Diamond Sword Development
  */
 public class LaunchArgs {
 
     //public JSONArray jsonStruct = new JSONArray();
-    
     //General Arguments
     public String MinecraftVersion = null;
     public String AppDataDirectory = null;
@@ -54,7 +53,7 @@ public class LaunchArgs {
 
     public boolean UseVersionArgument = false;
     public String VersionArgument = null;
-    
+
     public boolean UseTweakClassArgument = false;
     public String TweakClassArgument = null;
 
@@ -69,11 +68,9 @@ public class LaunchArgs {
 
     public List<String> AdditionalMinecraftArguments = new ArrayList();
 
-    
-    
     public void setVariable(String name, String value) {
         try {
-            
+
             for (Field f : this.getClass().getDeclaredFields()) {
                 if (name.equalsIgnoreCase(f.getName().toLowerCase())) {
                     if (f.getType().getSimpleName().equals("String")) {
@@ -85,60 +82,60 @@ public class LaunchArgs {
                     }
                 }
             }
-            
+
         } catch (Exception ex) {
             Logger.error("LaunchArgs.setVariable", ex.getMessage(), false, ex.getMessage());
         }
     }
-    
+
     public Object getVariable(String name) {
         try {
-            
+
             for (Field f : this.getClass().getDeclaredFields()) {
                 if (name.equalsIgnoreCase(f.getName().toLowerCase())) {
                     return f.get(this);
                 }
             }
-            
+
             return null;
-            
+
         } catch (Exception ex) {
             Logger.error("MainForm.getVariable", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
-    
+
     public String parseString(String s) {
         try {
-            
+
             String ret = s;
-            
+
             for (Field f : this.getClass().getDeclaredFields()) {
                 if (f.get(this) != null) {
                     ret = ret.replace("{" + f.getName() + "}", f.get(this).toString());
                 }
             }
-            
+
             return ret;
-            
+
         } catch (Exception ex) {
             Logger.error("LaunchArgs.parseString", ex.getMessage(), false, ex.getMessage());
             return null;
         }
     }
-    
+
     public void loadSettings(JSONArray settingsArray) {
         for (Object obj : settingsArray) {
             JSONObject setting = (JSONObject) obj;
-            setVariable((String)setting.get("name"), (String)setting.get("value"));
-            
+            setVariable((String) setting.get("name"), (String) setting.get("value"));
+
             /*for (Object o : jsonStruct) {
-                JSONObject oo = (JSONObject) o;
-                if (((String)oo.get("name")).equalsIgnoreCase(((String)setting.get("name")).toLowerCase())) {
-                    oo.values().clear();
-                    oo.values().add((String)setting.get("value"));
-                }
-            }*/
+             JSONObject oo = (JSONObject) o;
+             if (((String)oo.get("name")).equalsIgnoreCase(((String)setting.get("name")).toLowerCase())) {
+             oo.values().clear();
+             oo.values().add((String)setting.get("value"));
+             }
+             }*/
         }
     }
 }

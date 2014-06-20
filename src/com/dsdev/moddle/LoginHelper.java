@@ -1,17 +1,17 @@
-
 package com.dsdev.moddle;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 /**
+ * Handles login stuff
  *
- * @author Greenlock28
+ * @author Diamond Sword Develoment
  */
 public class LoginHelper {
-    
+
     public static String doPasswordLogin(String username, String password) {
-        
+
         AccountName = username;
         Password = password;
 
@@ -33,38 +33,38 @@ public class LoginHelper {
             return "Request failed!";
         }
 
-        JSONObject result = (JSONObject)JSONValue.parse(resultString);
+        JSONObject result = (JSONObject) JSONValue.parse(resultString);
 
         if (result.get("error") == null) {
             if (result.get("accessToken") != null) {
-                AccessToken = (String)result.get("accessToken");
+                AccessToken = (String) result.get("accessToken");
             }
 
             if (result.get("clientToken") != null) {
-                ClientToken = (String)result.get("clientToken");
+                ClientToken = (String) result.get("clientToken");
             }
 
             if (result.get("selectedProfile") != null) {
-                JSONObject selectedProfile = (JSONObject)result.get("selectedProfile");
+                JSONObject selectedProfile = (JSONObject) result.get("selectedProfile");
 
                 if (selectedProfile.get("id") != null) {
-                    UUID = (String)selectedProfile.get("id");
+                    UUID = (String) selectedProfile.get("id");
                 }
 
                 if (selectedProfile.get("name") != null) {
-                    Username = (String)selectedProfile.get("name");
+                    Username = (String) selectedProfile.get("name");
                 }
             }
 
             Logger.info("LoginHelper.doPasswordLogin", "AccessToken " + AccessToken + " generated.");
         } else {
-            Logger.warning("LoginHelper.doPasswordLogin", "Login failed with error '" + (String)result.get("error") + "'");
+            Logger.warning("LoginHelper.doPasswordLogin", "Login failed with error '" + (String) result.get("error") + "'");
             return "Bad Login!";
         }
-        
+
         return "Success";
     }
-    
+
     public static void doSystemLogout() {
         Username = null;
         AccountName = null;
@@ -77,7 +77,7 @@ public class LoginHelper {
         AccessToken = null;
         ClientToken = null;
     }
-    
+
     public static String Username = null;
     public static String AccountName = null;
     public static String Password = null;
@@ -88,5 +88,5 @@ public class LoginHelper {
 
     public static String AccessToken = null;
     public static String ClientToken = null;
-    
+
 }
