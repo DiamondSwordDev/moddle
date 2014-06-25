@@ -4,9 +4,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 /**
- * Container for all auth-related stuff.
+ * Container for all auth-related stuff
  *
- * @author Greenlock28
+ * @author Diamond Sword Development
  */
 public class MinecraftLogin {
 

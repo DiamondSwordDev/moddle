@@ -1,5 +1,6 @@
-package com.dsdev.moddle;
+package com.dsdev.moddle.web;
 
+import com.dsdev.moddle.Logger;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import java.io.*;
@@ -9,9 +10,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * This class contains all of the tools required to build and maintain a copy of
- * the Minecraft assets.
+ * the Minecraft assets
  *
- * @author Nathan2055
+ * @author Diamond Sword Development
  */
 public class AssetBuilder {
 

@@ -23,9 +23,9 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 
 /**
- * The main GUI.
+ * The main GUI
  *
- * @author Greenlock28
+ * @author Diamond Sword Development
  */
 public class MainForm extends javax.swing.JFrame {
 

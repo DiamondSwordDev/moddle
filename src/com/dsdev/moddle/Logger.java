@@ -9,9 +9,9 @@ import javax.swing.JProgressBar;
 import org.apache.commons.io.FileUtils;
 
 /**
- * Contains the methods to be used for logging.
+ * Contains the methods to be used for logging
  *
- * @author Greenlock28
+ * @author Diamond Sword Development
  */
 public class Logger {
 
@@ -93,7 +93,7 @@ public class Logger {
             statusBar.setValue(progress);
         }
     }
-    
+
     public static void incrementProgress(int progress) {
         if (statusBar != null) {
             if (progress > 100 || statusBar.getValue() + progress > 100) {
@@ -103,7 +103,7 @@ public class Logger {
             }
         }
     }
-    
+
     private static String getCurrentTimeStamp() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
         Date now = new Date();
