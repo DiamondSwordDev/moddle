@@ -2,12 +2,18 @@ package com.dsdev.moddle;
 
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.awt.Color;
+import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -45,12 +51,20 @@ public class MainForm extends javax.swing.JFrame {
         loginDialog = new javax.swing.JDialog();
         loginDialogUsernameLabel = new javax.swing.JLabel();
         loginDialogPasswordLabel = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        loginDialogUsernameBox = new javax.swing.JTextField();
+        loginDialogPasswordBox = new javax.swing.JPasswordField();
         loginDialogLoginButton = new javax.swing.JButton();
+        loginDialogCancelButton = new javax.swing.JButton();
         popupDialog = new javax.swing.JDialog();
         popupDialogCaptionLabel = new javax.swing.JLabel();
         popupDialogOkButton = new javax.swing.JButton();
+        instanceDialog = new javax.swing.JDialog();
+        instanceDialogCreateButton = new javax.swing.JButton();
+        instanceDialogNameLabel = new javax.swing.JLabel();
+        instanceDialogNameBox = new javax.swing.JTextField();
+        instanceDialogModpackLabel = new javax.swing.JLabel();
+        instanceDialogModpackComboBox = new javax.swing.JComboBox();
+        instanceDialogCancelButton = new javax.swing.JButton();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
         UsernameField = new javax.swing.JTextField();
@@ -58,6 +72,8 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane = new javax.swing.JTabbedPane();
         ModpackPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        ModpackList = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
         ModpackDescriptionPane = new javax.swing.JTextPane();
         NewsPanel = new javax.swing.JPanel();
         SettingsPanel = new javax.swing.JPanel();
@@ -137,6 +153,8 @@ public class MainForm extends javax.swing.JFrame {
 
         loginDialogLoginButton.setText("Log In");
 
+        loginDialogCancelButton.setText("Cancel");
+
         javax.swing.GroupLayout loginDialogLayout = new javax.swing.GroupLayout(loginDialog.getContentPane());
         loginDialog.getContentPane().setLayout(loginDialogLayout);
         loginDialogLayout.setHorizontalGroup(
@@ -150,11 +168,13 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(loginDialogPasswordLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
-                            .addComponent(jPasswordField1)))
+                            .addComponent(loginDialogUsernameBox, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                            .addComponent(loginDialogPasswordBox)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginDialogLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(loginDialogLoginButton)))
+                        .addComponent(loginDialogLoginButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(loginDialogCancelButton)))
                 .addContainerGap())
         );
         loginDialogLayout.setVerticalGroup(
@@ -162,14 +182,16 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(loginDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginDialogUsernameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loginDialogUsernameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginDialogPasswordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loginDialogPasswordLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(loginDialogLoginButton)
+                .addGroup(loginDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loginDialogLoginButton)
+                    .addComponent(loginDialogCancelButton))
                 .addContainerGap())
         );
 
@@ -213,10 +235,72 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        instanceDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                instanceDialogWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                instanceDialogWindowLostFocus(evt);
+            }
+        });
+        instanceDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                instanceDialogWindowOpened(evt);
+            }
+        });
+
+        instanceDialogCreateButton.setText("Create");
+
+        instanceDialogNameLabel.setText("Instance Name:");
+
+        instanceDialogModpackLabel.setText("Modpack:");
+
+        instanceDialogModpackComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        instanceDialogCancelButton.setText("Cancel");
+
+        javax.swing.GroupLayout instanceDialogLayout = new javax.swing.GroupLayout(instanceDialog.getContentPane());
+        instanceDialog.getContentPane().setLayout(instanceDialogLayout);
+        instanceDialogLayout.setHorizontalGroup(
+            instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(instanceDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(instanceDialogNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(instanceDialogModpackLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(instanceDialogModpackComboBox, 0, 300, Short.MAX_VALUE)
+                    .addComponent(instanceDialogNameBox))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instanceDialogLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(instanceDialogCreateButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(instanceDialogCancelButton)
+                .addContainerGap())
+        );
+        instanceDialogLayout.setVerticalGroup(
+            instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instanceDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instanceDialogNameLabel)
+                    .addComponent(instanceDialogNameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instanceDialogModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instanceDialogModpackLabel))
+                .addGap(33, 33, 33)
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instanceDialogCreateButton)
+                    .addComponent(instanceDialogCancelButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
-        setMinimumSize(new java.awt.Dimension(800, 450));
-        setResizable(false);
+        setMinimumSize(new java.awt.Dimension(900, 501));
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -244,17 +328,24 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         MainTabPane.setName(""); // NOI18N
 
-        jScrollPane1.setViewportView(ModpackDescriptionPane);
+        ModpackList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jScrollPane1.setViewportView(ModpackList);
+
+        jScrollPane2.setViewportView(ModpackDescriptionPane);
 
         javax.swing.GroupLayout ModpackPanelLayout = new javax.swing.GroupLayout(ModpackPanel);
         ModpackPanel.setLayout(ModpackPanelLayout);
         ModpackPanelLayout.setHorizontalGroup(
             ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 895, Short.MAX_VALUE)
+            .addGroup(ModpackPanelLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE))
         );
         ModpackPanelLayout.setVerticalGroup(
             ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+            .addComponent(jScrollPane2)
         );
 
         MainTabPane.addTab("Modpacks", ModpackPanel);
@@ -267,7 +358,7 @@ public class MainForm extends javax.swing.JFrame {
         );
         NewsPanelLayout.setVerticalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 404, Short.MAX_VALUE)
+            .addGap(0, 409, Short.MAX_VALUE)
         );
 
         MainTabPane.addTab("News", NewsPanel);
@@ -280,7 +371,7 @@ public class MainForm extends javax.swing.JFrame {
         );
         SettingsPanelLayout.setVerticalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 404, Short.MAX_VALUE)
+            .addGap(0, 409, Short.MAX_VALUE)
         );
 
         MainTabPane.addTab("Settings", SettingsPanel);
@@ -426,6 +517,43 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void loadModpackList() {
+        DefaultListModel modpackListModel = new DefaultListModel();
+        if (new File("./packs").isDirectory()) {
+            for (File f : new File("./packs").listFiles()) {
+                if (f.isDirectory()) {
+                    modpackListModel.addElement(f.getName());
+                    instanceDialogModpackComboBox.addItem(f.getName());
+                }
+            }
+        } else {
+            Logger.info("MainForm.loadModpackList", "Creating packs directory...");
+            (new File("./packs")).mkdirs();
+        }
+        ModpackList.setModel(modpackListModel);
+    }
+    
+    private void loadSelfExtractingData() {
+        if (!new File("./data").isDirectory()) {
+            
+            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
+            
+            try {
+                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
+            }
+
+            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
+
+            try {
+                Util.decompressZipfile("./data.zip", "./");
+            } catch (ZipException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
+            }
+        }
+    }
     
     private void loadModpackPaneContent(String contentLocation) {
         
@@ -822,65 +950,38 @@ public class MainForm extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
-        this.getContentPane().setBackground(new Color(152, 174, 196));
-        
         Logger.begin();
         Logger.statusLabel = progresDialogStatusLabel;
         Logger.statusBar = progressDialogStatusBar;
         
-        /*Logger.info("MainForm.formWindowOpened", "Loading progress spinner...");
-        LoadingLabel.setText("");
-        LoadingLabel.setIcon(new ImageIcon(this.getClass().getResource("loading.gif")));
-        setLoadingSpinnerVisible(true);*/
-        
         Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
+        
+        this.getContentPane().setBackground(new Color(152, 174, 196));
         this.setLocationRelativeTo(null);
+        
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         
-        loginDialog.setVisible(true);
-        
-        if (!new File("./data").isDirectory()) {
-            
-            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
-            
-            try {
-                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
-            } catch (IOException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
-            }
-
-            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
-
-            try {
-                Util.decompressZipfile("./data.zip", "./");
-            } catch (ZipException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
-            }
-        }
-        
-        //Do we even USE the temporary file cache any more...?  o_o
-        Logger.info("MainForm.formWindowOpened", "Clearing temporary file cache...");
-        if (new File("./tmp").exists()) {
-            try {
-                FileUtils.deleteDirectory(new File("./tmp"));
-            } catch (IOException ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to clear temp file cache!", false, ex.getMessage());
-            }
-        }
-
-        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
-        BaseModpackComboBox.addItem("<None>");
-        if (new File("./packs").isDirectory()) {
-            for (File f : new File("./packs").listFiles()) {
-                if (f.isDirectory()) {
-                    BaseModpackComboBox.addItem(f.getName());
+        ModpackList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (new File("./packs/" + value.toString() + "/pack.png").isFile()) {
+                    label.setIcon(new ImageIcon("./packs/" + value.toString() + "/pack.png"));
+                } else {
+                    label.setIcon(new ImageIcon("./data/content/noicon.png"));
                 }
+                return label;
             }
-        } else {
-            Logger.info("MainForm.formWindowOpened", "Creating packs directory...");
-            (new File("./packs")).mkdirs();
-        }
+        });
+        
+        
+        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
+        loadModpackList();
+        
+        //loadSelfExtractingData();
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         if (new File("./data/lastlogin.json").exists()) {
@@ -915,7 +1016,7 @@ public class MainForm extends javax.swing.JFrame {
         LoginButton.setEnabled(true);
 
         Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
-        String selectedInstance = InstanceComboBox.getSelectedItem().toString();
+        String selectedInstance = ModpackList.getSelectedValue().toString();
         if (UsernameField.getText() != null) {
             if (!selectedInstance.equals("<None>")) {
                 loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
@@ -927,8 +1028,6 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
-        
-        //setLoadingSpinnerVisible(false);
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
@@ -941,6 +1040,7 @@ public class MainForm extends javax.swing.JFrame {
     
 
     private void loginDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowOpened
+        loginDialog.setLocationRelativeTo(null);
         loginDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_loginDialogWindowOpened
 
@@ -954,6 +1054,7 @@ public class MainForm extends javax.swing.JFrame {
 
     
     private void progressDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_progressDialogWindowOpened
+        progressDialog.setLocationRelativeTo(null);
         progressDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_progressDialogWindowOpened
 
@@ -967,6 +1068,7 @@ public class MainForm extends javax.swing.JFrame {
 
     
     private void popupDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_popupDialogWindowOpened
+        popupDialog.setLocationRelativeTo(null);
         popupDialog.getContentPane().setBackground(new Color(152, 174, 196));
     }//GEN-LAST:event_popupDialogWindowOpened
 
@@ -978,6 +1080,21 @@ public class MainForm extends javax.swing.JFrame {
         popupDialog.getContentPane().setBackground(new Color(225, 225, 225));
     }//GEN-LAST:event_popupDialogWindowLostFocus
 
+    
+    private void instanceDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_instanceDialogWindowOpened
+        instanceDialog.setLocationRelativeTo(null);
+        instanceDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_instanceDialogWindowOpened
+
+    private void instanceDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_instanceDialogWindowGainedFocus
+        instanceDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_instanceDialogWindowGainedFocus
+
+    private void instanceDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_instanceDialogWindowLostFocus
+        instanceDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_instanceDialogWindowLostFocus
+
+    
     /**
      * @param args the command line arguments
      */
@@ -1024,6 +1141,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JLabel ModpackLabel;
+    private javax.swing.JList ModpackList;
     private javax.swing.JPanel ModpackPanel;
     private javax.swing.JPanel NewsPanel;
     private javax.swing.JPasswordField PasswordField;
@@ -1032,12 +1150,21 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel SettingsPanel;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
-    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JDialog instanceDialog;
+    private javax.swing.JButton instanceDialogCancelButton;
+    private javax.swing.JButton instanceDialogCreateButton;
+    private javax.swing.JComboBox instanceDialogModpackComboBox;
+    private javax.swing.JLabel instanceDialogModpackLabel;
+    private javax.swing.JTextField instanceDialogNameBox;
+    private javax.swing.JLabel instanceDialogNameLabel;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JDialog loginDialog;
+    private javax.swing.JButton loginDialogCancelButton;
     private javax.swing.JButton loginDialogLoginButton;
+    private javax.swing.JPasswordField loginDialogPasswordBox;
     private javax.swing.JLabel loginDialogPasswordLabel;
+    private javax.swing.JTextField loginDialogUsernameBox;
     private javax.swing.JLabel loginDialogUsernameLabel;
     private javax.swing.JDialog popupDialog;
     private javax.swing.JLabel popupDialogCaptionLabel;
