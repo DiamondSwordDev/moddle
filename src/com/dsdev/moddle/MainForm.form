@@ -7,6 +7,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[430, 100]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="progressDialogWindowGainedFocus"/>
@@ -23,7 +24,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="progresDialogStatusLabel" max="32767" attributes="0"/>
+                      <Component id="progressDialogStatusLabel" max="32767" attributes="0"/>
                       <Component id="progressDialogStatusBar" alignment="0" pref="410" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -34,7 +35,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="progresDialogStatusLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="progressDialogStatusLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="progressDialogStatusBar" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -48,7 +49,7 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JLabel" name="progresDialogStatusLabel">
+        <Component class="javax.swing.JLabel" name="progressDialogStatusLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Smoke..."/>
           </Properties>
@@ -140,19 +141,26 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Log In"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginDialogLoginButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="loginDialogCancelButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cancel"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginDialogCancelButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="popupDialog">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[372, 76]"/>
+          <Dimension value="[372, 105]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="popupDialogWindowGainedFocus"/>
@@ -163,14 +171,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="36" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="popupDialogCaptionLabel" max="32767" attributes="0"/>
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="289" max="32767" attributes="0"/>
-                          <Component id="popupDialogOkButton" min="-2" pref="63" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="popupDialogCaptionLabel" alignment="1" min="-2" pref="326" max="-2" attributes="0"/>
+                      <Component id="popupDialogOkButton" alignment="1" min="-2" pref="82" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -181,9 +186,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="popupDialogCaptionLabel" min="-2" pref="25" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="popupDialogOkButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -195,10 +200,19 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Ok"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="popupDialogOkButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="instanceDialog">
+      <Properties>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[409, 154]"/>
+        </Property>
+        <Property name="resizable" type="boolean" value="false"/>
+      </Properties>
       <Events>
         <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="instanceDialogWindowGainedFocus"/>
         <EventHandler event="windowLostFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="instanceDialogWindowLostFocus"/>
@@ -210,23 +224,25 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="instanceDialogNameLabel" max="32767" attributes="0"/>
-                      <Component id="instanceDialogModpackLabel" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="instanceDialogCreateButton" min="-2" pref="82" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="instanceDialogCancelButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="instanceDialogNameLabel" max="32767" attributes="0"/>
+                              <Component id="instanceDialogModpackLabel" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="instanceDialogModpackComboBox" pref="300" max="32767" attributes="0"/>
+                              <Component id="instanceDialogNameBox" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="instanceDialogModpackComboBox" pref="300" max="32767" attributes="0"/>
-                      <Component id="instanceDialogNameBox" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="instanceDialogCreateButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="instanceDialogCancelButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -243,12 +259,12 @@
                       <Component id="instanceDialogModpackComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="instanceDialogModpackLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="instanceDialogCreateButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="instanceDialogCancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="51" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -258,6 +274,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Create"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="instanceDialogCreateButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="instanceDialogNameLabel">
           <Properties>
@@ -274,11 +293,8 @@
         <Component class="javax.swing.JComboBox" name="instanceDialogModpackComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
+              <StringArray count="1">
+                <StringItem index="0" value="&lt;None&gt;"/>
               </StringArray>
             </Property>
           </Properties>
@@ -287,6 +303,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Cancel"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="instanceDialogCancelButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -323,49 +342,28 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="LoginButton" min="-2" max="-2" attributes="0"/>
-                  <Component id="CurrentUserLabel" min="-2" pref="120" max="-2" attributes="0"/>
+                  <Component id="CurrentUserLabel" min="-2" pref="196" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="PasswordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="UsernameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="UsernameField" max="32767" attributes="0"/>
-                  <Component id="PasswordField" min="-2" pref="140" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="InstanceNameLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="ModpackLabel" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="369" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="BaseModpackComboBox" min="-2" pref="100" max="-2" attributes="0"/>
-                  <Component id="InstanceNameField" min="-2" pref="100" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="CreateInstanceButton" min="-2" pref="65" max="-2" attributes="0"/>
-                  <Component id="InstanceLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="InstanceComboBox" min="-2" pref="120" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="AddInstanceButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="InstanceLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="InstanceComboBox" min="-2" pref="133" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="CreateInstanceButton" min="-2" pref="67" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="DeleteInstanceButton" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="PlayButton" max="32767" attributes="0"/>
-                  <Component id="ForceUpdateCheckBox" max="32767" attributes="0"/>
+                  <Component id="PlayButton" min="-2" pref="171" max="-2" attributes="0"/>
+                  <Component id="ForceUpdateCheckBox" min="-2" pref="179" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -378,24 +376,15 @@
               <Component id="MainTabPane" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="UsernameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="UsernameField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="CurrentUserLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="ModpackLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="BaseModpackComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="InstanceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="InstanceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="PlayButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="PasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="PasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="LoginButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="InstanceNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="InstanceNameField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="CreateInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="AddInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="DeleteInstanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="ForceUpdateCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -405,32 +394,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="UsernameLabel">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="80" green="80" red="80" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Username:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="PasswordLabel">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="80" green="80" red="80" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Password:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="UsernameField">
-      <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JPasswordField" name="PasswordField">
-      <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
     <Container class="javax.swing.JTabbedPane" name="MainTabPane">
       <Properties>
         <Property name="tabPlacement" type="int" value="3"/>
@@ -454,7 +417,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jScrollPane1" min="-2" pref="240" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="649" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="705" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -482,6 +445,9 @@
                       <StringArray count="0"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="ModpackListValueChanged"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -493,6 +459,10 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
                 <Component class="javax.swing.JTextPane" name="ModpackDescriptionPane">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -510,7 +480,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="895" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="951" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -532,7 +502,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="895" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="951" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -549,7 +519,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="11" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Validating..."/>
+        <Property name="text" type="java.lang.String" value="Loading..."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="LoginButton">
@@ -581,33 +551,8 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteInstanceButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="AddInstanceButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddInstanceButtonActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="BaseModpackComboBox">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="0"/>
-        </Property>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="InstanceNameField">
-      <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="InstanceLabel">
       <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="80" green="80" red="80" type="rgb"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Instance:"/>
       </Properties>
     </Component>
@@ -619,22 +564,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CreateInstanceButtonActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="ModpackLabel">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="80" green="80" red="80" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Modpack:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="InstanceNameLabel">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="80" green="80" red="80" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Instance Name:"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="ForceUpdateCheckBox">
       <Properties>

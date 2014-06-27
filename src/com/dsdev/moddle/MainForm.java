@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.auth.Auth;
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.awt.Color;
 import java.awt.Component;
@@ -47,7 +48,7 @@ public class MainForm extends javax.swing.JFrame {
 
         progressDialog = new javax.swing.JDialog();
         progressDialogStatusBar = new javax.swing.JProgressBar();
-        progresDialogStatusLabel = new javax.swing.JLabel();
+        progressDialogStatusLabel = new javax.swing.JLabel();
         loginDialog = new javax.swing.JDialog();
         loginDialogUsernameLabel = new javax.swing.JLabel();
         loginDialogPasswordLabel = new javax.swing.JLabel();
@@ -65,10 +66,6 @@ public class MainForm extends javax.swing.JFrame {
         instanceDialogModpackLabel = new javax.swing.JLabel();
         instanceDialogModpackComboBox = new javax.swing.JComboBox();
         instanceDialogCancelButton = new javax.swing.JButton();
-        UsernameLabel = new javax.swing.JLabel();
-        PasswordLabel = new javax.swing.JLabel();
-        UsernameField = new javax.swing.JTextField();
-        PasswordField = new javax.swing.JPasswordField();
         MainTabPane = new javax.swing.JTabbedPane();
         ModpackPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -81,17 +78,13 @@ public class MainForm extends javax.swing.JFrame {
         LoginButton = new javax.swing.JButton();
         InstanceComboBox = new javax.swing.JComboBox();
         DeleteInstanceButton = new javax.swing.JButton();
-        AddInstanceButton = new javax.swing.JButton();
-        BaseModpackComboBox = new javax.swing.JComboBox();
-        InstanceNameField = new javax.swing.JTextField();
         InstanceLabel = new javax.swing.JLabel();
         CreateInstanceButton = new javax.swing.JButton();
-        ModpackLabel = new javax.swing.JLabel();
-        InstanceNameLabel = new javax.swing.JLabel();
         ForceUpdateCheckBox = new javax.swing.JCheckBox();
         PlayButton = new javax.swing.JButton();
 
         progressDialog.setMinimumSize(new java.awt.Dimension(430, 100));
+        progressDialog.setResizable(false);
         progressDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 progressDialogWindowGainedFocus(evt);
@@ -106,7 +99,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        progresDialogStatusLabel.setText("Smoke...");
+        progressDialogStatusLabel.setText("Smoke...");
 
         javax.swing.GroupLayout progressDialogLayout = new javax.swing.GroupLayout(progressDialog.getContentPane());
         progressDialog.getContentPane().setLayout(progressDialogLayout);
@@ -115,7 +108,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progresDialogStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(progressDialogStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(progressDialogStatusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -123,7 +116,7 @@ public class MainForm extends javax.swing.JFrame {
             progressDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(progressDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(progresDialogStatusLabel)
+                .addComponent(progressDialogStatusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(progressDialogStatusBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -152,8 +145,18 @@ public class MainForm extends javax.swing.JFrame {
         loginDialogPasswordLabel.setText("Password:");
 
         loginDialogLoginButton.setText("Log In");
+        loginDialogLoginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginDialogLoginButtonActionPerformed(evt);
+            }
+        });
 
         loginDialogCancelButton.setText("Cancel");
+        loginDialogCancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginDialogCancelButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout loginDialogLayout = new javax.swing.GroupLayout(loginDialog.getContentPane());
         loginDialog.getContentPane().setLayout(loginDialogLayout);
@@ -195,7 +198,8 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        popupDialog.setMinimumSize(new java.awt.Dimension(372, 76));
+        popupDialog.setMinimumSize(new java.awt.Dimension(372, 105));
+        popupDialog.setResizable(false);
         popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 popupDialogWindowGainedFocus(evt);
@@ -211,18 +215,21 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         popupDialogOkButton.setText("Ok");
+        popupDialogOkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                popupDialogOkButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout popupDialogLayout = new javax.swing.GroupLayout(popupDialog.getContentPane());
         popupDialog.getContentPane().setLayout(popupDialogLayout);
         popupDialogLayout.setHorizontalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(popupDialogLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popupDialogLayout.createSequentialGroup()
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addGroup(popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(popupDialogLayout.createSequentialGroup()
-                        .addGap(0, 289, Short.MAX_VALUE)
-                        .addComponent(popupDialogOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(popupDialogOkButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         popupDialogLayout.setVerticalGroup(
@@ -230,11 +237,13 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(popupDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(popupDialogOkButton)
-                .addContainerGap())
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
+        instanceDialog.setMinimumSize(new java.awt.Dimension(409, 154));
+        instanceDialog.setResizable(false);
         instanceDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 instanceDialogWindowGainedFocus(evt);
@@ -250,14 +259,24 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         instanceDialogCreateButton.setText("Create");
+        instanceDialogCreateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instanceDialogCreateButtonActionPerformed(evt);
+            }
+        });
 
         instanceDialogNameLabel.setText("Instance Name:");
 
         instanceDialogModpackLabel.setText("Modpack:");
 
-        instanceDialogModpackComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        instanceDialogModpackComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<None>" }));
 
         instanceDialogCancelButton.setText("Cancel");
+        instanceDialogCancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instanceDialogCancelButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout instanceDialogLayout = new javax.swing.GroupLayout(instanceDialog.getContentPane());
         instanceDialog.getContentPane().setLayout(instanceDialogLayout);
@@ -265,20 +284,20 @@ public class MainForm extends javax.swing.JFrame {
             instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(instanceDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(instanceDialogNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(instanceDialogModpackLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(instanceDialogModpackComboBox, 0, 300, Short.MAX_VALUE)
-                    .addComponent(instanceDialogNameBox))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, instanceDialogLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(instanceDialogCreateButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(instanceDialogCancelButton)
-                .addContainerGap())
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(instanceDialogLayout.createSequentialGroup()
+                        .addComponent(instanceDialogCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(instanceDialogCancelButton))
+                    .addGroup(instanceDialogLayout.createSequentialGroup()
+                        .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(instanceDialogNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(instanceDialogModpackLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(instanceDialogModpackComboBox, 0, 300, Short.MAX_VALUE)
+                            .addComponent(instanceDialogNameBox))))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         instanceDialogLayout.setVerticalGroup(
             instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,11 +310,11 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instanceDialogModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(instanceDialogModpackLabel))
-                .addGap(33, 33, 33)
+                .addGap(18, 18, 18)
                 .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instanceDialogCreateButton)
                     .addComponent(instanceDialogCancelButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -315,22 +334,19 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        UsernameLabel.setForeground(new java.awt.Color(128, 128, 128));
-        UsernameLabel.setText("Username:");
-
-        PasswordLabel.setForeground(new java.awt.Color(128, 128, 128));
-        PasswordLabel.setText("Password:");
-
-        UsernameField.setEnabled(false);
-
-        PasswordField.setEnabled(false);
-
         MainTabPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         MainTabPane.setName(""); // NOI18N
 
         ModpackList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ModpackList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                ModpackListValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(ModpackList);
 
+        ModpackDescriptionPane.setEditable(false);
+        ModpackDescriptionPane.setContentType("text/html"); // NOI18N
         jScrollPane2.setViewportView(ModpackDescriptionPane);
 
         javax.swing.GroupLayout ModpackPanelLayout = new javax.swing.GroupLayout(ModpackPanel);
@@ -340,7 +356,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(ModpackPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE))
         );
         ModpackPanelLayout.setVerticalGroup(
             ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,7 +370,7 @@ public class MainForm extends javax.swing.JFrame {
         NewsPanel.setLayout(NewsPanelLayout);
         NewsPanelLayout.setHorizontalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 895, Short.MAX_VALUE)
+            .addGap(0, 951, Short.MAX_VALUE)
         );
         NewsPanelLayout.setVerticalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -367,7 +383,7 @@ public class MainForm extends javax.swing.JFrame {
         SettingsPanel.setLayout(SettingsPanelLayout);
         SettingsPanelLayout.setHorizontalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 895, Short.MAX_VALUE)
+            .addGap(0, 951, Short.MAX_VALUE)
         );
         SettingsPanelLayout.setVerticalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -377,7 +393,7 @@ public class MainForm extends javax.swing.JFrame {
         MainTabPane.addTab("Settings", SettingsPanel);
 
         CurrentUserLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        CurrentUserLabel.setText("Validating...");
+        CurrentUserLabel.setText("Loading...");
 
         LoginButton.setText("Log Out");
         LoginButton.setEnabled(false);
@@ -402,19 +418,6 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        AddInstanceButton.setText("Add");
-        AddInstanceButton.setEnabled(false);
-        AddInstanceButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddInstanceButtonActionPerformed(evt);
-            }
-        });
-
-        BaseModpackComboBox.setEnabled(false);
-
-        InstanceNameField.setEnabled(false);
-
-        InstanceLabel.setForeground(new java.awt.Color(128, 128, 128));
         InstanceLabel.setText("Instance:");
 
         CreateInstanceButton.setText("Create");
@@ -424,12 +427,6 @@ public class MainForm extends javax.swing.JFrame {
                 CreateInstanceButtonActionPerformed(evt);
             }
         });
-
-        ModpackLabel.setForeground(new java.awt.Color(128, 128, 128));
-        ModpackLabel.setText("Modpack:");
-
-        InstanceNameLabel.setForeground(new java.awt.Color(128, 128, 128));
-        InstanceNameLabel.setText("Instance Name:");
 
         ForceUpdateCheckBox.setText("Force Update");
 
@@ -451,38 +448,21 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LoginButton)
-                    .addComponent(CurrentUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(PasswordLabel)
-                    .addComponent(UsernameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(UsernameField)
-                    .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(InstanceNameLabel)
-                    .addComponent(ModpackLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(CurrentUserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BaseModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(CreateInstanceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(InstanceLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(AddInstanceButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(InstanceLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(CreateInstanceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(DeleteInstanceButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PlayButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ForceUpdateCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(PlayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ForceUpdateCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
             .addComponent(MainTabPane)
         );
@@ -492,23 +472,14 @@ public class MainForm extends javax.swing.JFrame {
                 .addComponent(MainTabPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(UsernameLabel)
-                    .addComponent(UsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CurrentUserLabel)
-                    .addComponent(ModpackLabel)
-                    .addComponent(BaseModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(InstanceLabel)
                     .addComponent(InstanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(PlayButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PasswordLabel)
-                    .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(LoginButton)
-                    .addComponent(InstanceNameLabel)
-                    .addComponent(InstanceNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CreateInstanceButton)
-                    .addComponent(AddInstanceButton)
                     .addComponent(DeleteInstanceButton)
                     .addComponent(ForceUpdateCheckBox))
                 .addContainerGap())
@@ -520,6 +491,7 @@ public class MainForm extends javax.swing.JFrame {
     
     private void loadModpackList() {
         DefaultListModel modpackListModel = new DefaultListModel();
+        instanceDialogModpackComboBox.removeAllItems();
         if (new File("./packs").isDirectory()) {
             for (File f : new File("./packs").listFiles()) {
                 if (f.isDirectory()) {
@@ -534,32 +506,78 @@ public class MainForm extends javax.swing.JFrame {
         ModpackList.setModel(modpackListModel);
     }
     
-    private void loadSelfExtractingData() {
-        if (!new File("./data").isDirectory()) {
-            
-            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
-            
-            try {
-                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
-            } catch (IOException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
-            }
-
-            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
-
-            try {
-                Util.decompressZipfile("./data.zip", "./");
-            } catch (ZipException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
-            }
+    private void loadUserInstances(String accountName) {
+        if (accountName == null) {
+            InstanceComboBox.removeAllItems();
+            InstanceComboBox.addItem("<None>");
+            InstanceComboBox.setSelectedIndex(0);
+            return;
         }
+        
+        String friendlyAccountName = getFriendlyName(accountName);
+        
+        InstanceComboBox.removeAllItems();
+        InstanceComboBox.addItem("<None>");
+        
+        if (new File("./users/" + friendlyAccountName).isDirectory()) {
+            for (File f : new File("./users/" + friendlyAccountName).listFiles()) {
+                if (f.isDirectory()) {
+                    InstanceComboBox.addItem(f.getName());
+                }
+            }
+            
+            if (new File("./users/" + friendlyAccountName + "/lastplayed.json").isFile()) {
+                try {
+                    JSONObject lastPlayedConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/lastplayed.json");
+                    InstanceComboBox.setSelectedItem(lastPlayedConfig.get("instance").toString());
+                } catch (IOException ex) {
+                    Logger.error("MainForm.loadLastPlayedInstance", "Failed to load 'lastplayed.json' file!", false, ex.getMessage());
+                    InstanceComboBox.setSelectedIndex(0);
+                }
+            } else {
+                JSONObject lastPlayedConfig = new JSONObject();
+                lastPlayedConfig.put("instance", "<None>");
+                try {
+                    FileUtils.writeStringToFile(new File("./users/" + friendlyAccountName + "/lastplayed.json"), lastPlayedConfig.toJSONString());
+                } catch (IOException ex) {
+                    Logger.error("MainForm.loadLastPlayedInstance", "Failed to create 'lastplayed.json' file!", false, ex.getMessage());
+                }
+                InstanceComboBox.setSelectedIndex(0);
+            }
+        } else {
+            (new File("./users/" + friendlyAccountName)).mkdirs();
+        }
+        
+    }
+    
+    private String getFriendlyName(String accountName) {
+        return accountName.replace("@", "__").replace(".", "__");
+    }
+    
+    private void enablePlayControls() {
+        PlayButton.setEnabled(true);
+        ForceUpdateCheckBox.setEnabled(true);
+        InstanceLabel.setEnabled(true);
+        InstanceComboBox.setEnabled(true);
+        CreateInstanceButton.setEnabled(true);
+        DeleteInstanceButton.setEnabled(true);
+    }
+    
+    private void disablePlayControls() {
+        PlayButton.setEnabled(false);
+        ForceUpdateCheckBox.setEnabled(false);
+        InstanceLabel.setEnabled(false);
+        InstanceComboBox.setEnabled(false);
+        CreateInstanceButton.setEnabled(false);
+        DeleteInstanceButton.setEnabled(false);
     }
     
     private void loadModpackPaneContent(String contentLocation) {
         
         if (!new File(contentLocation + "/description.txt").exists()) {
             //This line was a really bad idea...
-            contentLocation = "./data/content/nodesc/";
+            contentLocation = "./data/content/nodesc";
+            //Wait... how in the name of Notch did I just assign to a parameter variable?!?
         }
         
         try {
@@ -582,7 +600,7 @@ public class MainForm extends javax.swing.JFrame {
                         } catch (Exception ex) { }
 
                         if (styleArg.equalsIgnoreCase("image")) {
-                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + styleValue));
+                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + "/" + styleValue));
                             ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
                         } else if (styleArg.equalsIgnoreCase("reset")) {
                             keyWord = new SimpleAttributeSet();
@@ -600,7 +618,7 @@ public class MainForm extends javax.swing.JFrame {
                                     }
                                 }
                             } catch (Exception ex) {
-                                Util.isNumeric("0");
+                                
                             }
                         }
 
@@ -618,162 +636,26 @@ public class MainForm extends javax.swing.JFrame {
         
     }
     
-    private void disableLoginFields() {
-        LoginButton.setText("Log Out");
-        UsernameLabel.setForeground(new Color(128, 128, 128));
-        PasswordLabel.setForeground(new Color(128, 128, 128));
-        UsernameField.setEnabled(false);
-        PasswordField.setEnabled(false);
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
     
-    private void enableLoginFields() {
-        CurrentUserLabel.setText("Please log in  ------>");
-        LoginButton.setText("Log In");
-        UsernameLabel.setForeground(new Color(0, 0, 0));
-        PasswordLabel.setForeground(new Color(0, 0, 0));
-        UsernameField.setEnabled(true);
-        PasswordField.setEnabled(true);
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
-    
-    private boolean doLogin(String username, String password, String instance) {
-        Logger.info("MainForm.doLogin", "Logging in...");
-        String loginResult = LoginHelper.doPasswordLogin(username, password);
-        
-        if (loginResult.equals("Success")) {
+    private void loadSelfExtractingData() {
+        if (!new File("./data").isDirectory()) {
             
-            Logger.info("MainForm.doLogin", "Login successful!");
+            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
             
-            if (!UsernameField.getText().equals(username))
-                UsernameField.setText(username);
-            
-            if (!(new String(PasswordField.getPassword())).equals(password))
-                PasswordField.setText(password);
-            
-            CurrentUserLabel.setText(LoginHelper.Username);
-            
-            disableLoginFields();
-            
-            loadUserInstances(UsernameField.getText());
-            
-            InstanceComboBox.setSelectedItem(instance);
-            
-            return true;
-            
-        } else {
-            Logger.info("MainForm.doLogin", "Login failed!");
-            InstanceComboBox.removeAllItems();
-            InstanceComboBox.addItem("<None>");
-            enableLoginFields();
-            CurrentUserLabel.setText(loginResult + "  ---->");
-            return false;
-        }
-    }
-    
-    private void setLastLogin() {
-        try {
-            JSONObject lastlogin = new JSONObject();
-            lastlogin.put("username", UsernameField.getText());
-            lastlogin.put("password", new String(PasswordField.getPassword()));
-            lastlogin.put("instance", InstanceComboBox.getSelectedItem().toString());
-            FileUtils.writeStringToFile(new File("./data/lastlogin.json"), lastlogin.toJSONString());
-        } catch (IOException ex) {
-            Logger.error("MainForm.setLastLogin", "Failed to write lastlogin data to file!", false, ex.getMessage());
-        }
-    }
-    
-    private void loadUserInstances(String username) {
-        
-        Logger.info("MainForm.loadUserInstances", "Loading instances...");
-        
-        InstanceComboBox.removeAllItems();
-        InstanceComboBox.addItem("<None>");
-        
-        if (new File("./users/" + username.replace("@", "_")).isDirectory()) {
-            if (new File("./users/" + username.replace("@", "_")).listFiles() != null) {
-                for (File f : new File("./users/" + username.replace("@", "_")).listFiles()) {
-                    if (f.isDirectory()) {
-                        InstanceComboBox.addItem(f.getName());
-                    }
-                }
-            } else {
-                Logger.warning("MainForm.loadUserInstances", "Weird error.");
+            try {
+                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
             }
-        } else {
-            new File("./users/" + username.replace("@", "_")).mkdirs();
+
+            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
+
+            try {
+                Util.decompressZipfile("./data.zip", "./");
+            } catch (ZipException ex) {
+                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
+            }
         }
-        
-    }
-    
-    private boolean newInstanceEnabled = false;
-    
-    private void enableNewInstanceFields() {
-        ModpackLabel.setForeground(new Color(0, 0, 0));
-        InstanceNameLabel.setForeground(new Color(0, 0, 0));
-        BaseModpackComboBox.setEnabled(true);
-        InstanceNameField.setEnabled(true);
-        
-        CreateInstanceButton.setEnabled(true);
-        AddInstanceButton.setEnabled(false);
-        DeleteInstanceButton.setText("Cancel");
-        
-        InstanceComboBox.setEnabled(false);
-        InstanceLabel.setForeground(new Color(128, 128, 128));
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
-    
-    private void disableNewInstanceFields() {
-        ModpackLabel.setForeground(new Color(128, 128, 128));
-        InstanceNameLabel.setForeground(new Color(128, 128, 128));
-        BaseModpackComboBox.setEnabled(false);
-        InstanceNameField.setEnabled(false);
-        
-        CreateInstanceButton.setEnabled(false);
-        AddInstanceButton.setEnabled(true);
-        DeleteInstanceButton.setText("Delete");
-        
-        InstanceComboBox.setEnabled(true);
-        InstanceLabel.setForeground(new Color(0, 0, 0));
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
-    
-    private void enableInstanceFields() {
-        
-        AddInstanceButton.setEnabled(true);
-        DeleteInstanceButton.setEnabled(true);
-        
-        InstanceComboBox.setEnabled(true);
-        InstanceLabel.setForeground(new Color(0, 0, 0));
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
-    
-    private void disableInstanceFields() {
-        
-        AddInstanceButton.setEnabled(false);
-        DeleteInstanceButton.setEnabled(false);
-        
-        InstanceComboBox.setEnabled(false);
-        InstanceLabel.setForeground(new Color(128, 128, 128));
-        
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
-    }
-    
-    private void setLoadingSpinnerVisible(boolean state) {
-        //LoadingLabel.setVisible(state);
-        this.getContentPane().validate();
-        this.getContentPane().repaint();
     }
     
     private void loadDataFromResource() {
@@ -815,76 +697,61 @@ public class MainForm extends javax.swing.JFrame {
         
     }
 
-    private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
-        if (LoginButton.getText().equals("Log Out")) {
-            LoginHelper.doSystemLogout();
-            enableLoginFields();
-            disableNewInstanceFields();
-            disableInstanceFields();
-            PlayButton.setEnabled(false);
-            setLastLogin();
+    
+    private void ModpackListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ModpackListValueChanged
+        if (ModpackList.getSelectedValue() == null) {
+            //loadModpackPaneContent("./data/content/nopack");
         } else {
-            if (doLogin(UsernameField.getText(), (new String(PasswordField.getPassword())), "<None>")) {
-                enableInstanceFields();
-                PlayButton.setEnabled(true);
-                setLastLogin();
+            loadModpackPaneContent("./packs/" + ModpackList.getSelectedValue().toString());
+        }
+    }//GEN-LAST:event_ModpackListValueChanged
+
+    private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
+        try {
+            if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+                String item = InstanceComboBox.getSelectedItem().toString();
+                try {
+                    JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                    loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+                } catch (IOException ex) {
+                    Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                    loadModpackPaneContent("./data/content/nodesc");
+                }
+            } else {
+                loadModpackPaneContent("./data/content/nopack");
             }
+        } catch (Exception ex) { }
+    }//GEN-LAST:event_InstanceComboBoxActionPerformed
+
+
+    private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
+        if (LoginButton.getText().equals("Log In")) {
+            loginDialog.setVisible(true);
+        } else {
+            Auth.performLogout();
+            Auth.saveToFile();
+            loadUserInstances(null);
+            LoginButton.setText("Log In");
+            CurrentUserLabel.setText("-- Please Log In --");
+            disablePlayControls();
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
 
-    private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
-        
-        //I wish I could do this try/catch better, but this segment just does crazy stuff   ~Greenlock
-        try {
-        
-            String selectedInstance = InstanceComboBox.getSelectedItem().toString();
-
-            if (UsernameField.getText() != null) {
-                if (!selectedInstance.equals("<None>")) {
-                    loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
-                } else {
-                    loadModpackPaneContent("./data/content/nopack/");
-                }
-            } else {
-                loadModpackPaneContent("./data/content/nopack/");
-            }
-        
-        } catch (Exception ex) { }
-        
-    }//GEN-LAST:event_InstanceComboBoxActionPerformed
-
-    private void AddInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddInstanceButtonActionPerformed
-        enableNewInstanceFields();
-        PlayButton.setEnabled(false);
-        newInstanceEnabled = true;
-    }//GEN-LAST:event_AddInstanceButtonActionPerformed
-
     private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
-        if (newInstanceEnabled) {
-            disableNewInstanceFields();
-            PlayButton.setEnabled(true);
-            newInstanceEnabled = false;
-        } else {
+        if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
             try {
-                FileUtils.deleteDirectory(new File("./users/" + UsernameField.getText().replace("@", "_") + "/" + InstanceComboBox.getSelectedItem().toString()));
-                loadUserInstances(UsernameField.getText());
+                FileUtils.deleteDirectory(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + InstanceComboBox.getSelectedItem().toString()));
             } catch (IOException ex) {
-                Logger.error("MainForm.DeleteInstanceButtonActionPerformed", "Failed to delete instance!", false, ex.getMessage());
+                Logger.error("MainForm.DeleteInstanceButtonActionPerformed", "Could not delete instance!", false, ex.getMessage());
+                return;
             }
+            loadUserInstances(Auth.AccountName);
+            InstanceComboBox.setSelectedIndex(0);
         }
     }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
 
     private void CreateInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateInstanceButtonActionPerformed
-        
-        if (BaseModpackComboBox.getSelectedItem().toString().equals("<None>")) {
-            return;
-        }
-        
-        Modpack.createInstance(InstanceNameField.getText(), UsernameField.getText().replace("@", "_"), BaseModpackComboBox.getSelectedItem().toString());
-        
-        disableNewInstanceFields();
-        PlayButton.setEnabled(true);
-        loadUserInstances(UsernameField.getText());
+        instanceDialog.setVisible(true);
     }//GEN-LAST:event_CreateInstanceButtonActionPerformed
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
@@ -911,7 +778,7 @@ public class MainForm extends javax.swing.JFrame {
             @Override
             protected Object doInBackground() {
                 
-                setLastLogin();
+                Auth.saveToFile();
 
                 if (CurrentUserLabel.getText().endsWith("-->")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
@@ -924,7 +791,7 @@ public class MainForm extends javax.swing.JFrame {
                 }
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
-                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), UsernameField.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
+                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), CurrentUserLabel.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
 
                 if (!pack.IsInstallComplete) {
                     pack.build();
@@ -951,8 +818,6 @@ public class MainForm extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
         Logger.begin();
-        Logger.statusLabel = progresDialogStatusLabel;
-        Logger.statusBar = progressDialogStatusBar;
         
         Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
         
@@ -963,6 +828,7 @@ public class MainForm extends javax.swing.JFrame {
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        instanceDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
@@ -977,55 +843,61 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
+        Dialogs.popupDialog = popupDialog;
+        Dialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
+        Dialogs.progressDialog = progressDialog;
+        Dialogs.progressDialogStatusBar = progressDialogStatusBar;
+        Dialogs.progressDialogStatusLabel = progressDialogStatusLabel;
+        
         
         Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
         loadModpackList();
         
-        //loadSelfExtractingData();
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
-        if (new File("./data/lastlogin.json").exists()) {
-            JSONObject lastlogin = null;
-            try {
-                lastlogin = Util.readJSONFile("./data/lastlogin.json");
-            } catch (Exception ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to load lastlogin data!", false, ex.getMessage());
-                enableLoginFields();
-                disableInstanceFields();
-                PlayButton.setEnabled(false);
-                InstanceComboBox.addItem("<None>");
-            }
-            if (lastlogin != null) {
-                UsernameField.setText((String)lastlogin.get("username"));
-                PasswordField.setText((String)lastlogin.get("password"));
-                if (!doLogin((String)lastlogin.get("username"), (String)lastlogin.get("password"), (String)lastlogin.get("instance"))) {
-                    disableInstanceFields();
-                    PlayButton.setEnabled(false);
-                } else {
-                    enableInstanceFields();
-                    PlayButton.setEnabled(true);
-                }
+        Auth.loadFromFile();
+        if (Auth.isLoggedIn) {
+            if (Auth.performLogin(null, null)) {
+                CurrentUserLabel.setText(Auth.Username);
+                LoginButton.setText("Log Out");
+                enablePlayControls();
+            } else {
+                CurrentUserLabel.setText("-- Login Failed --");
+                LoginButton.setText("Log In");
+                disablePlayControls();
             }
         } else {
-            enableLoginFields();
-            disableInstanceFields();
-            PlayButton.setEnabled(false);
-            InstanceComboBox.addItem("<None>");
+            CurrentUserLabel.setText("-- Please Log In --");
+            LoginButton.setText("Log In");
+            disablePlayControls();
         }
-        
         LoginButton.setEnabled(true);
-
-        Logger.info("MainForm.formWindowOpened", "Loading content for selected instance...");
-        String selectedInstance = ModpackList.getSelectedValue().toString();
-        if (UsernameField.getText() != null) {
-            if (!selectedInstance.equals("<None>")) {
-                loadModpackPaneContent("./users/" + UsernameField.getText().replace("@", "_") + "/" + selectedInstance + "/ark/");
+        
+        
+        if (Auth.isLoggedIn) {
+            loadUserInstances(Auth.AccountName);
+            if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+                String item = InstanceComboBox.getSelectedItem().toString();
+                try {
+                    JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                    loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+                } catch (IOException ex) {
+                    Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                    loadModpackPaneContent("./data/content/nodesc");
+                }
+            } else {
+                loadModpackPaneContent("./data/content/nopack");
+            }
+        } else {
+            loadUserInstances(null);
+            if (ModpackList.getModel().getSize() > 0) {
+                ModpackList.setSelectedIndex(0);
+                loadModpackPaneContent("./packs/" + ModpackList.getSelectedValue().toString());
             } else {
                 loadModpackPaneContent("./data/content/nopack/");
             }
-        } else {
-            loadModpackPaneContent("./data/content/nopack/");
         }
+        
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
@@ -1095,6 +967,92 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_instanceDialogWindowLostFocus
 
     
+    private void loginDialogCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginDialogCancelButtonActionPerformed
+        loginDialog.setVisible(false);
+    }//GEN-LAST:event_loginDialogCancelButtonActionPerformed
+
+    private void loginDialogLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginDialogLoginButtonActionPerformed
+        SwingWorker worker = new SwingWorker() {
+            
+            @Override
+            protected void done() { }
+
+            @Override
+            protected void process(List chunks) { }
+            
+            @Override
+            protected Object doInBackground() {
+                
+                loginDialog.setVisible(false);
+                Dialogs.showProgressDialog();
+                Dialogs.setProgressIndeterminate(true);
+                
+                Dialogs.setProgressCaption("Logging in...");
+                Auth.performLogin(loginDialogUsernameBox.getText(), new String(loginDialogPasswordBox.getPassword()));
+                
+                Dialogs.hideProgressDialog();
+                
+                if (Auth.isLoggedIn) {
+                    Auth.saveToFile();
+                    
+                    CurrentUserLabel.setText(Auth.Username);
+                    LoginButton.setText("Log Out");
+                    enablePlayControls();
+                    loadUserInstances(Auth.AccountName);
+                    
+                    if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+                        String item = InstanceComboBox.getSelectedItem().toString();
+                        try {
+                            JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                            loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+                        } catch (IOException ex) {
+                            Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                            loadModpackPaneContent("./data/content/nodesc");
+                        }
+                    } else {
+                        loadModpackPaneContent("./data/content/nopack");
+                    }
+                } else {
+                    Dialogs.showNotification("Unable to log in successfully!");
+                    
+                    CurrentUserLabel.setText("-- Login Failed --");
+                    LoginButton.setText("Log In");
+                    disablePlayControls();
+                }
+                
+                return null;
+                
+            }
+            
+        };
+        worker.execute();
+    }//GEN-LAST:event_loginDialogLoginButtonActionPerformed
+
+    
+    private void instanceDialogCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instanceDialogCancelButtonActionPerformed
+        instanceDialog.setVisible(false);
+    }//GEN-LAST:event_instanceDialogCancelButtonActionPerformed
+
+    private void instanceDialogCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instanceDialogCreateButtonActionPerformed
+        new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + instanceDialogNameBox.getText()).mkdirs();
+        JSONObject instanceConfig = new JSONObject();
+        instanceConfig.put("name", instanceDialogNameBox.getText());
+        instanceConfig.put("pack", instanceDialogModpackComboBox.getSelectedItem().toString());
+        try {
+            FileUtils.writeStringToFile(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + instanceDialogNameBox.getText() + "/instance.json"), instanceConfig.toJSONString());
+        } catch (IOException ex) {
+            Logger.error("MainForm.instanceDialogCreateButtonActionPerformed", "Could not create 'instance.json'!", false, ex.getMessage());
+            return;
+        }
+        loadUserInstances(Auth.AccountName);
+    }//GEN-LAST:event_instanceDialogCreateButtonActionPerformed
+
+    
+    private void popupDialogOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupDialogOkButtonActionPerformed
+        popupDialog.setVisible(false);
+    }//GEN-LAST:event_popupDialogOkButtonActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -1127,29 +1085,20 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddInstanceButton;
-    private javax.swing.JComboBox BaseModpackComboBox;
     private javax.swing.JButton CreateInstanceButton;
     private javax.swing.JLabel CurrentUserLabel;
     private javax.swing.JButton DeleteInstanceButton;
     private javax.swing.JCheckBox ForceUpdateCheckBox;
     private javax.swing.JComboBox InstanceComboBox;
     private javax.swing.JLabel InstanceLabel;
-    private javax.swing.JTextField InstanceNameField;
-    private javax.swing.JLabel InstanceNameLabel;
     private javax.swing.JButton LoginButton;
     private javax.swing.JTabbedPane MainTabPane;
     private javax.swing.JTextPane ModpackDescriptionPane;
-    private javax.swing.JLabel ModpackLabel;
     private javax.swing.JList ModpackList;
     private javax.swing.JPanel ModpackPanel;
     private javax.swing.JPanel NewsPanel;
-    private javax.swing.JPasswordField PasswordField;
-    private javax.swing.JLabel PasswordLabel;
     private javax.swing.JButton PlayButton;
     private javax.swing.JPanel SettingsPanel;
-    private javax.swing.JTextField UsernameField;
-    private javax.swing.JLabel UsernameLabel;
     private javax.swing.JDialog instanceDialog;
     private javax.swing.JButton instanceDialogCancelButton;
     private javax.swing.JButton instanceDialogCreateButton;
@@ -1169,8 +1118,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JDialog popupDialog;
     private javax.swing.JLabel popupDialogCaptionLabel;
     private javax.swing.JButton popupDialogOkButton;
-    private javax.swing.JLabel progresDialogStatusLabel;
     public javax.swing.JDialog progressDialog;
     public javax.swing.JProgressBar progressDialogStatusBar;
+    private javax.swing.JLabel progressDialogStatusLabel;
     // End of variables declaration//GEN-END:variables
 }

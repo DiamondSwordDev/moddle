@@ -22,15 +22,23 @@ public class Auth {
     public static String UUID = null;
     public static String AccessToken = null;
     
-    public static boolean wasLastLoginSuccessful = false;
+    public static boolean isLoggedIn = false;
     
     
     public static void loadFromFile() {
         try {
-            JSONObject authConfig = Util.readJSONFile("./data/auth.json");
-            AccountName = authConfig.get("account").toString();
-            Password = decryptPassword(authConfig.get("password").toString());
-            wasLastLoginSuccessful = Boolean.parseBoolean(authConfig.get("successful").toString());
+            if (new File("./data/auth.json").isFile()) {
+                JSONObject authConfig = Util.readJSONFile("./data/auth.json");
+                isLoggedIn = Boolean.parseBoolean(authConfig.get("loggedin").toString());
+                AccountName = authConfig.get("account").toString();
+                Password = decryptPassword(authConfig.get("password").toString());
+            } else {
+                JSONObject authConfig = new JSONObject();
+                authConfig.put("account", "");
+                authConfig.put("password", "");
+                authConfig.put("loggedin", Boolean.toString(false));
+                FileUtils.writeStringToFile(new File("./data/auth.json"), authConfig.toJSONString());
+            }
         } catch (IOException ex) {
             Logger.error("Auth.loadFromFile", "Failed to load file 'auth.json'!", false, ex.getMessage());
         }
@@ -40,8 +48,8 @@ public class Auth {
         try {
             JSONObject authConfig = new JSONObject();
             authConfig.put("account", AccountName);
-            authConfig.put("password", Password);
-            authConfig.put("successful", Boolean.toString(wasLastLoginSuccessful));
+            authConfig.put("password", encryptPassword(Password));
+            authConfig.put("loggedin", Boolean.toString(isLoggedIn));
             FileUtils.writeStringToFile(new File("./data/auth.json"), authConfig.toJSONString());
         } catch (IOException ex) {
             Logger.error("AuthCache.saveToFile", "Failed to save auth data to file 'auth.json'!", false, ex.getMessage());
@@ -57,7 +65,7 @@ public class Auth {
     }
     
     
-    private boolean performLogin(String uname, String pword) {
+    public static boolean performLogin(String uname, String pword) {
         if (uname != null) {
             AccountName = uname;
         }
@@ -72,23 +80,30 @@ public class Auth {
         try {
             result = request.send();
         } catch (Exception ex) {
-            wasLastLoginSuccessful = false;
+            isLoggedIn = false;
             return false;
         }
         
         if (result.wasSuccessful) {
-            wasLastLoginSuccessful = true;
+            isLoggedIn = true;
             Username = result.Username;
             UUID = result.UUID;
             AccessToken = result.AccessToken;
             return true;
         } else {
-            wasLastLoginSuccessful = false;
+            isLoggedIn = false;
             Username = null;
             UUID = null;
             AccessToken = null;
             Dialogs.showNotification("Error: " + result.ErrorDescription);
             return false;
         }
+    }
+    
+    public static void performLogout() {
+        Username = null;
+        UUID = null;
+        AccessToken = null;
+        isLoggedIn = false;
     }
 }

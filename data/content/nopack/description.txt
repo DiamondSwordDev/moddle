@@ -1,3 +1,1 @@
-$[[BOLD:True]]
-No instance selected!
-$[[RESET]]
+$[[IMAGE:banner.png]]
