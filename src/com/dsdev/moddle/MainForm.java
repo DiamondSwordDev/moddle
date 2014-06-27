@@ -59,6 +59,7 @@ public class MainForm extends javax.swing.JFrame {
         popupDialog = new javax.swing.JDialog();
         popupDialogCaptionLabel = new javax.swing.JLabel();
         popupDialogOkButton = new javax.swing.JButton();
+        popupDialogImageLabel = new javax.swing.JLabel();
         instanceDialog = new javax.swing.JDialog();
         instanceDialogCreateButton = new javax.swing.JButton();
         instanceDialogNameLabel = new javax.swing.JLabel();
@@ -198,7 +199,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        popupDialog.setMinimumSize(new java.awt.Dimension(372, 105));
+        popupDialog.setMinimumSize(new java.awt.Dimension(396, 142));
         popupDialog.setResizable(false);
         popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -225,21 +226,31 @@ public class MainForm extends javax.swing.JFrame {
         popupDialog.getContentPane().setLayout(popupDialogLayout);
         popupDialogLayout.setHorizontalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popupDialogLayout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
+            .addGroup(popupDialogLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(popupDialogOkButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(popupDialogLayout.createSequentialGroup()
+                        .addComponent(popupDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popupDialogLayout.createSequentialGroup()
+                        .addGap(0, 294, Short.MAX_VALUE)
+                        .addComponent(popupDialogOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         popupDialogLayout.setVerticalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(popupDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(popupDialogLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(popupDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(popupDialogLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(9, 9, 9)
                 .addComponent(popupDialogOkButton)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         instanceDialog.setMinimumSize(new java.awt.Dimension(409, 154));
@@ -526,28 +537,32 @@ public class MainForm extends javax.swing.JFrame {
                 }
             }
             
-            if (new File("./users/" + friendlyAccountName + "/lastplayed.json").isFile()) {
-                try {
-                    JSONObject lastPlayedConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/lastplayed.json");
-                    InstanceComboBox.setSelectedItem(lastPlayedConfig.get("instance").toString());
-                } catch (IOException ex) {
-                    Logger.error("MainForm.loadLastPlayedInstance", "Failed to load 'lastplayed.json' file!", false, ex.getMessage());
-                    InstanceComboBox.setSelectedIndex(0);
-                }
-            } else {
-                JSONObject lastPlayedConfig = new JSONObject();
-                lastPlayedConfig.put("instance", "<None>");
-                try {
-                    FileUtils.writeStringToFile(new File("./users/" + friendlyAccountName + "/lastplayed.json"), lastPlayedConfig.toJSONString());
-                } catch (IOException ex) {
-                    Logger.error("MainForm.loadLastPlayedInstance", "Failed to create 'lastplayed.json' file!", false, ex.getMessage());
-                }
-                InstanceComboBox.setSelectedIndex(0);
-            }
+            loadLastPlayed(accountName);
         } else {
             (new File("./users/" + friendlyAccountName)).mkdirs();
         }
         
+    }
+    
+    private void loadLastPlayed(String accountName) {
+        if (new File("./users/" + getFriendlyName(accountName) + "/lastplayed.json").isFile()) {
+            try {
+                JSONObject lastPlayedConfig = Util.readJSONFile("./users/" + getFriendlyName(accountName) + "/lastplayed.json");
+                InstanceComboBox.setSelectedItem(lastPlayedConfig.get("instance").toString());
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadLastPlayedInstance", "Failed to load 'lastplayed.json' file!", false, ex.getMessage());
+                InstanceComboBox.setSelectedIndex(0);
+            }
+        } else {
+            JSONObject lastPlayedConfig = new JSONObject();
+            lastPlayedConfig.put("instance", "<None>");
+            try {
+                FileUtils.writeStringToFile(new File("./users/" + getFriendlyName(accountName) + "/lastplayed.json"), lastPlayedConfig.toJSONString());
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadLastPlayedInstance", "Failed to create 'lastplayed.json' file!", false, ex.getMessage());
+            }
+            InstanceComboBox.setSelectedIndex(0);
+        }
     }
     
     private String getFriendlyName(String accountName) {
@@ -828,6 +843,7 @@ public class MainForm extends javax.swing.JFrame {
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        popupDialogImageLabel.setIcon(new ImageIcon("./data/content/alert.png"));
         instanceDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
@@ -1117,6 +1133,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel loginDialogUsernameLabel;
     private javax.swing.JDialog popupDialog;
     private javax.swing.JLabel popupDialogCaptionLabel;
+    private javax.swing.JLabel popupDialogImageLabel;
     private javax.swing.JButton popupDialogOkButton;
     public javax.swing.JDialog progressDialog;
     public javax.swing.JProgressBar progressDialogStatusBar;

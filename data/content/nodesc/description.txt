@@ -1,3 +1,1 @@
-$[[BOLD:True]]
-No description is available!
-$[[RESET]]
+$[[IMAGE:banner.png]]

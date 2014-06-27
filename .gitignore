@@ -3,10 +3,11 @@
 /dist/
 /tmp/
 /data/versions/
+/data/auth.json
+/data/lastlogin.json
 /stderr.txt
 /stdout.txt
 /users/
-/data/lastlogin.json
 /news.zip
 /logs/
 /cache/*/
