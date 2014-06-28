@@ -24,7 +24,7 @@ public class Util {
 
     public static void assertDirectoryExistence(String path) {
         File dir = new File(path);
-        if (!dir.exists()) {
+        if (!dir.isDirectory()) {
             dir.mkdirs();
         }
     }

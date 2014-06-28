@@ -501,8 +501,10 @@ public class MainForm extends javax.swing.JFrame {
 
     
     private void loadModpackList() {
-        DefaultListModel modpackListModel = new DefaultListModel();
         instanceDialogModpackComboBox.removeAllItems();
+        
+        DefaultListModel modpackListModel = new DefaultListModel();
+        
         if (new File("./packs").isDirectory()) {
             for (File f : new File("./packs").listFiles()) {
                 if (f.isDirectory()) {
@@ -514,6 +516,7 @@ public class MainForm extends javax.swing.JFrame {
             Logger.info("MainForm.loadModpackList", "Creating packs directory...");
             (new File("./packs")).mkdirs();
         }
+        
         ModpackList.setModel(modpackListModel);
     }
     
@@ -562,6 +565,21 @@ public class MainForm extends javax.swing.JFrame {
                 Logger.error("MainForm.loadLastPlayedInstance", "Failed to create 'lastplayed.json' file!", false, ex.getMessage());
             }
             InstanceComboBox.setSelectedIndex(0);
+        }
+    }
+    
+    private void loadSelectedPackDescription() {
+        if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+            String item = InstanceComboBox.getSelectedItem().toString();
+            try {
+                JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+            } catch (IOException ex) {
+                Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                loadModpackPaneContent("./data/content/nodesc");
+            }
+        } else {
+            loadModpackPaneContent("./data/content/nopack");
         }
     }
     
@@ -772,9 +790,7 @@ public class MainForm extends javax.swing.JFrame {
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
         Logger.info("MainForm.PlayButtonActionPerformed", "Starting execution...");
-        Logger.setProgress(0);
-        progressDialog.setVisible(true);
-        progressDialog.setLocationRelativeTo(null);
+        Dialogs.showProgressDialog();
         
         SwingWorker worker = new SwingWorker() {
 
@@ -795,7 +811,7 @@ public class MainForm extends javax.swing.JFrame {
                 
                 Auth.saveToFile();
 
-                if (CurrentUserLabel.getText().endsWith("-->")) {
+                if (CurrentUserLabel.getText().startsWith("-- ")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
                     return null;
                 }
@@ -806,7 +822,7 @@ public class MainForm extends javax.swing.JFrame {
                 }
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
-                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), CurrentUserLabel.getText().replace("@", "_"), ForceUpdateCheckBox.isSelected());
+                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), getFriendlyName(Auth.AccountName), ForceUpdateCheckBox.isSelected());
 
                 if (!pack.IsInstallComplete) {
                     pack.build();
@@ -1061,6 +1077,7 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         loadUserInstances(Auth.AccountName);
+        instanceDialog.setVisible(false);
     }//GEN-LAST:event_instanceDialogCreateButtonActionPerformed
 
     

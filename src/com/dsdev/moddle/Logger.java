@@ -4,8 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -17,20 +15,18 @@ public class Logger {
 
     public static String instanceLoggerFile = null;
     public static DefaultListModel redirectionList = null;
-    public static JLabel statusLabel = null;
-    public static JProgressBar statusBar = null;
 
     public static void info(String method, String message) {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "] - " + message);
-        if (statusLabel != null) {
-            statusLabel.setText(message);
+        if (Dialogs.progressDialogStatusLabel != null) {
+            Dialogs.progressDialogStatusLabel.setText(message);
         }
     }
 
     public static void warning(String method, String message) {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "][WARNING] - " + message);
-        if (statusLabel != null) {
-            statusLabel.setText("Warning: " + message);
+        if (Dialogs.progressDialogStatusLabel != null) {
+            Dialogs.progressDialogStatusLabel.setText("Warning: " + message);
         }
     }
 
@@ -48,8 +44,8 @@ public class Logger {
             safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
         }
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
-        if (statusLabel != null) {
-            statusLabel.setText("Error: " + message);
+        if (Dialogs.progressDialogStatusLabel != null) {
+            Dialogs.progressDialogStatusLabel.setText("Error: " + message);
         }
     }
 
@@ -89,17 +85,17 @@ public class Logger {
     }
 
     public static void setProgress(int progress) {
-        if (statusBar != null) {
-            statusBar.setValue(progress);
+        if (Dialogs.progressDialogStatusBar != null) {
+            Dialogs.progressDialogStatusBar.setValue(progress);
         }
     }
 
     public static void incrementProgress(int progress) {
-        if (statusBar != null) {
-            if (progress > 100 || statusBar.getValue() + progress > 100) {
-                statusBar.setValue(100);
+        if (Dialogs.progressDialogStatusBar != null) {
+            if (progress > 100 || Dialogs.progressDialogStatusBar.getValue() + progress > 100) {
+                Dialogs.progressDialogStatusBar.setValue(100);
             } else {
-                statusBar.setValue(statusBar.getValue() + progress);
+                Dialogs.progressDialogStatusBar.setValue(Dialogs.progressDialogStatusBar.getValue() + progress);
             }
         }
     }

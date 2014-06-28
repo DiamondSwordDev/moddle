@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.auth.Auth;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -83,7 +84,7 @@ public class Modpack {
             ret = parseSettingsString(ret);
         }
 
-        if (ret.contains("##")) {
+        /*if (ret.contains("##")) {
             if (ret.split("##")[0].equalsIgnoreCase("id")) {
                 String id = IDHelper.getID(settingName);
                 if (id != null) {
@@ -92,7 +93,7 @@ public class Modpack {
                     ret = ret.split("##")[1];
                 }
             }
-        }
+        }*/
 
         return ret;
     }
@@ -239,7 +240,7 @@ public class Modpack {
 
         Logger.info("Modpack.build", "Obtaining Minecraft jarfile...");
         Util.assertDirectoryExistence("./data/versions");
-        if (!(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar").exists())) {
+        if (!(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar").isFile())) {
             Logger.info("Modpack.build", "Version does not exist.  Downloading...");
             try {
                 FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar"), new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar"));
@@ -249,9 +250,9 @@ public class Modpack {
             }
         }
         try {
-            if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").exists()) {
-                new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").delete();
-            }
+            //if (new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").exists()) {
+            //    new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar").delete();
+            //}
             FileUtils.copyFile(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar"), new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion") + "/" + Settings.get("general.MinecraftVersion") + ".jar"));
         } catch (IOException ex) {
             Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex.getMessage());
@@ -471,9 +472,9 @@ public class Modpack {
             }
             try {
                 if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
-                    if (new File(targetDir + (String) file.get("target")).isDirectory()) {
-                        FileUtils.deleteDirectory(new File(targetDir + (String) file.get("target")));
-                    }
+                    //if (new File(targetDir + (String) file.get("target")).isDirectory()) {
+                    //    FileUtils.deleteDirectory(new File(targetDir + (String) file.get("target")));
+                    //}
                     Util.decompressZipfile(entryLocation + entryName + "-" + entryVersion + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                 } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
                     if (new File(targetDir + (String) file.get("target")).isFile()) {
@@ -661,6 +662,7 @@ public class Modpack {
             }
 
             //</editor-fold>
+            
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
             Logger.info("Modpack.run", "Parsing UseLegacyUsernameAndSession...");
             if (getSettingBool("launch.UseLegacyUsernameAndSession")) {
@@ -689,28 +691,29 @@ public class Modpack {
             Logger.info("Modpack.run", "Parsing UseUsernameArgument...");
             if (getSettingBool("launch.UseUsernameArgument")) {
                 args.add("--username");
-                args.add(LoginHelper.Username);
+                args.add(Auth.Username);
             }
 
             Logger.info("Modpack.run", "Parsing UseSessionArgument...");
             if (getSettingBool("launch.UseSessionArgument")) {
                 args.add("--session");
-                args.add(LoginHelper.AccessToken);
+                args.add(Auth.AccessToken);
             }
 
             Logger.info("Modpack.run", "Parsing UseUUIDArgument...");
             if (getSettingBool("launch.UseUUIDArgument")) {
                 args.add("--uuid");
-                args.add(LoginHelper.UUID);
+                args.add(Auth.UUID);
             }
 
             Logger.info("Modpack.run", "Parsing UseAccessTokenArgument...");
             if (getSettingBool("launch.UseAccessTokenArgument")) {
                 args.add("--accessToken");
-                args.add(LoginHelper.AccessToken);
+                args.add(Auth.AccessToken);
             }
 
-            Logger.info("Modpack.run", "Parsing UseUserPropertiesArgument...");
+            //Need to find out what these actually do!
+            /*Logger.info("Modpack.run", "Parsing UseUserPropertiesArgument...");
             if (getSettingBool("launch.UseUserPropertiesArgument")) {
                 args.add("--userProperties");
                 args.add(LoginHelper.UserProperties);
@@ -720,7 +723,7 @@ public class Modpack {
             if (getSettingBool("launch.UseUserTypeArgument")) {
                 args.add("--userType");
                 args.add(LoginHelper.UserType);
-            }
+            }*/
 
             Logger.info("Modpack.run", "Parsing UseTweakClassArgument...");
             if (getSettingBool("launch.UseTweakClassArgument")) {
@@ -736,6 +739,7 @@ public class Modpack {
             }
 
             //</editor-fold>
+            
             String[] argArray = new String[args.toArray().length];
             for (int i = 0; i < argArray.length; i++) {
                 argArray[i] = args.get(i);
@@ -755,7 +759,8 @@ public class Modpack {
             return true;
 
         } catch (Exception ex) {
-            Logger.error("PackBuilder.run", ex.getMessage(), true, ex.getMessage());
+            ex.printStackTrace();
+            Logger.error("PackBuilder.run", ex.getMessage(), true, ex.getClass().getSimpleName() + ": " + ex.getMessage());
             return false;
         }
     }
