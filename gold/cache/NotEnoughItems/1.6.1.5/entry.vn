@@ -1,0 +1,11 @@
+Author=ChickenBones
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-CodeChickenCore,0.9.0.6
+
+NotEnoughItems.jar:
+-Extract=False
+-Url=http://www.chickenbones.craftsaddle.org/Files/goto.php?file=NotEnoughItems&version=1.6.4

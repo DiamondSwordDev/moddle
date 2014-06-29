@@ -1,0 +1,11 @@
+Author=cpw
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+IronChests.zip:
+-Extract=False
+-Url=http://files.minecraftforge.net/IronChests2/ironchest-universal-1.6.4-5.4.1.649.zip

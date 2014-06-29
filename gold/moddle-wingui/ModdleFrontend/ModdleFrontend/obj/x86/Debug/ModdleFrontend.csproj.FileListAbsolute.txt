@@ -1,0 +1,9 @@
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\bin\Debug\ModdleFrontend.exe
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\bin\Debug\ModdleFrontend.pdb
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ModdleFrontend.MainForm.resources
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ResGen.read.1.tlog
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ResGen.write.1.tlog
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ModdleFrontend.exe
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\obj\x86\Debug\ModdleFrontend.pdb
+C:\Users\LukeSmalley\Documents\SharpDevelop Projects\ModdleFrontend\ModdleFrontend\bin\Debug\ICSharpCode.SharpZipLib.dll

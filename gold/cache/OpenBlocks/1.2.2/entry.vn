@@ -1,0 +1,11 @@
+Author=The OpenMods Team
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+OpenBlocks.jar:
+-Extract=False
+-Url=https://dl.dropboxusercontent.com/u/4295615/OpenBlocks-1.2.2.jar

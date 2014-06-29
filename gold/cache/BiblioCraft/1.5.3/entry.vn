@@ -1,0 +1,11 @@
+Author=Nuchaz
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+BiblioCraft.zip:
+-Extract=False
+-Url=http://www.bibliocraftmod.com/releases/BiblioCraft[v1.5.3].zip

@@ -1,0 +1,11 @@
+Author=ProjectRed Contributors
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+ProjectRed-Base.tar.gz:
+-Extract=True
+-Url=https://dl.dropboxusercontent.com/u/242871063/moddle/dist/projectred/4.2.0.14/projectred-base.tar.gz

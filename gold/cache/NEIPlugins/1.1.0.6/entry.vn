@@ -1,0 +1,11 @@
+Author=mistaqur
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+NEIPlugins.jar:
+-Extract=False
+-Url=http://bit.ly/1fSmc97

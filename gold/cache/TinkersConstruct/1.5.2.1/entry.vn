@@ -1,0 +1,11 @@
+Author=mDiyo
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+TinkersConstruct.jar:
+-Extract=False
+-Url=https://dl.dropboxusercontent.com/u/42769935/Tinker_1.6.2/TConstruct_mc1.6.4_1.5.2.1.jar

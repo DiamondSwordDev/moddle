@@ -1,0 +1,10 @@
+Author=Various
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+__MinecraftNatives.zip:
+-Extract=True

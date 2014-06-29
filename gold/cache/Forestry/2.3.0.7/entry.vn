@@ -1,0 +1,11 @@
+Author=SirSengir
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-None
+
+Forestry.jar:
+-Extract=False
+-Url=http://www.curseforge.com/media/files/752/73/forestry-A-2.3.0.7.jar

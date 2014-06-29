@@ -1,0 +1,11 @@
+Author=Mithion
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+ArsMagica2.zip:
+-Extract=False
+-Url=http://www.curseforge.com/media/files/764/649/AM2_1.1.1c.zip

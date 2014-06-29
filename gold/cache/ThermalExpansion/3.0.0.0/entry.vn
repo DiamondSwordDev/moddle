@@ -1,0 +1,11 @@
+Author=Team CoFH
+
+HasConfigs=False
+ConfigInstallDir=/config
+
+Dependencies:
+-CoFHCore,2.0.0.0
+
+ThermalExpansion.jar:
+-Extract=False
+-Url=http://www.curseforge.com/media/files/762/739/ThermalExpansion-3.0.0.0.jar

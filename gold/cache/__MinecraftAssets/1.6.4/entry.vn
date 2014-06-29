@@ -1,0 +1,10 @@
+Author=MojangAB
+
+HasConfigs=False
+ConfigInstallDir=None
+
+Dependencies:
+-None
+
+assets.zip:
+-Extract=True
