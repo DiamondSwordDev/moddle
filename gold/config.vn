@@ -1,9 +1,0 @@
-***
-*** Moddle Configuration
-***
-
-Memory=1024
-
-JavaPath=C:\Program Files\Java\jre7\bin
-
-Experimental=False
