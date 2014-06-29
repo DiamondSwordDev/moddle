@@ -1,5 +1,7 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.util.Logger;
+import com.dsdev.moddle.util.Util;
 import com.dsdev.moddle.auth.Auth;
 import java.io.File;
 import java.io.IOException;
@@ -132,13 +134,13 @@ public class Modpack {
         this.PlayerOwner = player;
 
         Logger.info("Modpack (const)", "Asserting pack directory...");
-        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName);
+        Util.createDirectoryIfNeeded("./users/" + PlayerOwner + "/" + ModpackName);
 
         Logger.info("Modpack (const)", "Asserting .minecraft directory...");
-        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft");
+        Util.createDirectoryIfNeeded("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft");
 
         Logger.info("Modpack (const)", "Asserting entries directory...");
-        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
+        Util.createDirectoryIfNeeded("./users/" + PlayerOwner + "/" + ModpackName + "/entries");
 
         IsInstallComplete = new File("./users/" + PlayerOwner + "/" + ModpackName + "/completeinstall").exists();
 
@@ -233,13 +235,13 @@ public class Modpack {
 
         //<editor-fold defaultstate="collapsed" desc="Install Minecraft Jarfile">
         Logger.info("Modpack.build", "Creating '.minecraft/versions/' ...");
-        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions");
+        Util.createDirectoryIfNeeded("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions");
 
         Logger.info("Modpack.build", "Creating '.minecraft/versions/<version>/' ...");
-        Util.assertDirectoryExistence("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion"));
+        Util.createDirectoryIfNeeded("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft/versions/" + Settings.get("general.MinecraftVersion"));
 
         Logger.info("Modpack.build", "Obtaining Minecraft jarfile...");
-        Util.assertDirectoryExistence("./data/versions");
+        Util.createDirectoryIfNeeded("./data/versions");
         if (!(new File("./data/versions/" + Settings.get("general.MinecraftVersion") + ".jar").isFile())) {
             Logger.info("Modpack.build", "Version does not exist.  Downloading...");
             try {
@@ -666,8 +668,8 @@ public class Modpack {
             //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
             Logger.info("Modpack.run", "Parsing UseLegacyUsernameAndSession...");
             if (getSettingBool("launch.UseLegacyUsernameAndSession")) {
-                args.add(LoginHelper.Username);
-                args.add(LoginHelper.AccessToken);
+                args.add(Auth.Username);
+                args.add(Auth.AccessToken);
             }
 
             Logger.info("Modpack.run", "Parsing UseGameDirArgument...");

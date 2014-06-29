@@ -1,9 +1,9 @@
 
 package com.dsdev.moddle.auth;
 
-import com.dsdev.moddle.Dialogs;
-import com.dsdev.moddle.Logger;
-import com.dsdev.moddle.Util;
+import com.dsdev.moddle.GlobalDialogs;
+import com.dsdev.moddle.util.Logger;
+import com.dsdev.moddle.util.Util;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 
 /**
  *
- * @author LukeSmalley
+ * @author Diamond Sword Development
  */
 public class Auth {
     
@@ -66,21 +66,21 @@ public class Auth {
     
     
     public static boolean performLogin(String uname, String pword) {
-        if (uname != null) {
-            AccountName = uname;
-        }
         
-        if (pword != null) {
-            Password = pword;
-        }
+        //Set username and password
+        if (uname != null) AccountName = uname;
+        if (pword != null) Password = pword;
         
+        //Initialize request and result objects
         YggdrasilRequest request = new YggdrasilRequest(AccountName, Password);
         YggdrasilResult result = null;
         
+        //Submit the login request
         try {
             result = request.send();
         } catch (Exception ex) {
             isLoggedIn = false;
+            GlobalDialogs.showNotification("Login failed: (" + ex.getClass().getSimpleName() + ") " + ex.getMessage());
             return false;
         }
         
@@ -95,7 +95,7 @@ public class Auth {
             Username = null;
             UUID = null;
             AccessToken = null;
-            Dialogs.showNotification("Error: " + result.ErrorDescription);
+            GlobalDialogs.showNotification("Login failed: " + result.ErrorDescription);
             return false;
         }
     }

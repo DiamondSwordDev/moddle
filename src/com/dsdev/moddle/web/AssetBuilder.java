@@ -1,6 +1,6 @@
 package com.dsdev.moddle.web;
 
-import com.dsdev.moddle.Logger;
+import com.dsdev.moddle.util.Logger;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import java.io.*;

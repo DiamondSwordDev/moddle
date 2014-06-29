@@ -6,7 +6,7 @@ import org.json.simple.JSONValue;
 
 /**
  *
- * @author LukeSmalley
+ * @author Diamond Sword Development
  */
 public class YggdrasilResult {
     

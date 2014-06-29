@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 
 /**
  *
- * @author LukeSmalley
+ * @author Diamond Sword Development
  */
 public class YggdrasilRequest {
     

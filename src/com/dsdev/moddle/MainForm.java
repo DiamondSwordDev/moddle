@@ -1,6 +1,9 @@
 package com.dsdev.moddle;
 
 import com.dsdev.moddle.auth.Auth;
+import com.dsdev.moddle.util.Logger;
+import com.dsdev.moddle.util.SimpleSwingWorker;
+import com.dsdev.moddle.util.Util;
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,7 +17,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -520,70 +522,72 @@ public class MainForm extends javax.swing.JFrame {
         ModpackList.setModel(modpackListModel);
     }
     
-    private void loadUserInstances(String accountName) {
-        if (accountName == null) {
-            InstanceComboBox.removeAllItems();
-            InstanceComboBox.addItem("<None>");
-            InstanceComboBox.setSelectedIndex(0);
-            return;
-        }
+    private void loadUser(String accountName) {
         
+        //Get the 'friendly' username string (removes '@' and '.')
         String friendlyAccountName = getFriendlyName(accountName);
         
+        //Clear instance ComboBox
         InstanceComboBox.removeAllItems();
         InstanceComboBox.addItem("<None>");
         
-        if (new File("./users/" + friendlyAccountName).isDirectory()) {
+        if (accountName == null) {
+            //Select '<None' as current instance
+            InstanceComboBox.setSelectedItem("<None>");
+        } else {
+            //Create user directory if necessary
+            Util.createDirectoryIfNeeded("./users/" + friendlyAccountName);
+
+            //Create 'lastplayed.json' file if necessary
+            File lastPlayedFile = new File("./users/" + friendlyAccountName + "/lastplayed.json");
+            if (!lastPlayedFile.isFile()) {
+                try {
+                    FileUtils.writeStringToFile(lastPlayedFile, "{\"instance\":\"<None>\"}");
+                } catch (IOException ex) {
+
+                }
+            }
+            
+            //Clear instance ComboBox
+            InstanceComboBox.removeAllItems();
+            InstanceComboBox.addItem("<None>");
+            
+            //Populate instance ComboBox
             for (File f : new File("./users/" + friendlyAccountName).listFiles()) {
                 if (f.isDirectory()) {
                     InstanceComboBox.addItem(f.getName());
                 }
             }
             
-            loadLastPlayed(accountName);
-        } else {
-            (new File("./users/" + friendlyAccountName)).mkdirs();
-        }
-        
-    }
-    
-    private void loadLastPlayed(String accountName) {
-        if (new File("./users/" + getFriendlyName(accountName) + "/lastplayed.json").isFile()) {
+            //Select last played instance
             try {
-                JSONObject lastPlayedConfig = Util.readJSONFile("./users/" + getFriendlyName(accountName) + "/lastplayed.json");
+                JSONObject lastPlayedConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/lastplayed.json");
                 InstanceComboBox.setSelectedItem(lastPlayedConfig.get("instance").toString());
             } catch (IOException ex) {
-                Logger.error("MainForm.loadLastPlayedInstance", "Failed to load 'lastplayed.json' file!", false, ex.getMessage());
-                InstanceComboBox.setSelectedIndex(0);
+                InstanceComboBox.setSelectedItem("<None>");
             }
-        } else {
-            JSONObject lastPlayedConfig = new JSONObject();
-            lastPlayedConfig.put("instance", "<None>");
-            try {
-                FileUtils.writeStringToFile(new File("./users/" + getFriendlyName(accountName) + "/lastplayed.json"), lastPlayedConfig.toJSONString());
-            } catch (IOException ex) {
-                Logger.error("MainForm.loadLastPlayedInstance", "Failed to create 'lastplayed.json' file!", false, ex.getMessage());
-            }
-            InstanceComboBox.setSelectedIndex(0);
         }
-    }
-    
-    private void loadSelectedPackDescription() {
-        if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-            String item = InstanceComboBox.getSelectedItem().toString();
+        
+        if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+            //Display 'no pack selected' content
+            loadModpackPaneContent("./data/content/nopack");
+            ModpackList.setSelectedIndex(-1);
+        } else {
+            //Load pack description content
+            String selectedInstance = InstanceComboBox.getSelectedItem().toString();
             try {
-                JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                JSONObject instanceConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/" + selectedInstance + "/instance.json");
+                ModpackList.setSelectedValue(instanceConfig.get("pack").toString(), true);
                 loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
             } catch (IOException ex) {
-                Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                //Load 'no description' content if content loading fails
                 loadModpackPaneContent("./data/content/nodesc");
             }
-        } else {
-            loadModpackPaneContent("./data/content/nopack");
         }
     }
     
     private String getFriendlyName(String accountName) {
+        if (accountName == null) return null;
         return accountName.replace("@", "__").replace(".", "__");
     }
     
@@ -741,17 +745,21 @@ public class MainForm extends javax.swing.JFrame {
 
     private void InstanceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InstanceComboBoxActionPerformed
         try {
-            if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-                String item = InstanceComboBox.getSelectedItem().toString();
+            if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+                //Display 'no pack selected' content
+                loadModpackPaneContent("./data/content/nopack");
+                ModpackList.setSelectedIndex(-1);
+            } else {
+                //Load pack description content
+                String selectedInstance = InstanceComboBox.getSelectedItem().toString();
                 try {
-                    JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
+                    JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + selectedInstance + "/instance.json");
+                    ModpackList.setSelectedValue(instanceConfig.get("pack").toString(), true);
                     loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
                 } catch (IOException ex) {
-                    Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
+                    //Load 'no description' content if content loading fails
                     loadModpackPaneContent("./data/content/nodesc");
                 }
-            } else {
-                loadModpackPaneContent("./data/content/nopack");
             }
         } catch (Exception ex) { }
     }//GEN-LAST:event_InstanceComboBoxActionPerformed
@@ -759,26 +767,41 @@ public class MainForm extends javax.swing.JFrame {
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         if (LoginButton.getText().equals("Log In")) {
+            //Show login dialog
             loginDialog.setVisible(true);
         } else {
+            //Log out and save auth state
             Auth.performLogout();
             Auth.saveToFile();
-            loadUserInstances(null);
+            
+            loadUser(null);
+            
             LoginButton.setText("Log In");
-            CurrentUserLabel.setText("-- Please Log In --");
+            CurrentUserLabel.setText("-- Not Logged In --");
             disablePlayControls();
         }
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
         if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+            //Delete instance
             try {
                 FileUtils.deleteDirectory(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + InstanceComboBox.getSelectedItem().toString()));
             } catch (IOException ex) {
-                Logger.error("MainForm.DeleteInstanceButtonActionPerformed", "Could not delete instance!", false, ex.getMessage());
                 return;
             }
-            loadUserInstances(Auth.AccountName);
+            
+            //Clear the instance ComboBoc
+            InstanceComboBox.removeAllItems();
+            InstanceComboBox.addItem("<None>");
+            
+            //Populate instance ComboBox
+            for (File f : new File("./users/" + getFriendlyName(Auth.AccountName)).listFiles()) {
+                if (f.isDirectory()) {
+                    InstanceComboBox.addItem(f.getName());
+                }
+            }
+            
             InstanceComboBox.setSelectedIndex(0);
         }
     }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
@@ -790,7 +813,7 @@ public class MainForm extends javax.swing.JFrame {
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
 
         Logger.info("MainForm.PlayButtonActionPerformed", "Starting execution...");
-        Dialogs.showProgressDialog();
+        GlobalDialogs.showProgressDialog();
         
         SwingWorker worker = new SwingWorker() {
 
@@ -852,16 +875,21 @@ public class MainForm extends javax.swing.JFrame {
         
         Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
         
+        //Set basic frame properties
         this.getContentPane().setBackground(new Color(152, 174, 196));
         this.setLocationRelativeTo(null);
         
+        //Load window icons
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        popupDialogImageLabel.setIcon(new ImageIcon("./data/content/alert.png"));
         instanceDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         
+        //Load popup dialog image
+        popupDialogImageLabel.setIcon(new ImageIcon("./data/content/alert.png"));
+        
+        //Set up custom JList rendering
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -875,11 +903,12 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
-        Dialogs.popupDialog = popupDialog;
-        Dialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
-        Dialogs.progressDialog = progressDialog;
-        Dialogs.progressDialogStatusBar = progressDialogStatusBar;
-        Dialogs.progressDialogStatusLabel = progressDialogStatusLabel;
+        //Assign global dialog objects
+        GlobalDialogs.popupDialog = popupDialog;
+        GlobalDialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
+        GlobalDialogs.progressDialog = progressDialog;
+        GlobalDialogs.progressDialogStatusBar = progressDialogStatusBar;
+        GlobalDialogs.progressDialogStatusLabel = progressDialogStatusLabel;
         
         
         Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
@@ -894,7 +923,7 @@ public class MainForm extends javax.swing.JFrame {
                 LoginButton.setText("Log Out");
                 enablePlayControls();
             } else {
-                CurrentUserLabel.setText("-- Login Failed --");
+                CurrentUserLabel.setText("-- Please Log In --");
                 LoginButton.setText("Log In");
                 disablePlayControls();
             }
@@ -907,27 +936,9 @@ public class MainForm extends javax.swing.JFrame {
         
         
         if (Auth.isLoggedIn) {
-            loadUserInstances(Auth.AccountName);
-            if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-                String item = InstanceComboBox.getSelectedItem().toString();
-                try {
-                    JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
-                    loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
-                } catch (IOException ex) {
-                    Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
-                    loadModpackPaneContent("./data/content/nodesc");
-                }
-            } else {
-                loadModpackPaneContent("./data/content/nopack");
-            }
+            loadUser(Auth.AccountName);
         } else {
-            loadUserInstances(null);
-            if (ModpackList.getModel().getSize() > 0) {
-                ModpackList.setSelectedIndex(0);
-                loadModpackPaneContent("./packs/" + ModpackList.getSelectedValue().toString());
-            } else {
-                loadModpackPaneContent("./data/content/nopack/");
-            }
+            loadUser(null);
         }
         
         
@@ -1004,25 +1015,19 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_loginDialogCancelButtonActionPerformed
 
     private void loginDialogLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginDialogLoginButtonActionPerformed
-        SwingWorker worker = new SwingWorker() {
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
             
             @Override
-            protected void done() { }
-
-            @Override
-            protected void process(List chunks) { }
-            
-            @Override
-            protected Object doInBackground() {
+            protected void task() {
                 
                 loginDialog.setVisible(false);
-                Dialogs.showProgressDialog();
-                Dialogs.setProgressIndeterminate(true);
+                GlobalDialogs.showProgressDialog();
+                GlobalDialogs.setProgressIndeterminate(true);
                 
-                Dialogs.setProgressCaption("Logging in...");
+                GlobalDialogs.setProgressCaption("Logging in...");
                 Auth.performLogin(loginDialogUsernameBox.getText(), new String(loginDialogPasswordBox.getPassword()));
                 
-                Dialogs.hideProgressDialog();
+                GlobalDialogs.hideProgressDialog();
                 
                 if (Auth.isLoggedIn) {
                     Auth.saveToFile();
@@ -1030,30 +1035,14 @@ public class MainForm extends javax.swing.JFrame {
                     CurrentUserLabel.setText(Auth.Username);
                     LoginButton.setText("Log Out");
                     enablePlayControls();
-                    loadUserInstances(Auth.AccountName);
-                    
-                    if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-                        String item = InstanceComboBox.getSelectedItem().toString();
-                        try {
-                            JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + item + "/instance.json");
-                            loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
-                        } catch (IOException ex) {
-                            Logger.error("MainForm.formWindowOpened", "Failed to load instance config!", false, ex.getMessage());
-                            loadModpackPaneContent("./data/content/nodesc");
-                        }
-                    } else {
-                        loadModpackPaneContent("./data/content/nopack");
-                    }
+                    loadUser(Auth.AccountName);
                 } else {
-                    Dialogs.showNotification("Unable to log in successfully!");
+                    GlobalDialogs.showNotification("Unable to log in successfully!");
                     
                     CurrentUserLabel.setText("-- Login Failed --");
                     LoginButton.setText("Log In");
                     disablePlayControls();
                 }
-                
-                return null;
-                
             }
             
         };
@@ -1076,7 +1065,7 @@ public class MainForm extends javax.swing.JFrame {
             Logger.error("MainForm.instanceDialogCreateButtonActionPerformed", "Could not create 'instance.json'!", false, ex.getMessage());
             return;
         }
-        loadUserInstances(Auth.AccountName);
+        loadUser(Auth.AccountName);
         instanceDialog.setVisible(false);
     }//GEN-LAST:event_instanceDialogCreateButtonActionPerformed
 

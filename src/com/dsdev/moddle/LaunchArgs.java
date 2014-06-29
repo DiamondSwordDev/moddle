@@ -1,5 +1,6 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.util.Logger;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;

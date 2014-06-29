@@ -1,5 +1,7 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.util.Util;
+import com.dsdev.moddle.util.Logger;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
