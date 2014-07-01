@@ -4,6 +4,7 @@ package com.dsdev.moddle;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -17,6 +18,9 @@ public class GlobalDialogs {
     public static JDialog progressDialog = null;
     public static JLabel progressDialogStatusLabel = null;
     public static JProgressBar progressDialogStatusBar = null;
+    
+    public static JDialog consoleDialog = null;
+    public static JTextPane consoleDialogLogPane = null;
     
     public static void showNotification(String message) {
         popupDialogCaptionLabel.setText(message);
@@ -44,6 +48,14 @@ public class GlobalDialogs {
     
     public static void setProgressIndeterminate(boolean indeterminate) {
         progressDialogStatusBar.setIndeterminate(indeterminate);
+    }
+    
+    public static void showConsole() {
+        consoleDialog.setVisible(true);
+    }
+    
+    public static void hideConsole() {
+        consoleDialog.setVisible(false);
     }
     
 }

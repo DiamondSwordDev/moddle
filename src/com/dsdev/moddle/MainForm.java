@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -17,7 +19,10 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import net.lingala.zip4j.exception.ZipException;
@@ -69,6 +74,9 @@ public class MainForm extends javax.swing.JFrame {
         instanceDialogModpackLabel = new javax.swing.JLabel();
         instanceDialogModpackComboBox = new javax.swing.JComboBox();
         instanceDialogCancelButton = new javax.swing.JButton();
+        consoleDialog = new javax.swing.JDialog();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        consoleDialogLogPane = new javax.swing.JTextPane();
         MainTabPane = new javax.swing.JTabbedPane();
         ModpackPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -202,6 +210,7 @@ public class MainForm extends javax.swing.JFrame {
         );
 
         popupDialog.setMinimumSize(new java.awt.Dimension(396, 142));
+        popupDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         popupDialog.setResizable(false);
         popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -256,6 +265,7 @@ public class MainForm extends javax.swing.JFrame {
         );
 
         instanceDialog.setMinimumSize(new java.awt.Dimension(409, 154));
+        instanceDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         instanceDialog.setResizable(false);
         instanceDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -328,6 +338,27 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(instanceDialogCreateButton)
                     .addComponent(instanceDialogCancelButton))
                 .addContainerGap(51, Short.MAX_VALUE))
+        );
+
+        consoleDialog.setTitle("Moddle Console");
+        consoleDialog.setMinimumSize(new java.awt.Dimension(600, 350));
+
+        consoleDialogLogPane.setEditable(false);
+        consoleDialogLogPane.setBackground(java.awt.SystemColor.control);
+        consoleDialogLogPane.setContentType("text/html"); // NOI18N
+        consoleDialogLogPane.setForeground(new java.awt.Color(255, 255, 255));
+        consoleDialogLogPane.setToolTipText("");
+        jScrollPane3.setViewportView(consoleDialogLogPane);
+
+        javax.swing.GroupLayout consoleDialogLayout = new javax.swing.GroupLayout(consoleDialog.getContentPane());
+        consoleDialog.getContentPane().setLayout(consoleDialogLayout);
+        consoleDialogLayout.setHorizontalGroup(
+            consoleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        );
+        consoleDialogLayout.setVerticalGroup(
+            consoleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -503,22 +534,28 @@ public class MainForm extends javax.swing.JFrame {
 
     
     private void loadModpackList() {
+        //Clear modpack ComboBox
         instanceDialogModpackComboBox.removeAllItems();
         
         DefaultListModel modpackListModel = new DefaultListModel();
         
         if (new File("./packs").isDirectory()) {
+            //Populate modpack lists
             for (File f : new File("./packs").listFiles()) {
                 if (f.isDirectory()) {
+                    Logger.info("MainForm.loadModpackList", "Loading pack '" + f.getName() + "'");
                     modpackListModel.addElement(f.getName());
                     instanceDialogModpackComboBox.addItem(f.getName());
                 }
             }
         } else {
             Logger.info("MainForm.loadModpackList", "Creating packs directory...");
+            
+            //Create 'packs' directory
             (new File("./packs")).mkdirs();
         }
         
+        //Load ListModel into ModpackList
         ModpackList.setModel(modpackListModel);
     }
     
@@ -673,6 +710,86 @@ public class MainForm extends javax.swing.JFrame {
         
     }
     
+    private void redirectOutputStreams() {
+        //Redirect standard output
+        OutputStream redirectedStdOutput = new OutputStream() {
+            @Override
+            public void write(final int b) throws IOException {
+                updateTextPane(String.valueOf((char) b));
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                updateTextPane(new String(b, off, len));
+            }
+
+            @Override
+            public void write(byte[] b) throws IOException {
+                write(b, 0, b.length);
+            }
+            
+            private void updateTextPane(final String text) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        Document doc = GlobalDialogs.consoleDialogLogPane.getDocument();
+                        try {
+                            SimpleAttributeSet sas = new SimpleAttributeSet();
+                            if (text.contains("[Moddle]")) {
+                                StyleConstants.setForeground(sas, Color.CYAN.darker().darker());
+                            } else if (text.contains("INFO")) {
+                                StyleConstants.setForeground(sas, Color.BLACK);
+                            } else if (text.contains("WARNING")) {
+                                StyleConstants.setForeground(sas, Color.YELLOW.darker().darker());
+                            } else if (text.contains("SEVERE")) {
+                                StyleConstants.setForeground(sas, Color.RED.darker().darker());
+                            }
+                            doc.insertString(doc.getLength(), text, sas);
+                        } catch (BadLocationException e) {
+                            throw new RuntimeException(e);
+                        }
+                        GlobalDialogs.consoleDialogLogPane.setCaretPosition(doc.getLength() - 1);
+                    }
+                });
+            }
+        };
+        System.setOut(new PrintStream(redirectedStdOutput, true));
+        
+        //Redirect standard error
+        OutputStream redirectedStdError = new OutputStream() {
+            @Override
+            public void write(final int b) throws IOException {
+                updateTextPane(String.valueOf((char) b));
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                updateTextPane(new String(b, off, len));
+            }
+
+            @Override
+            public void write(byte[] b) throws IOException {
+                write(b, 0, b.length);
+            }
+            
+            private void updateTextPane(final String text) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        Document doc = GlobalDialogs.consoleDialogLogPane.getDocument();
+                        try {
+                            SimpleAttributeSet sas = new SimpleAttributeSet();
+                            StyleConstants.setForeground(sas, Color.RED.darker());
+                            doc.insertString(doc.getLength(), text, sas);
+                        } catch (BadLocationException e) {
+                            throw new RuntimeException(e);
+                        }
+                        GlobalDialogs.consoleDialogLogPane.setCaretPosition(doc.getLength() - 1);
+                    }
+                });
+            }
+        };
+        System.setErr(new PrintStream(redirectedStdOutput, true));
+    }
+    
     
     private void loadSelfExtractingData() {
         if (!new File("./data").isDirectory()) {
@@ -736,9 +853,8 @@ public class MainForm extends javax.swing.JFrame {
 
     
     private void ModpackListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ModpackListValueChanged
-        if (ModpackList.getSelectedValue() == null) {
-            //loadModpackPaneContent("./data/content/nopack");
-        } else {
+        if (ModpackList.getSelectedValue() != null) {
+            //Load description content
             loadModpackPaneContent("./packs/" + ModpackList.getSelectedValue().toString());
         }
     }//GEN-LAST:event_ModpackListValueChanged
@@ -784,6 +900,8 @@ public class MainForm extends javax.swing.JFrame {
 
     private void DeleteInstanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteInstanceButtonActionPerformed
         if (!InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
+            String instanceToBeRemoved = InstanceComboBox.getSelectedItem().toString();
+            
             //Delete instance
             try {
                 FileUtils.deleteDirectory(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + InstanceComboBox.getSelectedItem().toString()));
@@ -803,6 +921,8 @@ public class MainForm extends javax.swing.JFrame {
             }
             
             InstanceComboBox.setSelectedIndex(0);
+            
+            Logger.info("MainForm.DeleteInstanceButtonActionPerformed", "Removed instance '" + instanceToBeRemoved + "'.");
         }
     }//GEN-LAST:event_DeleteInstanceButtonActionPerformed
 
@@ -815,33 +935,27 @@ public class MainForm extends javax.swing.JFrame {
         Logger.info("MainForm.PlayButtonActionPerformed", "Starting execution...");
         GlobalDialogs.showProgressDialog();
         
-        SwingWorker worker = new SwingWorker() {
-
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
             @Override
-            protected void done() {
-                progressDialog.setVisible(false);
-            }
-
-            @Override
-            protected void process(List chunks) {
-                //for (Object o : chunks) {
-                //    consolePane.setText(consolePane.getText() + (String)o + "\n");
-                //}
-            }
-
-            @Override
-            protected Object doInBackground() {
+            protected void task() {
                 
+                //Save lastlogin data
                 Auth.saveToFile();
 
+                //Save lastplayed data
+                File lastPlayedFile = new File("./users/" + getFriendlyName(Auth.AccountName) + "/lastplayed.json");
+                try {
+                    FileUtils.writeStringToFile(lastPlayedFile, "{\"instance\":\"" + InstanceComboBox.getSelectedItem().toString() + "\"}");
+                } catch (IOException ex) { }
+                
                 if (CurrentUserLabel.getText().startsWith("-- ")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
-                    return null;
+                    return;
                 }
 
                 if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
-                    return null;
+                    return;
                 }
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
@@ -855,13 +969,13 @@ public class MainForm extends javax.swing.JFrame {
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
                 if (pack.run()) {
-                    System.exit(0);
+                    //System.exit(0);
                 } else {
                     progressDialog.setVisible(false);
                     //setLoadingSpinnerVisible(false);
                 }
                 
-                return null;
+                return;
             }
         };
 
@@ -871,13 +985,29 @@ public class MainForm extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
-        Logger.begin();
+        //Assign global dialog objects
+        GlobalDialogs.popupDialog = popupDialog;
+        GlobalDialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
+        GlobalDialogs.progressDialog = progressDialog;
+        GlobalDialogs.progressDialogStatusBar = progressDialogStatusBar;
+        GlobalDialogs.progressDialogStatusLabel = progressDialogStatusLabel;
+        GlobalDialogs.consoleDialog = consoleDialog;
+        GlobalDialogs.consoleDialogLogPane = consoleDialogLogPane;
         
-        Logger.info("MainForm.formWindowOpened", "Setting frame properties...");
+        //Show console
+        GlobalDialogs.showConsole();
+        
+        //Redirect stdout and stderr
+        redirectOutputStreams();
         
         //Set basic frame properties
         this.getContentPane().setBackground(new Color(152, 174, 196));
         this.setLocationRelativeTo(null);
+        
+        //Start logging
+        Logger.begin();
+        
+        Logger.info("MainForm.formWindowOpened", "Loading Moddle...");
         
         //Load window icons
         this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
@@ -885,6 +1015,7 @@ public class MainForm extends javax.swing.JFrame {
         loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         instanceDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        consoleDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
         
         //Load popup dialog image
         popupDialogImageLabel.setIcon(new ImageIcon("./data/content/alert.png"));
@@ -903,19 +1034,12 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
-        //Assign global dialog objects
-        GlobalDialogs.popupDialog = popupDialog;
-        GlobalDialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
-        GlobalDialogs.progressDialog = progressDialog;
-        GlobalDialogs.progressDialogStatusBar = progressDialogStatusBar;
-        GlobalDialogs.progressDialogStatusLabel = progressDialogStatusLabel;
-        
-        
-        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
+        //Load modpacks
         loadModpackList();
         
-        
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
+        
+        //Load auth from file
         Auth.loadFromFile();
         if (Auth.isLoggedIn) {
             if (Auth.performLogin(null, null)) {
@@ -923,24 +1047,23 @@ public class MainForm extends javax.swing.JFrame {
                 LoginButton.setText("Log Out");
                 enablePlayControls();
             } else {
-                CurrentUserLabel.setText("-- Please Log In --");
+                CurrentUserLabel.setText("-- Not Logged In --");
                 LoginButton.setText("Log In");
                 disablePlayControls();
             }
         } else {
-            CurrentUserLabel.setText("-- Please Log In --");
+            CurrentUserLabel.setText("-- Not Logged In --");
             LoginButton.setText("Log In");
             disablePlayControls();
         }
         LoginButton.setEnabled(true);
         
-        
+        //Load GUI
         if (Auth.isLoggedIn) {
             loadUser(Auth.AccountName);
         } else {
             loadUser(null);
         }
-        
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
@@ -1023,8 +1146,8 @@ public class MainForm extends javax.swing.JFrame {
                 loginDialog.setVisible(false);
                 GlobalDialogs.showProgressDialog();
                 GlobalDialogs.setProgressIndeterminate(true);
-                
                 GlobalDialogs.setProgressCaption("Logging in...");
+                
                 Auth.performLogin(loginDialogUsernameBox.getText(), new String(loginDialogPasswordBox.getPassword()));
                 
                 GlobalDialogs.hideProgressDialog();
@@ -1036,10 +1159,12 @@ public class MainForm extends javax.swing.JFrame {
                     LoginButton.setText("Log Out");
                     enablePlayControls();
                     loadUser(Auth.AccountName);
+                    
+                    Logger.info("MainForm.loginDialogLoginButtonActionPerformed", "Logged in user '" + Auth.AccountName + "'.");
                 } else {
                     GlobalDialogs.showNotification("Unable to log in successfully!");
                     
-                    CurrentUserLabel.setText("-- Login Failed --");
+                    CurrentUserLabel.setText("-- Not Logged In --");
                     LoginButton.setText("Log In");
                     disablePlayControls();
                 }
@@ -1067,6 +1192,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         loadUser(Auth.AccountName);
         instanceDialog.setVisible(false);
+        Logger.info("MainForm.instanceDialogCreateButtonActionPerformed", "Created new instance '" + instanceDialogNameBox.getText() + "'.");
     }//GEN-LAST:event_instanceDialogCreateButtonActionPerformed
 
     
@@ -1121,6 +1247,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel NewsPanel;
     private javax.swing.JButton PlayButton;
     private javax.swing.JPanel SettingsPanel;
+    private javax.swing.JDialog consoleDialog;
+    private javax.swing.JTextPane consoleDialogLogPane;
     private javax.swing.JDialog instanceDialog;
     private javax.swing.JButton instanceDialogCancelButton;
     private javax.swing.JButton instanceDialogCreateButton;
@@ -1130,6 +1258,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel instanceDialogNameLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JButton loginDialogCancelButton;
     private javax.swing.JButton loginDialogLoginButton;

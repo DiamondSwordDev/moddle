@@ -1,15 +1,18 @@
 package com.dsdev.moddle;
 
+import com.dsdev.moddle.auth.Auth;
 import com.dsdev.moddle.util.Logger;
 import com.dsdev.moddle.util.Util;
-import com.dsdev.moddle.auth.Auth;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
@@ -756,8 +759,12 @@ public class Modpack {
 
             Logger.info("Modpack.run", "Launching process!");
             launcher.directory(new File("./users/" + PlayerOwner + "/" + ModpackName + "/.minecraft"));
-            launcher.start();
-
+            
+            Process processHandle = launcher.start();
+            
+            inheritIO(processHandle.getInputStream(), System.out);
+            inheritIO(processHandle.getErrorStream(), System.err);
+            
             return true;
 
         } catch (Exception ex) {
@@ -788,4 +795,15 @@ public class Modpack {
         }
     }
 
+    private static void inheritIO(final InputStream src, final PrintStream dest) {
+        new Thread(new Runnable() {
+            public void run() {
+                Scanner sc = new Scanner(src);
+                while (sc.hasNextLine()) {
+                    dest.println(sc.nextLine());
+                }
+            }
+        }).start();
+    }
+    
 }
