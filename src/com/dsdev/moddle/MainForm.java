@@ -1,12 +1,14 @@
 package com.dsdev.moddle;
 
 import com.dsdev.moddle.auth.Auth;
+import com.dsdev.moddle.resources.Resources;
 import com.dsdev.moddle.util.Logger;
 import com.dsdev.moddle.util.SimpleSwingWorker;
 import com.dsdev.moddle.util.Util;
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.BadLocationException;
@@ -28,6 +31,7 @@ import javax.swing.text.StyleConstants;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -74,6 +78,8 @@ public class MainForm extends javax.swing.JFrame {
         instanceDialogModpackLabel = new javax.swing.JLabel();
         instanceDialogModpackComboBox = new javax.swing.JComboBox();
         instanceDialogCancelButton = new javax.swing.JButton();
+        instanceDialogVersionComboBox = new javax.swing.JComboBox();
+        instanceDialogModpackLabel1 = new javax.swing.JLabel();
         consoleDialog = new javax.swing.JDialog();
         jScrollPane3 = new javax.swing.JScrollPane();
         consoleDialogLogPane = new javax.swing.JTextPane();
@@ -84,6 +90,8 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         ModpackDescriptionPane = new javax.swing.JTextPane();
         NewsPanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        newsPane = new javax.swing.JTextPane();
         SettingsPanel = new javax.swing.JPanel();
         CurrentUserLabel = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
@@ -209,7 +217,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        popupDialog.setMinimumSize(new java.awt.Dimension(396, 142));
+        popupDialog.setMinimumSize(new java.awt.Dimension(505, 143));
         popupDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         popupDialog.setResizable(false);
         popupDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -245,26 +253,25 @@ public class MainForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popupDialogLayout.createSequentialGroup()
-                        .addGap(0, 294, Short.MAX_VALUE)
+                        .addGap(0, 403, Short.MAX_VALUE)
                         .addComponent(popupDialogOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         popupDialogLayout.setVerticalGroup(
             popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(popupDialogLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(popupDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(popupDialogLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(popupDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(popupDialogLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popupDialogLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(popupDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(popupDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(popupDialogOkButton)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        instanceDialog.setMinimumSize(new java.awt.Dimension(409, 154));
+        instanceDialog.setMinimumSize(new java.awt.Dimension(409, 180));
         instanceDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         instanceDialog.setResizable(false);
         instanceDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -293,6 +300,11 @@ public class MainForm extends javax.swing.JFrame {
         instanceDialogModpackLabel.setText("Modpack:");
 
         instanceDialogModpackComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<None>" }));
+        instanceDialogModpackComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instanceDialogModpackComboBoxActionPerformed(evt);
+            }
+        });
 
         instanceDialogCancelButton.setText("Cancel");
         instanceDialogCancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -300,6 +312,10 @@ public class MainForm extends javax.swing.JFrame {
                 instanceDialogCancelButtonActionPerformed(evt);
             }
         });
+
+        instanceDialogVersionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<None>" }));
+
+        instanceDialogModpackLabel1.setText("Pack Version:");
 
         javax.swing.GroupLayout instanceDialogLayout = new javax.swing.GroupLayout(instanceDialog.getContentPane());
         instanceDialog.getContentPane().setLayout(instanceDialogLayout);
@@ -313,13 +329,16 @@ public class MainForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(instanceDialogCancelButton))
                     .addGroup(instanceDialogLayout.createSequentialGroup()
-                        .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(instanceDialogNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(instanceDialogModpackLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(instanceDialogNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(instanceDialogModpackLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(instanceDialogModpackLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(instanceDialogModpackComboBox, 0, 300, Short.MAX_VALUE)
-                            .addComponent(instanceDialogNameBox))))
+                            .addComponent(instanceDialogNameBox)
+                            .addComponent(instanceDialogVersionComboBox, 0, 300, Short.MAX_VALUE))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         instanceDialogLayout.setVerticalGroup(
@@ -333,6 +352,10 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instanceDialogModpackComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(instanceDialogModpackLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(instanceDialogVersionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instanceDialogModpackLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(instanceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instanceDialogCreateButton)
@@ -341,7 +364,7 @@ public class MainForm extends javax.swing.JFrame {
         );
 
         consoleDialog.setTitle("Moddle Console");
-        consoleDialog.setMinimumSize(new java.awt.Dimension(600, 350));
+        consoleDialog.setMinimumSize(new java.awt.Dimension(700, 350));
 
         consoleDialogLogPane.setEditable(false);
         consoleDialogLogPane.setBackground(java.awt.SystemColor.control);
@@ -354,7 +377,7 @@ public class MainForm extends javax.swing.JFrame {
         consoleDialog.getContentPane().setLayout(consoleDialogLayout);
         consoleDialogLayout.setHorizontalGroup(
             consoleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
         );
         consoleDialogLayout.setVerticalGroup(
             consoleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -410,15 +433,19 @@ public class MainForm extends javax.swing.JFrame {
 
         MainTabPane.addTab("Modpacks", ModpackPanel);
 
+        newsPane.setEditable(false);
+        newsPane.setBackground(java.awt.SystemColor.control);
+        jScrollPane4.setViewportView(newsPane);
+
         javax.swing.GroupLayout NewsPanelLayout = new javax.swing.GroupLayout(NewsPanel);
         NewsPanel.setLayout(NewsPanelLayout);
         NewsPanelLayout.setHorizontalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 951, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         NewsPanelLayout.setVerticalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 409, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
         );
 
         MainTabPane.addTab("News", NewsPanel);
@@ -607,7 +634,7 @@ public class MainForm extends javax.swing.JFrame {
         
         if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
             //Display 'no pack selected' content
-            loadModpackPaneContent("./data/content/nopack");
+            loadPaneContentFromDirectory("./data/content/nopack", ModpackDescriptionPane);
             ModpackList.setSelectedIndex(-1);
         } else {
             //Load pack description content
@@ -615,10 +642,10 @@ public class MainForm extends javax.swing.JFrame {
             try {
                 JSONObject instanceConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/" + selectedInstance + "/instance.json");
                 ModpackList.setSelectedValue(instanceConfig.get("pack").toString(), true);
-                loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+                loadPaneContentFromDirectory("./packs/" + instanceConfig.get("pack").toString(), ModpackDescriptionPane);
             } catch (IOException ex) {
                 //Load 'no description' content if content loading fails
-                loadModpackPaneContent("./data/content/nodesc");
+                loadPaneContentFromDirectory("./data/content/nodesc", ModpackDescriptionPane);
             }
         }
     }
@@ -646,7 +673,7 @@ public class MainForm extends javax.swing.JFrame {
         DeleteInstanceButton.setEnabled(false);
     }
     
-    private void loadModpackPaneContent(String contentLocation) {
+    private void loadPaneContentFromDirectory(String contentLocation, JTextPane pane) {
         
         if (!new File(contentLocation + "/description.txt").exists()) {
             //This line was a really bad idea...
@@ -657,7 +684,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             List<String> contentLines = FileUtils.readLines(new File(contentLocation + "/description.txt"));
             SimpleAttributeSet keyWord = new SimpleAttributeSet();
-            ModpackDescriptionPane.setText("");
+            pane.setText("");
 
             for (String line : contentLines) {
 
@@ -674,9 +701,12 @@ public class MainForm extends javax.swing.JFrame {
                         } catch (Exception ex) { }
 
                         if (styleArg.equalsIgnoreCase("image")) {
-                            ModpackDescriptionPane.insertIcon(new ImageIcon(contentLocation + "/" + styleValue));
-                            ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), "\n", keyWord);
-                        } else if (styleArg.equalsIgnoreCase("reset")) {
+                            pane.insertIcon(new ImageIcon(contentLocation + "/" + styleValue));
+                            pane.getStyledDocument().insertString(pane.getStyledDocument().getLength(), "\n", keyWord);
+                        } else if (styleArg.equalsIgnoreCase("imageres")) {
+                            pane.insertIcon(new ImageIcon(this.getClass().getResource("com/dsdev/moddle/resources/" + styleValue)));
+                            pane.getStyledDocument().insertString(pane.getStyledDocument().getLength(), "\n", keyWord);
+                        }else if (styleArg.equalsIgnoreCase("reset")) {
                             keyWord = new SimpleAttributeSet();
                         } else {
                             try {
@@ -698,7 +728,7 @@ public class MainForm extends javax.swing.JFrame {
 
                     }
                 } else {
-                    ModpackDescriptionPane.getStyledDocument().insertString(ModpackDescriptionPane.getStyledDocument().getLength(), line + "\n", keyWord);
+                    pane.getStyledDocument().insertString(pane.getStyledDocument().getLength(), line + "\n", keyWord);
                 }
 
             }
@@ -706,7 +736,7 @@ public class MainForm extends javax.swing.JFrame {
             Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex.getMessage());
         }
 
-        ModpackDescriptionPane.setCaretPosition(0);
+        pane.setCaretPosition(0);
         
     }
     
@@ -739,9 +769,11 @@ public class MainForm extends javax.swing.JFrame {
                             } else if (text.contains("INFO")) {
                                 StyleConstants.setForeground(sas, Color.BLACK);
                             } else if (text.contains("WARNING")) {
-                                StyleConstants.setForeground(sas, Color.YELLOW.darker().darker());
+                                StyleConstants.setForeground(sas, Color.ORANGE.darker());
                             } else if (text.contains("SEVERE")) {
                                 StyleConstants.setForeground(sas, Color.RED.darker().darker());
+                            } else {
+                                StyleConstants.setForeground(sas, Color.CYAN.darker().darker().darker());
                             }
                             doc.insertString(doc.getLength(), text, sas);
                         } catch (BadLocationException e) {
@@ -855,7 +887,7 @@ public class MainForm extends javax.swing.JFrame {
     private void ModpackListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ModpackListValueChanged
         if (ModpackList.getSelectedValue() != null) {
             //Load description content
-            loadModpackPaneContent("./packs/" + ModpackList.getSelectedValue().toString());
+            loadPaneContentFromDirectory("./packs/" + ModpackList.getSelectedValue().toString(), ModpackDescriptionPane);
         }
     }//GEN-LAST:event_ModpackListValueChanged
 
@@ -863,7 +895,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
                 //Display 'no pack selected' content
-                loadModpackPaneContent("./data/content/nopack");
+                loadPaneContentFromDirectory("./data/content/nopack", ModpackDescriptionPane);
                 ModpackList.setSelectedIndex(-1);
             } else {
                 //Load pack description content
@@ -871,10 +903,10 @@ public class MainForm extends javax.swing.JFrame {
                 try {
                     JSONObject instanceConfig = Util.readJSONFile("./users/" + getFriendlyName(Auth.AccountName) + "/" + selectedInstance + "/instance.json");
                     ModpackList.setSelectedValue(instanceConfig.get("pack").toString(), true);
-                    loadModpackPaneContent("./packs/" + instanceConfig.get("pack").toString());
+                    loadPaneContentFromDirectory("./packs/" + instanceConfig.get("pack").toString(), ModpackDescriptionPane);
                 } catch (IOException ex) {
                     //Load 'no description' content if content loading fails
-                    loadModpackPaneContent("./data/content/nodesc");
+                    loadPaneContentFromDirectory("./data/content/nodesc", ModpackDescriptionPane);
                 }
             }
         } catch (Exception ex) { }
@@ -942,33 +974,40 @@ public class MainForm extends javax.swing.JFrame {
                 //Save lastlogin data
                 Auth.saveToFile();
 
+                String accountname = getFriendlyName(Auth.AccountName);
+                String instancename = InstanceComboBox.getSelectedItem().toString();
+                
                 //Save lastplayed data
-                File lastPlayedFile = new File("./users/" + getFriendlyName(Auth.AccountName) + "/lastplayed.json");
+                File lastPlayedFile = new File("./users/" + accountname + "/lastplayed.json");
                 try {
-                    FileUtils.writeStringToFile(lastPlayedFile, "{\"instance\":\"" + InstanceComboBox.getSelectedItem().toString() + "\"}");
+                    FileUtils.writeStringToFile(lastPlayedFile, "{\"instance\":\"" + instancename + "\"}");
                 } catch (IOException ex) { }
                 
+                //Check that critical fields are correctly completed
                 if (CurrentUserLabel.getText().startsWith("-- ")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
                     return;
                 }
-
                 if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
                     Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
                     return;
                 }
 
-                Logger.info("MainForm.PlayButtonActionPerformed", "Invoking pack builder...");
-                Modpack pack = new Modpack(InstanceComboBox.getSelectedItem().toString(), getFriendlyName(Auth.AccountName), ForceUpdateCheckBox.isSelected());
-
-                if (!pack.IsInstallComplete) {
-                    pack.build();
-                } else if (ForceUpdateCheckBox.isSelected()) {
-                    pack.build();
+                //Clear settings
+                Variables.clearSettings();
+                
+                Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to build modpack...");
+                
+                //Build instance
+                if (!Instances.isInstanceComplete(accountname, instancename) || ForceUpdateCheckBox.isSelected()) {
+                    Instances.buildInstance(accountname, instancename);
                 }
+                
+                //Clear settings
+                Variables.clearSettings();
 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
-                if (pack.run()) {
+                if (Instances.runInstance(accountname, instancename)) {
                     //System.exit(0);
                 } else {
                     progressDialog.setVisible(false);
@@ -996,6 +1035,7 @@ public class MainForm extends javax.swing.JFrame {
         
         //Show console
         GlobalDialogs.showConsole();
+        this.toFront();
         
         //Redirect stdout and stderr
         redirectOutputStreams();
@@ -1010,15 +1050,16 @@ public class MainForm extends javax.swing.JFrame {
         Logger.info("MainForm.formWindowOpened", "Loading Moddle...");
         
         //Load window icons
-        this.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        progressDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        loginDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        popupDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        instanceDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
-        consoleDialog.setIconImage((new ImageIcon(this.getClass().getResource("icon_mb.png"))).getImage());
+        Image moddleIcon = Resources.getImageResource("icon_mb.png").getImage();
+        this.setIconImage(moddleIcon);
+        progressDialog.setIconImage(moddleIcon);
+        loginDialog.setIconImage(moddleIcon);
+        popupDialog.setIconImage(moddleIcon);
+        instanceDialog.setIconImage(moddleIcon);
+        consoleDialog.setIconImage(moddleIcon);
         
         //Load popup dialog image
-        popupDialogImageLabel.setIcon(new ImageIcon("./data/content/alert.png"));
+        popupDialogImageLabel.setIcon(Resources.getImageResource("alert.png"));
         
         //Set up custom JList rendering
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
@@ -1028,7 +1069,7 @@ public class MainForm extends javax.swing.JFrame {
                 if (new File("./packs/" + value.toString() + "/pack.png").isFile()) {
                     label.setIcon(new ImageIcon("./packs/" + value.toString() + "/pack.png"));
                 } else {
-                    label.setIcon(new ImageIcon("./data/content/noicon.png"));
+                    label.setIcon(Resources.getImageResource("noicon.png"));
                 }
                 return label;
             }
@@ -1122,6 +1163,20 @@ public class MainForm extends javax.swing.JFrame {
     private void instanceDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_instanceDialogWindowOpened
         instanceDialog.setLocationRelativeTo(null);
         instanceDialog.getContentPane().setBackground(new Color(152, 174, 196));
+        
+        instanceDialogVersionComboBox.removeAllItems();
+        instanceDialogVersionComboBox.addItem("Recommended");
+        
+        try {
+            JSONObject packConfig = Util.readJSONFile("./packs/" + instanceDialogModpackComboBox.getSelectedItem().toString() + "/pack.json");
+            JSONArray versionsArray = (JSONArray)packConfig.get("versions");
+            for (Object obj : versionsArray) {
+                JSONObject versionObj = (JSONObject)obj;
+                instanceDialogVersionComboBox.addItem(versionObj.get("name").toString());
+            }
+        } catch (IOException ex) {
+            Logger.warning("MainForm.instanceDialogWindowOpened", "Failed to load available pack versions!");
+        }
     }//GEN-LAST:event_instanceDialogWindowOpened
 
     private void instanceDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_instanceDialogWindowGainedFocus
@@ -1184,6 +1239,7 @@ public class MainForm extends javax.swing.JFrame {
         JSONObject instanceConfig = new JSONObject();
         instanceConfig.put("name", instanceDialogNameBox.getText());
         instanceConfig.put("pack", instanceDialogModpackComboBox.getSelectedItem().toString());
+        instanceConfig.put("version", instanceDialogVersionComboBox.getSelectedItem().toString());
         try {
             FileUtils.writeStringToFile(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + instanceDialogNameBox.getText() + "/instance.json"), instanceConfig.toJSONString());
         } catch (IOException ex) {
@@ -1200,6 +1256,25 @@ public class MainForm extends javax.swing.JFrame {
         popupDialog.setVisible(false);
     }//GEN-LAST:event_popupDialogOkButtonActionPerformed
 
+    private void instanceDialogModpackComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instanceDialogModpackComboBoxActionPerformed
+        try {
+            instanceDialogVersionComboBox.removeAllItems();
+            instanceDialogVersionComboBox.addItem("Recommended");
+
+            try {
+                JSONObject packConfig = Util.readJSONFile("./packs/" + instanceDialogModpackComboBox.getSelectedItem().toString() + "/pack.json");
+                JSONArray versionsArray = (JSONArray)packConfig.get("versions");
+                for (Object obj : versionsArray) {
+                    JSONObject versionObj = (JSONObject)obj;
+                    instanceDialogVersionComboBox.addItem(versionObj.get("name").toString());
+                }
+            } catch (IOException ex) {
+                Logger.warning("MainForm.instanceDialogWindowOpened", "Failed to load available pack versions!");
+            }
+        } catch (Exception ex) { }
+    }//GEN-LAST:event_instanceDialogModpackComboBoxActionPerformed
+
+    
     
     /**
      * @param args the command line arguments
@@ -1254,11 +1329,14 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton instanceDialogCreateButton;
     private javax.swing.JComboBox instanceDialogModpackComboBox;
     private javax.swing.JLabel instanceDialogModpackLabel;
+    private javax.swing.JLabel instanceDialogModpackLabel1;
     private javax.swing.JTextField instanceDialogNameBox;
     private javax.swing.JLabel instanceDialogNameLabel;
+    private javax.swing.JComboBox instanceDialogVersionComboBox;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JButton loginDialogCancelButton;
     private javax.swing.JButton loginDialogLoginButton;
@@ -1266,6 +1344,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel loginDialogPasswordLabel;
     private javax.swing.JTextField loginDialogUsernameBox;
     private javax.swing.JLabel loginDialogUsernameLabel;
+    private javax.swing.JTextPane newsPane;
     private javax.swing.JDialog popupDialog;
     private javax.swing.JLabel popupDialogCaptionLabel;
     private javax.swing.JLabel popupDialogImageLabel;

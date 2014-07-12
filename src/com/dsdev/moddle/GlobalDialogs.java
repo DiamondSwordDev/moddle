@@ -23,7 +23,7 @@ public class GlobalDialogs {
     public static JTextPane consoleDialogLogPane = null;
     
     public static void showNotification(String message) {
-        popupDialogCaptionLabel.setText(message);
+        popupDialogCaptionLabel.setText("<html><body style='width: 300px'>" + message + "</body></html>");
         popupDialog.setVisible(true);
     }
     
