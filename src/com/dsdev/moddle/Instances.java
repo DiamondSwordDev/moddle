@@ -41,6 +41,10 @@ public class Instances {
     
     public static void buildInstance(String account, String name) {
         
+        //Clear progress (partially redundant)
+        GlobalDialogs.setProgressCaption("Initializing...");
+        GlobalDialogs.setProgressValue(0);
+        
         //Mark instance as incomplete
         Logger.info("Instances.buildInstance", "Updating instance status as 'incomplete'...");
         setInstanceIncomplete(account, name);
@@ -67,9 +71,23 @@ public class Instances {
             return;
         }
         
+        //Announce installation queue build
+        GlobalDialogs.setProgressCaption("Building installation queue...");
+        GlobalDialogs.setProgressValue(0);
+        
         //Get entries queued for installation
         Logger.info("Instances.buildInstance", "Building installation queue...");
         List<String> installationQueue = getInstallationQueue(packConfig, instanceConfig.get("version").toString());
+        
+        //Announce settings being loaded
+        GlobalDialogs.setProgressCaption("Loading settings...");
+        GlobalDialogs.setProgressValue(0);
+        
+        //Set mod list settings
+        Logger.info("Instances.buildInstance", "Adding mods to installation queue setting...");
+        for (String mod : installationQueue) {
+            Variables.setSetting("mods.installed", mod);
+        }
         
         //Set APPDATA setting
         Variables.setSetting("launch.AppDataDirectory", Util.getFullPath(instancePath));
@@ -83,17 +101,28 @@ public class Instances {
         
         //Install cache entries
         for (String entry : installationQueue) {
+            //Announce entry
+            GlobalDialogs.setProgressCaption("Installing entry '" + entry.split("-")[0] + "'...");
+            
+            //Install entry
             Logger.info("Instances.buildInstance", "Installing entry '" + entry.split("-")[0] + "'...");
-            installCacheEntry(entry.split("-")[0], entry.split("-")[1], "./packs/" + instanceConfig.get("pack").toString() + "/cache", "./users/" + account + "/" + name + "/.minecraft", installationQueue);
+            installCacheEntry(entry.split("-")[0], entry.split("-")[1], "./packs/" + instanceConfig.get("pack").toString() + "/cache", "./users/" + account + "/" + name + "/.minecraft");
+            
+            //Update progress
+            GlobalDialogs.incrementProgressValue(100 / installationQueue.size());
         }
         
+        //Announce Minecraft installation
+        GlobalDialogs.setProgressCaption("Obtaining Minecraft jarfile...");
+        GlobalDialogs.setProgressValue(10);
+        
         //Install Minecraft jarfile
-        //Util.createDirectoryIfNeeded("./users/" + account + "/" + name + "/.minecraft/versions");
         Logger.info("Instances.buildInstance", "Obtaining Minecraft jarfile...");
         String mcVersion = packConfig.get("minecraftversion").toString();
         Util.createDirectoryIfNeeded(instancePath + "/.minecraft/versions/" + mcVersion);
         Util.createDirectoryIfNeeded("./data/versions");
         if (!(new File("./data/versions/" + mcVersion + ".jar").isFile())) {
+            //Download file
             Logger.info("Instances.buildInstance", "Version not found!  Will download...");
             try {
                 FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/" + mcVersion + "/" + mcVersion + ".jar"), new File("./data/versions/" + mcVersion + ".jar"));
@@ -101,6 +130,9 @@ public class Instances {
                 Logger.error("Modpack.build", "Failed to download Minecraft jarfile!", true, ex.getMessage());
                 return;
             }
+            
+            //Update progress
+            GlobalDialogs.setProgressValue(50);
         }
         Logger.info("Instances.buildInstance", "Copying Minecraft jarfile...");
         try {
@@ -110,15 +142,25 @@ public class Instances {
             return;
         }
         
+        //Update progress
+        GlobalDialogs.setProgressCaption("Finishing up...");
+        GlobalDialogs.setProgressValue(100);
+        
         //Set instance complete
         Logger.info("Instances.buildInstance", "Updating instance status as 'complete'...");
         setInstanceComplete(account, name);
     }
     
     public static boolean runInstance(String account, String name) {
+        
+        //Make progress indeterminate
+        GlobalDialogs.setProgressIndeterminate(true);
+        GlobalDialogs.setProgressCaption("Preparing to launch...");
+        
         String instancePath = "./users/" + account + "/" + name;
         
         //Load instance config
+        Logger.info("Instances.runInstance", "Loading instance config...");
         JSONObject instanceConfig;
         try {
             instanceConfig = Util.readJSONFile(instancePath + "/instance.json");
@@ -128,6 +170,7 @@ public class Instances {
         }
         
         //Load pack config
+        Logger.info("Instances.runInstance", "Loading pack config...");
         JSONObject packConfig;
         try {
             packConfig = Util.readJSONFile("./packs/" + instanceConfig.get("pack").toString() + "/pack.json");
@@ -137,40 +180,51 @@ public class Instances {
         }
         
         //Get entries queued for installation
+        Logger.info("Instances.runInstance", "Building installation queue...");
         List<String> installationQueue = getInstallationQueue(packConfig, instanceConfig.get("version").toString());
+        
+        //Add installation queue variable
+        Logger.info("Instances.runInstance", "Adding mods to installation queue setting...");
+        for (String mod : installationQueue) {
+            Variables.setSetting("mods.installed", mod);
+        }
         
         //Set APPDATA setting
         Variables.setSetting("launch.AppDataDirectory", Util.getFullPath(instancePath));
         
         //Set all other settings
+        Logger.info("Instances.runInstance", "Loading settings...");
         loadPackSettings(packConfig, installationQueue);
 
+        Logger.info("Instances.runInstance", "Preparing arguments...");
         List<String> args = new ArrayList();
 
+        //There are so many logger statements in here, you be able to tell what's going on
+        
         //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
-        Logger.info("Modpack.run", "Parsing JavaExecutablePath...");
+        Logger.info("Instances.runInstance", "Parsing JavaExecutablePath...");
         if (!Variables.getSetting("launch.JavaExecutablePath").equals("null")) {
             args.add(Variables.getSetting("launch.JavaExecutablePath"));
         } else {
             args.add("javaw.exe");
         }
 
-        Logger.info("Modpack.run", "Parsing XmxArgument...");
+        Logger.info("Instances.runInstance", "Parsing XmxArgument...");
         if (Variables.getSettingBool("launch.UseXmxArgument")) {
             args.add("-Xmx" + Variables.getSetting("launch.XmxArgument") + "M");
         }
 
-        Logger.info("Modpack.run", "Parsing XmsArgument...");
+        Logger.info("Instances.runInstance", "Parsing XmsArgument...");
         if (Variables.getSettingBool("launch.UseXmsArgument")) {
             args.add("-Xms" + Variables.getSetting("launch.XmsArgument") + "M");
         }
 
-        Logger.info("Modpack.run", "Parsing DJavaLibPathArgument...");
+        Logger.info("Instances.runInstance", "Parsing DJavaLibPathArgument...");
         if (Variables.getSettingBool("launch.UseDJavaLibPathArgument")) {
             args.add("-Djava.library.path=\"" + Util.getFullPath(Variables.getSetting("launch.DJavaLibPathArgument")) + "\"");
         }
 
-        Logger.info("Modpack.run", "Parsing ClassPathArgument...");
+        Logger.info("Instances.runInstance", "Parsing ClassPathArgument...");
         if (Variables.getSettingBool("launch.UseClassPathArgument")) {
             String cpArg = "";//"\"";
             if (Variables.getSettingBool("launch.GetLibraryClassPaths")) {
@@ -189,7 +243,7 @@ public class Instances {
                     cpArg += ";";
                 }
                 for (String cpArgEntry : additionalClassPathEntries) {
-                    cpArg += Variables.parseSettingsString(cpArgEntry) + ";";
+                    cpArg += cpArgEntry + ";";
                 }
                 cpArg = cpArg.substring(0, cpArg.length() - 2);
             }
@@ -197,64 +251,64 @@ public class Instances {
             args.add("\"" + cpArg + "\"");
         }
 
-        Logger.info("Modpack.run", "Parsing MainClassArgument...");
+        Logger.info("Instances.runInstance", "Parsing MainClassArgument...");
         if (Variables.getSettingBool("launch.UseMainClassArgument")) {
             args.add(Variables.getSetting("launch.MainClassArgument"));
         }
 
-        Logger.info("Modpack.run", "Parsing AdditionalCoreArguments...");
+        Logger.info("Instances.runInstance", "Parsing AdditionalCoreArguments...");
         if (!Variables.getSettingList("launch.AdditionalCoreLaunchArguments").isEmpty()) {
             for (String additionalArg : Variables.getSettingList("launch.AdditionalCoreLaunchArguments")) {
-                args.add(Variables.parseSettingsString(additionalArg));
+                args.add(additionalArg);
             }
         }
 
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Minecraft Arguments">
-        Logger.info("Modpack.run", "Parsing UseLegacyUsernameAndSession...");
+        Logger.info("Instances.runInstance", "Parsing UseLegacyUsernameAndSession...");
         if (Variables.getSettingBool("launch.UseLegacyUsernameAndSession")) {
             args.add(Auth.Username);
             args.add(Auth.AccessToken);
         }
 
-        Logger.info("Modpack.run", "Parsing UseGameDirArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseGameDirArgument...");
         if (Variables.getSettingBool("launch.UseGameDirArgument")) {
             args.add("--gameDir");
             args.add(Variables.getSetting("launch.GameDirArgument"));
         }
 
-        Logger.info("Modpack.run", "Parsing UseAssetDirArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseAssetDirArgument...");
         if (Variables.getSettingBool("launch.UseAssetDirArgument")) {
             args.add("--assetDir");
             args.add(Variables.getSetting("launch.AssetDirArgument"));
         }
 
-        Logger.info("Modpack.run", "Parsing UseVersionArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseVersionArgument...");
         if (Variables.getSettingBool("launch.UseVersionArgument")) {
             args.add("--version");
             args.add(Variables.getSetting("launch.VersionArgument"));
         }
 
-        Logger.info("Modpack.run", "Parsing UseUsernameArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseUsernameArgument...");
         if (Variables.getSettingBool("launch.UseUsernameArgument")) {
             args.add("--username");
             args.add(Auth.Username);
         }
 
-        Logger.info("Modpack.run", "Parsing UseSessionArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseSessionArgument...");
         if (Variables.getSettingBool("launch.UseSessionArgument")) {
             args.add("--session");
             args.add(Auth.AccessToken);
         }
 
-        Logger.info("Modpack.run", "Parsing UseUUIDArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseUUIDArgument...");
         if (Variables.getSettingBool("launch.UseUUIDArgument")) {
             args.add("--uuid");
             args.add(Auth.UUID);
         }
 
-        Logger.info("Modpack.run", "Parsing UseAccessTokenArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseAccessTokenArgument...");
         if (Variables.getSettingBool("launch.UseAccessTokenArgument")) {
             args.add("--accessToken");
             args.add(Auth.AccessToken);
@@ -273,36 +327,40 @@ public class Instances {
             args.add(LoginHelper.UserType);
         }*/
 
-        Logger.info("Modpack.run", "Parsing UseTweakClassArgument...");
+        Logger.info("Instances.runInstance", "Parsing UseTweakClassArgument...");
         if (Variables.getSettingBool("launch.UseTweakClassArgument")) {
             args.add("--tweakClass");
             args.add(Variables.getSetting("launch.TweakClassArgument"));
         }
 
-        Logger.info("Modpack.run", "Parsing AdditionalMinecraftArguments...");
+        Logger.info("Instances.runInstance", "Parsing AdditionalMinecraftArguments...");
         if (!Variables.getSettingList("launch.AdditionalMinecraftLaunchArguments").isEmpty()) {
             for (String additionalArg : Variables.getSettingList("launch.AdditionalMinecraftLaunchArguments")) {
-                args.add(Variables.parseSettingsString(additionalArg));
+                args.add(additionalArg);
             }
         }
 
         //</editor-fold>
 
+        //Put args in an array (wha... what is this... this... boilerplate code?!?)
         String[] argArray = new String[args.toArray().length];
         for (int i = 0; i < argArray.length; i++) {
             argArray[i] = args.get(i);
         }
 
+        //Make the ProcessBuilder
         ProcessBuilder launcher = new ProcessBuilder(argArray);
 
-        Logger.info("Modpack.run", "Setting environment variables...");
+        //Set the actual APPDATA variable
+        Logger.info("Instances.runInstance", "Setting environment variables...");
         Map<String, String> env = launcher.environment();
-        //env.put("APPDATA", Util.getFile("./packs/" + ModpackName).getCanonicalPath());
         env.put("APPDATA", Variables.getSetting("launch.AppDataDirectory"));
 
-        Logger.info("Modpack.run", "Launching process!");
+        //Set working directory
         launcher.directory(new File("./users/" + account + "/" + name + "/.minecraft"));
 
+        //Launch!
+        Logger.info("Instances.runInstance", "Launching process!");
         Process processHandle;
         try {
             processHandle = launcher.start();
@@ -311,6 +369,7 @@ public class Instances {
             return false;
         }
 
+        //Redirect output to the console
         inheritIO(processHandle.getInputStream(), System.out);
         inheritIO(processHandle.getErrorStream(), System.err);
         
@@ -348,6 +407,9 @@ public class Instances {
         //Init installation queue
         List<String> installationQueue = new ArrayList();
         
+        //Announce Minecraft enqueueing
+        GlobalDialogs.setProgressCaption("Enqueueing Minecraft...");
+        
         //Queue Minecraft
         Logger.info("Instances.getInstallationQueue", "Enqueueing Minecraft...");
         enqueueCacheEntry("minecraft", packConfig.get("minecraftversion").toString(), "./packs/" + packConfig.get("name").toString() + "/cache", packConfig.get("minecraftversion").toString(), installationQueue);
@@ -355,8 +417,16 @@ public class Instances {
         //Add pack entries to installation queue
         for (Object obj : entriesArray) {
             JSONObject entryObj = (JSONObject) obj;
+            
+            //Announce entry
+            GlobalDialogs.setProgressCaption("Enqueueing '" + entryObj.get("name").toString() + "'...");
+            
+            //Enqueue entry
             Logger.info("Instances.getInstallationQueue", "Enqueueing '" + entryObj.get("name").toString() + "'...");
             enqueueCacheEntry(entryObj.get("name").toString(), entryObj.get("version").toString(), "./packs/" + packConfig.get("name").toString() + "/cache", packConfig.get("minecraftversion").toString(), installationQueue);
+            
+            //Update progress
+            GlobalDialogs.incrementProgressValue(100 / entriesArray.size());
         }
         
         return installationQueue;
@@ -427,39 +497,50 @@ public class Instances {
     
     
     private static String getCacheEntryPath(String name, String version, String packCacheLocation) {
-        if (new File("./data/" + name + "-" + version).isDirectory()) {
-            return "./data/" + name + "-" + version;
-        } else if (new File("./data/" + name + "-" + version + ".zip").isFile()) {
+        
+        //Check data folder
+        String dataLocation = "./data/" + name + "-" + version;
+        if (new File(dataLocation).isDirectory()) {
+            return dataLocation;
+        } else if (new File(dataLocation + ".zip").isFile()) {
             try {
-                Util.decompressZipfile("./data/" + name + "-" + version + ".zip", "./data/" + name + "-" + version);
+                Util.decompressZipfile(dataLocation + ".zip", dataLocation);
             } catch (ZipException ex) {
                 Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
                 return null;
             }
-            return "./data/" + name + "-" + version;
-        } else if (new File(packCacheLocation + "/" + name + "-" + version).isDirectory()) {
-            return packCacheLocation + "/" + name + "-" + version;
-        } else if (new File(packCacheLocation + "/" + name + "-" + version + ".zip").isFile()) {
-            try {
-                Util.decompressZipfile(packCacheLocation + "/" + name + "-" + version + ".zip", packCacheLocation + "/" + name + "-" + version);
-            } catch (ZipException ex) {
-                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
-                return null;
-            }
-            return packCacheLocation + "/" + name + "-" + version;
-        } else if (new File("./cache/" + name + "-" + version).isDirectory()) {
-            return "./cache/" + name + "-" + version;
-        } else if (new File("./cache/" + name + "-" + version + ".zip").isFile()) {
-            try {
-                Util.decompressZipfile("./cache/" + name + "-" + version + ".zip", "./cache/" + name + "-" + version);
-            } catch (ZipException ex) {
-                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
-                return null;
-            }
-            return "./cache/" + name + "-" + version;
-        } else {
-            return null;
+            return dataLocation;
         }
+        
+        //Check pack cache folder
+        String packLocation = packCacheLocation + "/" + name + "-" + version;
+        if (new File(packLocation).isDirectory()) {
+            return packLocation;
+        } else if (new File(packLocation + ".zip").isFile()) {
+            try {
+                Util.decompressZipfile(packLocation + ".zip", packLocation);
+            } catch (ZipException ex) {
+                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
+                return null;
+            }
+            return packLocation;
+        }
+        
+        //Check cache folder
+        String cacheLocation = "./cache/" + name + "-" + version;
+        if (new File(cacheLocation).isDirectory()) {
+            return cacheLocation;
+        } else if (new File(cacheLocation + ".zip").isFile()) {
+            try {
+                Util.decompressZipfile(cacheLocation + ".zip", cacheLocation);
+            } catch (ZipException ex) {
+                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
+                return null;
+            }
+            return cacheLocation;
+        }
+        
+        return null;
     }
     
     private static void getCacheEntrySettings(String name, String version, String packCacheLocation) {
@@ -483,7 +564,7 @@ public class Instances {
     }
     
     
-    private static void installCacheEntry(String name, String version, String packCacheLocation, String targetDir, List<String> installQueue) {
+    private static void installCacheEntry(String name, String version, String packCacheLocation, String targetDir) {
         //Get entry location
         String entryPath = getCacheEntryPath(name, version, packCacheLocation);
 
@@ -501,6 +582,8 @@ public class Instances {
             //Process files
             for (Object obj : (JSONArray)entryConfig.get("files")) {
                 JSONObject file = (JSONObject) obj;
+                
+                //Attempt to download file if it does not exist
                 try {
                     if (!new File(entryPath + "/" + (String) file.get("name")).exists()) {
                         FileUtils.copyURLToFile(new URL((String) file.get("url")), new File(entryPath + "/" + (String) file.get("name")));
@@ -508,19 +591,24 @@ public class Instances {
                 } catch (IOException ex) {
                     Logger.error("Instances.installCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex.getMessage());
                 }
+                
+                //Perform specified action for file
                 try {
                     if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
+                        //'extract-zip':  decompress the file into a folder
                         Util.decompressZipfile(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                     } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
+                        //'copy-file':  Copy the file and delete existing copy if necessary
                         if (new File(targetDir + (String) file.get("target")).isFile()) {
                             new File(targetDir + (String) file.get("target")).delete();
                         }
                         FileUtils.copyFile(new File(entryPath + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
                     } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
+                        //'copy-config':  Copy the file via the config parser
                         if (new File(targetDir + (String) file.get("target")).isFile()) {
                             new File(targetDir + (String) file.get("target")).delete();
                         }
-                        copyTextFileWithVariables(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"), installQueue);
+                        copyTextFileWithVariables(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                     }
                 } catch (Exception ex) {
                     Logger.error("Instances.installCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -529,51 +617,10 @@ public class Instances {
         }
     }
     
-    public static void copyTextFileWithVariables(String sourceFile, String destFile, List<String> installQueue) throws IOException {
-        List<String> sourceText = FileUtils.readLines(new File(sourceFile));
-        String destText = "";
-        boolean isSkipping = false;
-        for (String line : sourceText) {
-
-            if (line.equalsIgnoreCase("$[[end]]")) {
-                isSkipping = false;
-            } else if (line.startsWith("$[[") && line.endsWith("]]") && line.contains(":")) {
-                String functionString = line.substring(3, line.length() - 2);
-                if (functionString.split(":")[0].equalsIgnoreCase("if")) {
-                    if (!Variables.getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
-                        isSkipping = true;
-                    }
-                } else if (functionString.split(":")[0].equalsIgnoreCase("ifnot")) {
-                    if (Variables.getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
-                        isSkipping = true;
-                    }
-                } else if (functionString.split(":")[0].equalsIgnoreCase("ifinstalled")) {
-                    boolean isInstalled = false;
-                    for (String item : installQueue) {
-                        if (item.startsWith(functionString.split(":")[1])) {
-                            isInstalled = true;
-                        }
-                    }
-                    if (!isInstalled) {
-                        isSkipping = true;
-                    }
-                } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotinstalled")) {
-                    boolean isInstalled = false;
-                    for (String item : installQueue) {
-                        if (item.startsWith(functionString.split(":")[1])) {
-                            isInstalled = true;
-                        }
-                    }
-                    if (isInstalled) {
-                        isSkipping = true;
-                    }
-                }
-            } else {
-                destText += Variables.parseSettingsString(line) + "\n\r";
-            }
-
-        }
-        destText = destText.substring(0, destText.length() - 2);
+    public static void copyTextFileWithVariables(String sourceFile, String destFile) throws IOException {
+        //This be reeeal simple:  Read, parse, make directory, and write
+        String sourceText = FileUtils.readFileToString(new File(sourceFile));
+        String destText = Variables.parseString(sourceText);
         new File(destFile).getParentFile().mkdirs();
         FileUtils.writeStringToFile(new File(destFile), destText);
     }

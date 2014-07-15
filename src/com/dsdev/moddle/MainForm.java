@@ -1009,12 +1009,10 @@ public class MainForm extends javax.swing.JFrame {
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
                 if (Instances.runInstance(accountname, instancename)) {
                     //System.exit(0);
+                    GlobalDialogs.hideProgressDialog();
                 } else {
-                    progressDialog.setVisible(false);
-                    //setLoadingSpinnerVisible(false);
+                    GlobalDialogs.hideProgressDialog();
                 }
-                
-                return;
             }
         };
 

@@ -46,6 +46,14 @@ public class GlobalDialogs {
         progressDialogStatusBar.setValue(n);
     }
     
+    public static void incrementProgressValue(int n) {
+        if (!(progressDialogStatusBar.getValue() + n > 100)) {
+            progressDialogStatusBar.setValue(progressDialogStatusBar.getValue() + n);
+        } else {
+            progressDialogStatusBar.setValue(100);
+        }
+    }
+    
     public static void setProgressIndeterminate(boolean indeterminate) {
         progressDialogStatusBar.setIndeterminate(indeterminate);
     }
