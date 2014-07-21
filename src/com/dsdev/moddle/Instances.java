@@ -86,7 +86,7 @@ public class Instances {
         //Set mod list settings
         Logger.info("Instances.buildInstance", "Adding mods to installation queue setting...");
         for (String mod : installationQueue) {
-            Variables.setSetting("mods.installed", mod);
+            Variables.setSetting("mods.Installed", mod);
         }
         
         //Set APPDATA setting
@@ -186,7 +186,7 @@ public class Instances {
         //Add installation queue variable
         Logger.info("Instances.runInstance", "Adding mods to installation queue setting...");
         for (String mod : installationQueue) {
-            Variables.setSetting("mods.installed", mod);
+            Variables.setSetting("mods.Installed", mod);
         }
         
         //Set APPDATA setting
@@ -478,7 +478,7 @@ public class Instances {
         //Load pack settings
         if (packConfig.get("settings") != null) {
             Logger.info("Instances.loadPackSettings", "Loading pack settings...");
-            Variables.loadSettingsFromJSON(packConfig);
+            Variables.loadSettingsFromJSON(packConfig, "pack");
         }
         
         //Load entry settings
@@ -491,7 +491,7 @@ public class Instances {
                 continue;
             }
             Logger.info("Instances.loadPackSettings", "Loading settings for entry '" + entryConfig.get("name").toString() + "'...");
-            Variables.loadSettingsFromJSON(entryConfig);
+            Variables.loadSettingsFromJSON(entryConfig, "entry");
         }
     }
     
@@ -559,7 +559,7 @@ public class Instances {
             }
             
             //Load settings
-            Variables.loadSettingsFromJSON(entryConfig);
+            Variables.loadSettingsFromJSON(entryConfig, "entry");
         }
     }
     

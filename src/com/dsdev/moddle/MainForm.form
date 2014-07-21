@@ -613,15 +613,205 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="951" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="PrefsUserLabel" alignment="1" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="MaximizeMinecraftCheckbox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="ShowConsoleCheckbox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="ReopenLauncherCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="MemoryLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="JavaPathLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="MemoryField" min="-2" pref="92" max="-2" attributes="0"/>
+                                          <Component id="JavaPathField" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="MinecraftSizeLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="MinecraftSizeXField" min="-2" pref="53" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="MinecraftSizeYField" min="-2" pref="53" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="AdditionalVariablesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="AdditionalVariablesWarningLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jScrollPane5" min="-2" pref="397" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace pref="208" max="32767" attributes="0"/>
+                              <Component id="SaveSettingsButton" min="-2" pref="98" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="CancelSettingsButton" min="-2" pref="74" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="409" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="PrefsUserLabel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                              <Component id="ReopenLauncherCheckbox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="ShowConsoleCheckbox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="MemoryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="MemoryField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="JavaPathField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="JavaPathLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="MinecraftSizeXField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="MinecraftSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="MinecraftSizeYField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="MaximizeMinecraftCheckbox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="AdditionalVariablesLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="AdditionalVariablesWarningLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="75" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPane5" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="CancelSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="SaveSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
           </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="PrefsUserLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="18" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Not Logged In"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="ReopenLauncherCheckbox">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Re-open launcher when Minecraft closes"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="ShowConsoleCheckbox">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Show the Moddle console"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="MemoryLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Minimum Memory (Mb):"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="MemoryField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1024"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="JavaPathLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Java Executable Path:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="JavaPathField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="default"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="MinecraftSizeLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Minecraft Window Size:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="MinecraftSizeXField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="default"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="MinecraftSizeYField">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="default"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="MaximizeMinecraftCheckbox">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Maximize the Minecraft window"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="AdditionalVariablesLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Additional Launcher Variables:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="AdditionalVariablesWarningLabel">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="cc" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="(Advanced!)"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane5">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextPane" name="AdditionalVariablesPane">
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="CancelSettingsButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cancel"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CancelSettingsButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="SaveSettingsButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SaveSettingsButtonActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
         </Container>
       </SubComponents>
     </Container>

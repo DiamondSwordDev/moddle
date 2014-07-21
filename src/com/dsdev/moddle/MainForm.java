@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -93,6 +94,23 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         newsPane = new javax.swing.JTextPane();
         SettingsPanel = new javax.swing.JPanel();
+        PrefsUserLabel = new javax.swing.JLabel();
+        ReopenLauncherCheckbox = new javax.swing.JCheckBox();
+        ShowConsoleCheckbox = new javax.swing.JCheckBox();
+        MemoryLabel = new javax.swing.JLabel();
+        MemoryField = new javax.swing.JTextField();
+        JavaPathLabel = new javax.swing.JLabel();
+        JavaPathField = new javax.swing.JTextField();
+        MinecraftSizeLabel = new javax.swing.JLabel();
+        MinecraftSizeXField = new javax.swing.JTextField();
+        MinecraftSizeYField = new javax.swing.JTextField();
+        MaximizeMinecraftCheckbox = new javax.swing.JCheckBox();
+        AdditionalVariablesLabel = new javax.swing.JLabel();
+        AdditionalVariablesWarningLabel = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        AdditionalVariablesPane = new javax.swing.JTextPane();
+        CancelSettingsButton = new javax.swing.JButton();
+        SaveSettingsButton = new javax.swing.JButton();
         CurrentUserLabel = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
         InstanceComboBox = new javax.swing.JComboBox();
@@ -450,15 +468,129 @@ public class MainForm extends javax.swing.JFrame {
 
         MainTabPane.addTab("News", NewsPanel);
 
+        PrefsUserLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        PrefsUserLabel.setText("Not Logged In");
+
+        ReopenLauncherCheckbox.setText("Re-open launcher when Minecraft closes");
+
+        ShowConsoleCheckbox.setText("Show the Moddle console");
+
+        MemoryLabel.setText("Minimum Memory (Mb):");
+
+        MemoryField.setText("1024");
+
+        JavaPathLabel.setText("Java Executable Path:");
+
+        JavaPathField.setText("default");
+
+        MinecraftSizeLabel.setText("Minecraft Window Size:");
+
+        MinecraftSizeXField.setText("default");
+
+        MinecraftSizeYField.setText("default");
+
+        MaximizeMinecraftCheckbox.setText("Maximize the Minecraft window");
+
+        AdditionalVariablesLabel.setText("Additional Launcher Variables:");
+
+        AdditionalVariablesWarningLabel.setForeground(new java.awt.Color(204, 0, 0));
+        AdditionalVariablesWarningLabel.setText("(Advanced!)");
+
+        jScrollPane5.setViewportView(AdditionalVariablesPane);
+
+        CancelSettingsButton.setText("Cancel");
+        CancelSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CancelSettingsButtonActionPerformed(evt);
+            }
+        });
+
+        SaveSettingsButton.setText("Save");
+        SaveSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveSettingsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout SettingsPanelLayout = new javax.swing.GroupLayout(SettingsPanel);
         SettingsPanel.setLayout(SettingsPanelLayout);
         SettingsPanelLayout.setHorizontalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 951, Short.MAX_VALUE)
+            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PrefsUserLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(SettingsPanelLayout.createSequentialGroup()
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(MaximizeMinecraftCheckbox)
+                            .addComponent(ShowConsoleCheckbox)
+                            .addComponent(ReopenLauncherCheckbox)
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(MemoryLabel)
+                                    .addComponent(JavaPathLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(MemoryField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(JavaPathField)))
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addComponent(MinecraftSizeLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MinecraftSizeXField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(AdditionalVariablesLabel)
+                                    .addComponent(AdditionalVariablesWarningLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
+                        .addComponent(SaveSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(CancelSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         SettingsPanelLayout.setVerticalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 409, Short.MAX_VALUE)
+            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(PrefsUserLabel)
+                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(SettingsPanelLayout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(ReopenLauncherCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ShowConsoleCheckbox)
+                        .addGap(23, 23, 23)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(MemoryLabel)
+                            .addComponent(MemoryField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(JavaPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JavaPathLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(MinecraftSizeXField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(MinecraftSizeLabel)
+                            .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(MaximizeMinecraftCheckbox)
+                        .addGap(18, 18, 18)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addComponent(AdditionalVariablesLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(AdditionalVariablesWarningLabel)
+                                .addGap(0, 75, Short.MAX_VALUE))
+                            .addComponent(jScrollPane5)))
+                    .addGroup(SettingsPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CancelSettingsButton)
+                            .addComponent(SaveSettingsButton))))
+                .addContainerGap())
         );
 
         MainTabPane.addTab("Settings", SettingsPanel);
@@ -586,6 +718,31 @@ public class MainForm extends javax.swing.JFrame {
         ModpackList.setModel(modpackListModel);
     }
     
+    private void fetchNews() {
+        //Download news
+        try {
+            FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/news.zip"), new File("./data/news.zip"));
+        } catch (IOException ex) {
+            Logger.warning("MainForm.formWindowOpened", "Could not fetch news!");
+            return;
+        }
+        
+        //Delete old news
+        try {
+            FileUtils.deleteDirectory(new File("./data/news"));
+        } catch (IOException ex) {
+            //Swallow error
+        }
+
+        //Extract news
+        try {
+            Util.decompressZipfile("./data/news.zip", "./data/news");
+        } catch (ZipException ex) {
+            Logger.warning("MainForm.formWindowOpened", "Could not extract news archive!");
+            return;
+        }
+    }
+    
     private void loadUser(String accountName) {
         
         //Get the 'friendly' username string (removes '@' and '.')
@@ -648,6 +805,89 @@ public class MainForm extends javax.swing.JFrame {
                 loadPaneContentFromDirectory("./data/content/nodesc", ModpackDescriptionPane);
             }
         }
+    }
+    
+    private void loadUserPrefs(String accountName) {
+        if (accountName == null) {
+            loadNullUserPrefs();
+            return;
+        }
+        
+        //Get the 'friendly' username string (removes '@' and '.')
+        String friendlyAccountName = getFriendlyName(accountName);
+        
+        //Load pref config
+        JSONObject prefConfig;
+        try {
+            prefConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/prefs.json");
+        } catch (IOException ex) {
+            Logger.warning("MainForm.loadUserPrefs", "Could not load preferences file!");
+            loadNullUserPrefs();
+            return;
+        }
+        
+        SettingsPanel.setEnabled(true);
+        
+        PrefsUserLabel.setText(Auth.Username);
+        
+        ReopenLauncherCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("reopen").toString()));
+        ShowConsoleCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("console").toString()));
+        
+        MemoryField.setText(prefConfig.get("memory").toString());
+        JavaPathField.setText(prefConfig.get("javapath").toString());
+        
+        MinecraftSizeXField.setText(prefConfig.get("width").toString());
+        MinecraftSizeYField.setText(prefConfig.get("height").toString());
+        MaximizeMinecraftCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("maximize").toString()));
+        
+        AdditionalVariablesPane.setText(prefConfig.get("variables").toString().replace("``n", "\n").replace("``q", "\""));
+    }
+    
+    private void loadNullUserPrefs() {
+        SettingsPanel.setEnabled(false);
+        
+        PrefsUserLabel.setText("Not Logged In");
+        
+        ReopenLauncherCheckbox.setSelected(false);
+        ShowConsoleCheckbox.setSelected(false);
+        
+        MemoryField.setText("1024");
+        JavaPathField.setText("default");
+        
+        MinecraftSizeXField.setText("default");
+        MinecraftSizeYField.setText("default");
+        MaximizeMinecraftCheckbox.setSelected(false);
+        
+        AdditionalVariablesPane.setText("");
+    }
+    
+    private void saveUserPrefs(String accountName) {
+        
+        //Get the 'friendly' username string (removes '@' and '.')
+        String friendlyAccountName = getFriendlyName(accountName);
+        
+        //Create pref config
+        JSONObject prefConfig = new JSONObject();
+        
+        prefConfig.put("reopen", Boolean.toString(ReopenLauncherCheckbox.isSelected()));
+        prefConfig.put("console", Boolean.toString(ShowConsoleCheckbox.isSelected()));
+        
+        prefConfig.put("memory", MemoryField.getText());
+        prefConfig.put("javapath", JavaPathField.getText());
+        
+        prefConfig.put("width", MinecraftSizeXField.getText());
+        prefConfig.put("height", MinecraftSizeYField.getText());
+        prefConfig.put("maximize", Boolean.toString(MaximizeMinecraftCheckbox.isSelected()));
+        
+        prefConfig.put("variables", AdditionalVariablesPane.getText().replace("\n", "``n").replace("\"", "``q"));
+        
+        try {
+            FileUtils.writeStringToFile(new File("./users/" + friendlyAccountName + "/prefs.json"), prefConfig.toJSONString());
+        } catch (IOException ex) {
+            Logger.error("MainForm.saveUserPrefs", "Unable to save user preferences!", false, ex.getMessage());
+        }
+        
+        Logger.info("Logger.saveUserPrefs", "Saved user preferences!");
     }
     
     private String getFriendlyName(String accountName) {
@@ -1076,6 +1316,15 @@ public class MainForm extends javax.swing.JFrame {
         //Load modpacks
         loadModpackList();
         
+        Logger.info("MainForm.formWindowOpened", "Loading news...");
+        
+        //Download news
+        fetchNews();
+        
+        //Load news content
+        this.loadPaneContentFromDirectory("./data/content/news", newsPane);
+        MainTabPane.setSelectedIndex(1);
+        
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         
         //Load auth from file
@@ -1100,8 +1349,10 @@ public class MainForm extends javax.swing.JFrame {
         //Load GUI
         if (Auth.isLoggedIn) {
             loadUser(Auth.AccountName);
+            loadUserPrefs(Auth.AccountName);
         } else {
             loadUser(null);
+            loadUserPrefs(null);
         }
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
@@ -1212,6 +1463,7 @@ public class MainForm extends javax.swing.JFrame {
                     LoginButton.setText("Log Out");
                     enablePlayControls();
                     loadUser(Auth.AccountName);
+                    loadUserPrefs(Auth.AccountName);
                     
                     Logger.info("MainForm.loginDialogLoginButtonActionPerformed", "Logged in user '" + Auth.AccountName + "'.");
                 } else {
@@ -1273,6 +1525,15 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_instanceDialogModpackComboBoxActionPerformed
 
     
+    private void SaveSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveSettingsButtonActionPerformed
+        saveUserPrefs(Auth.AccountName);
+    }//GEN-LAST:event_SaveSettingsButtonActionPerformed
+
+    private void CancelSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelSettingsButtonActionPerformed
+        loadUserPrefs(Auth.AccountName);
+    }//GEN-LAST:event_CancelSettingsButtonActionPerformed
+
+    
     
     /**
      * @param args the command line arguments
@@ -1306,20 +1567,36 @@ public class MainForm extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel AdditionalVariablesLabel;
+    private javax.swing.JTextPane AdditionalVariablesPane;
+    private javax.swing.JLabel AdditionalVariablesWarningLabel;
+    private javax.swing.JButton CancelSettingsButton;
     private javax.swing.JButton CreateInstanceButton;
     private javax.swing.JLabel CurrentUserLabel;
     private javax.swing.JButton DeleteInstanceButton;
     private javax.swing.JCheckBox ForceUpdateCheckBox;
     private javax.swing.JComboBox InstanceComboBox;
     private javax.swing.JLabel InstanceLabel;
+    private javax.swing.JTextField JavaPathField;
+    private javax.swing.JLabel JavaPathLabel;
     private javax.swing.JButton LoginButton;
     private javax.swing.JTabbedPane MainTabPane;
+    private javax.swing.JCheckBox MaximizeMinecraftCheckbox;
+    private javax.swing.JTextField MemoryField;
+    private javax.swing.JLabel MemoryLabel;
+    private javax.swing.JLabel MinecraftSizeLabel;
+    private javax.swing.JTextField MinecraftSizeXField;
+    private javax.swing.JTextField MinecraftSizeYField;
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JList ModpackList;
     private javax.swing.JPanel ModpackPanel;
     private javax.swing.JPanel NewsPanel;
     private javax.swing.JButton PlayButton;
+    private javax.swing.JLabel PrefsUserLabel;
+    private javax.swing.JCheckBox ReopenLauncherCheckbox;
+    private javax.swing.JButton SaveSettingsButton;
     private javax.swing.JPanel SettingsPanel;
+    private javax.swing.JCheckBox ShowConsoleCheckbox;
     private javax.swing.JDialog consoleDialog;
     private javax.swing.JTextPane consoleDialogLogPane;
     private javax.swing.JDialog instanceDialog;
@@ -1335,6 +1612,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JButton loginDialogCancelButton;
     private javax.swing.JButton loginDialogLoginButton;

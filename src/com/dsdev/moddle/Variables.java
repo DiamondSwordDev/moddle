@@ -14,17 +14,112 @@ import org.json.simple.JSONObject;
  */
 public class Variables {
     
-    private static Map<String, String> SettingsMap = new HashMap<String, String>();
+    private static List<PrioritizedVariable> PrioritizedVariables = new ArrayList();
     
-    public static void setSetting(String name, String value) {
-        if (name.startsWith("+")) {
-            int index = 0;
-            while (getSetting(name.substring(1) + "." + Integer.toString(index)) != null) index++;
-            SettingsMap.put(name.substring(1) + "." + Integer.toString(index), value);
+    private static boolean hasVariableWithName(String name) {
+        for (PrioritizedVariable p : PrioritizedVariables) {
+            if (p.Name.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static PrioritizedVariable getVariableByName(String name) {
+        for (PrioritizedVariable p : PrioritizedVariables) {
+            if (p.Name.equals(name)) {
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    private static void setVariable(PrioritizedVariable pvar) {
+        if (hasVariableWithName(pvar.Name)) {
+            if (getVariableByName(pvar.Name).PrioritizationExpression == null) {
+                getVariableByName(pvar.Name).PrioritizationExpression = pvar.PrioritizationExpression;
+            }
+            getVariableByName(pvar.Name).Values = pvar.Values;
         } else {
-            SettingsMap.put(name, value);
+            PrioritizedVariables.add(pvar);
         }
     }
+    
+    
+    public static void setSetting(String name, String value) {
+        if (hasVariableWithName(name)) {
+            getVariableByName(name).Values.add(new TaggedValue(value, null));
+        } else {
+            PrioritizedVariable var = new PrioritizedVariable();
+            var.Name = name;
+            var.Values.add(new TaggedValue(value, null));
+            PrioritizedVariables.add(var);
+        }
+    }
+    
+    public static void setSetting(String name, String value, String tag) {
+        if (hasVariableWithName(name)) {
+            getVariableByName(name).Values.add(new TaggedValue(value, tag));
+        } else {
+            PrioritizedVariable var = new PrioritizedVariable();
+            var.Name = name;
+            var.Values.add(new TaggedValue(value, tag));
+            PrioritizedVariables.add(var);
+        }
+    }
+    
+    public static void setSettingPriority(String name, String value) {
+        if (hasVariableWithName(name)) {
+            PrioritizedVariable var = getVariableByName(name);
+            if (var.PrioritizationExpression == null) {
+                var.PrioritizationExpression = value;
+            }
+        } else {
+            PrioritizedVariable var = new PrioritizedVariable();
+            var.Name = name;
+            var.PrioritizationExpression = value;
+            PrioritizedVariables.add(var);
+        }
+    }
+    
+    
+    public static String getSetting(String name) {
+        if (hasVariableWithName(name)) {
+            PrioritizedVariable var = getVariableByName(name);
+            if (var.PrioritizationExpression.equalsIgnoreCase("oldest")) {
+                TaggedValue newestValue = var.Values.get(var.Values.size() - 1);
+                return parseString(newestValue.Value);
+            } else { //get newest
+                TaggedValue newestValue = var.Values.get(var.Values.size() - 1);
+                return parseString(newestValue.Value);
+            }
+        } else {
+            return "null";
+        }
+    }
+    
+    public static boolean getSettingBool(String name) {
+        return "true".equalsIgnoreCase(getSetting(name));
+    }
+    
+    public static List<String> getSettingList(String name) {
+        if (hasVariableWithName(name)) {
+            PrioritizedVariable var = getVariableByName(name);
+            List<String> variableValues = new ArrayList();
+            for (TaggedValue v : var.Values) {
+                variableValues.add(v.Value);
+            }
+            return variableValues;
+        } else {
+            return new ArrayList();
+        }
+    }
+    
+    
+    public static void clearSettings() {
+        PrioritizedVariables = new ArrayList();
+    }
+    
     
     public static String parseString(String s) {
         if (s.contains("\n")) {
@@ -148,28 +243,28 @@ public class Variables {
                 String functionString = trimmedline.substring(3, trimmedline.length() - 2);
                 if (functionString.split(":")[0].equalsIgnoreCase("if")) {
                     //'if' statement
-                    if (!Variables.getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                    if (!getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
                         isSkipping = true;
                     }
                 } else if (functionString.split(":")[0].equalsIgnoreCase("ifnot")) {
                     //'ifnot' statement
-                    if (Variables.getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
+                    if (getSetting(functionString.split(":")[1]).equals(functionString.split(":")[2])) {
                         isSkipping = true;
                     }
                 } else if (functionString.split(":")[0].equalsIgnoreCase("ifbool")) {
                     //'ifbool' statement
-                    if (!Variables.getSettingBool(functionString.split(":")[1]) == Boolean.parseBoolean(functionString.split(":")[2])) {
+                    if (!getSettingBool(functionString.split(":")[1]) == Boolean.parseBoolean(functionString.split(":")[2])) {
                         isSkipping = true;
                     }
                 } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotbool")) {
                     //'ifnotbool' statement
-                    if (Variables.getSettingBool(functionString.split(":")[1]) == Boolean.parseBoolean(functionString.split(":")[2])) {
+                    if (getSettingBool(functionString.split(":")[1]) == Boolean.parseBoolean(functionString.split(":")[2])) {
                         isSkipping = true;
                     }
                 } else if (functionString.split(":")[0].equalsIgnoreCase("ifcontains")) {
                     //'ifcontains' statement
                     boolean contains = false;
-                    for (String item : Variables.getSettingList(functionString.split(":")[1])) {
+                    for (String item : getSettingList(functionString.split(":")[1])) {
                         if (item.equals(functionString.split(":")[2])) {
                             contains = true;
                             break;
@@ -183,7 +278,7 @@ public class Variables {
                     }
                 } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotcontains")) {
                     //'ifnotcontains' statement
-                    for (String item : Variables.getSettingList(functionString.split(":")[1])) {
+                    for (String item : getSettingList(functionString.split(":")[1])) {
                         if (item.equals(functionString.split(":")[2])) {
                             isSkipping = true;
                             break;
@@ -196,7 +291,7 @@ public class Variables {
             } else {
                 //Append the line if not skipping
                 if (!isSkipping) {
-                    ret += Variables.parseString(line) + "\n\r";
+                    ret += parseString(line) + "\n\r";
                 }
             }
 
@@ -208,42 +303,23 @@ public class Variables {
         return ret;
     }
     
-    public static String getSetting(String key) {
-        String value = SettingsMap.get(key);
-        if (value != null) {
-            return parseString(value);
-        } else {
-            return "null";
-        }
-    }
     
-    public static boolean getSettingBool(String key) {
-        return "true".equalsIgnoreCase(getSetting(key));
-    }
-    
-    public static List<String> getSettingList(String key) {
-        List<String> settingList = new ArrayList();
-        int index = 0;
-        while (true) {
-            String listEntry = getSetting(key + "." + Integer.toString(index));
-            if (!listEntry.equals("null")) {
-                settingList.add(listEntry);
-                index++;
-            } else {
-                break;
-            }
-        }
-        return settingList;
-    }
-    
-    public static void clearSettings() {
-        SettingsMap = new HashMap<String, String>();
-    }
-    
-    public static void loadSettingsFromJSON(JSONObject json) {
+    public static void loadSettingsFromJSON(JSONObject json, String tagToApply) {
         for (Object obj : (JSONArray)json.get("settings")) {
             JSONObject setting = (JSONObject)obj;
-            SettingsMap.put(setting.get("name").toString(), setting.get("value").toString());
+            if (tagToApply == null) {
+                if (setting.get("tag") != null) {
+                    setSetting(setting.get("name").toString(), setting.get("value").toString(), setting.get("tag").toString());
+                } else {
+                    setSetting(setting.get("name").toString(), setting.get("value").toString());
+                }
+            } else {
+                if (setting.get("tag") != null) {
+                    setSetting(setting.get("name").toString(), setting.get("value").toString(), setting.get("tag").toString());
+                } else {
+                    setSetting(setting.get("name").toString(), setting.get("value").toString(), tagToApply);
+                }
+            }
         }
     }
     
