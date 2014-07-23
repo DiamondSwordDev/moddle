@@ -1,0 +1,40 @@
+{
+    "name" : "minecraft",
+    "version" : "1.6.4",
+    "author" : "Various",
+    "website" : "None",
+    
+    "minecraftversion" : "1.6.4",
+    
+    "files" : [
+        {
+            "name" : "minecraft-1.6.4.zip",
+            "action" : "extract-zip",
+            "target" : "/"
+        }
+    ],
+    
+    "settings" : [
+        
+        { "name" : "general.MinecraftVersion", "value" : "1.6.4" },
+        
+        { "name" : "launch.UseDJavaLibPathArgument", "value" : "true" },
+        { "name" : "launch.DJavaLibPathArgument", "value" : "${launch.AppDataDirectory}/.minecraft/versions/${general.MinecraftVersion}/${general.MinecraftVersion}-natives" },
+        { "name" : "launch.UseClassPathArgument", "value" : "true" },
+        { "name" : "launch.GetLibraryClassPaths", "value" : "true" },
+        { "name" : "launch.GetMinecraftClassPath", "value" : "true" },
+        { "name" : "launch.UseMainClassArgument", "value" : "true" },
+        { "name" : "launch.MainClassArgument", "value" : "net.minecraft.client.main.Main" },
+        
+        { "name" : "launch.UseGameDirArgument", "value" : "true" },
+        { "name" : "launch.GameDirArgument", "value" : "${launch.AppDataDirectory}/.minecraft" },
+        { "name" : "launch.UseAssetDirArgument", "value" : "true" },
+        { "name" : "launch.AssetDirArgument", "value" : "${launch.AppDataDirectory}/.minecraft/assets" },
+        { "name" : "launch.UseVersionArgument", "value" : "true" },
+        { "name" : "launch.VersionArgument", "value" : "${general.MinecraftVersion}" },
+        { "name" : "launch.UseUsernameArgument", "value" : "true" },
+        { "name" : "launch.UseSessionArgument", "value" : "true" }
+        
+    ]
+    
+}
