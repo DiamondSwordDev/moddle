@@ -401,6 +401,88 @@
         </Container>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JDialog" name="updateDialog">
+      <Properties>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[505, 143]"/>
+        </Property>
+        <Property name="modalityType" type="java.awt.Dialog$ModalityType" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="APPLICATION_MODAL"/>
+        </Property>
+        <Property name="resizable" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowGainedFocus"/>
+        <EventHandler event="windowLostFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowLostFocus"/>
+        <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowOpened"/>
+      </Events>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="updateDialogImageLabel" min="-2" pref="65" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="updateDialogCaptionLabel" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="315" max="32767" attributes="0"/>
+                          <Component id="updateDialogYesButton" min="-2" pref="82" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="updateDialogNoButton" min="-2" pref="82" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="updateDialogCaptionLabel" min="-2" pref="59" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="updateDialogImageLabel" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="updateDialogNoButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="updateDialogYesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="updateDialogCaptionLabel">
+        </Component>
+        <Component class="javax.swing.JButton" name="updateDialogNoButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="No"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateDialogNoButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="updateDialogImageLabel">
+        </Component>
+        <Component class="javax.swing.JButton" name="updateDialogYesButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Yes"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateDialogYesButtonActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
@@ -617,9 +699,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="PrefsUserLabel" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="MaximizeMinecraftCheckbox" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="ShowConsoleCheckbox" min="-2" max="-2" attributes="0"/>
                                   <Component id="ReopenLauncherCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
@@ -630,7 +711,7 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="MemoryField" min="-2" pref="92" max="-2" attributes="0"/>
-                                          <Component id="JavaPathField" max="32767" attributes="0"/>
+                                          <Component id="JavaPathField" min="-2" pref="431" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -640,7 +721,7 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="MinecraftSizeYField" min="-2" pref="53" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="AdditionalVariablesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="AdditionalVariablesWarningLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -687,14 +768,12 @@
                                   <Component id="MinecraftSizeYField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="MaximizeMinecraftCheckbox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="AdditionalVariablesLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="AdditionalVariablesWarningLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="75" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="116" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane5" max="32767" attributes="0"/>
                               </Group>
@@ -730,6 +809,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Show the Moddle console"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ShowConsoleCheckboxActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="MemoryLabel">
               <Properties>
@@ -764,11 +846,6 @@
             <Component class="javax.swing.JTextField" name="MinecraftSizeYField">
               <Properties>
                 <Property name="text" type="java.lang.String" value="default"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="MaximizeMinecraftCheckbox">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Maximize the Minecraft window"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="AdditionalVariablesLabel">

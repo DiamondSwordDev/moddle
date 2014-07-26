@@ -2,9 +2,7 @@
 package com.dsdev.moddle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -86,10 +84,25 @@ public class Variables {
     public static String getSetting(String name) {
         if (hasVariableWithName(name)) {
             PrioritizedVariable var = getVariableByName(name);
-            if (var.PrioritizationExpression.equalsIgnoreCase("oldest")) {
+            if (var.PrioritizationExpression == null) {
+                //Get newest
                 TaggedValue newestValue = var.Values.get(var.Values.size() - 1);
                 return parseString(newestValue.Value);
-            } else { //get newest
+            } else if (var.PrioritizationExpression.equalsIgnoreCase("oldest")) {
+                //Get oldest
+                TaggedValue newestValue = var.Values.get(var.Values.size() - 1);
+                return parseString(newestValue.Value);
+            } else if (var.PrioritizationExpression.equalsIgnoreCase("int:largest")) {
+                //Get largest integer
+                int returnValue = 1024;
+                for (TaggedValue tv : var.Values) {
+                    if (Integer.parseInt(parseString(tv.Value)) > returnValue) {
+                        returnValue = Integer.parseInt(parseString(tv.Value));
+                    }
+                }
+                return Integer.toString(returnValue);
+            } else {
+                //Get newest
                 TaggedValue newestValue = var.Values.get(var.Values.size() - 1);
                 return parseString(newestValue.Value);
             }
@@ -174,27 +187,32 @@ public class Variables {
             String name;
             String defaultval = "";
             boolean isID = false;
+            boolean isList = false;
             
             //Check for default values or IDs
-            if (fullclause.contains(":")) {
-                name = fullclause.split(":")[0];
-                defaultval = fullclause.split(":")[1];
-            } else if (fullclause.contains("##") && fullclause.split("##")[0].equalsIgnoreCase("id")) {
-                isID = true;
-                name = fullclause.split("##")[1];
-                defaultval = fullclause.split("##")[2];
-            } else {
-                name = fullclause;
-            }
-            
-            if (!isID) {
-                //Replace variable with its respective or provided default value
-                if (!getSetting(name).equals("null")) {
-                    ret = ret.replace(clause, getSetting(name));
+            if (fullclause.contains("##")) {
+                if (fullclause.split("##")[0].equalsIgnoreCase("id")) {
+                    isID = true;
+                    name = fullclause.split("##")[1].split(":")[0];
+                    defaultval = fullclause.split("##")[1].split(":")[1];
+                } else if (fullclause.split("##")[0].equalsIgnoreCase("list")) {
+                    isList = true;
+                    name = fullclause.split("##")[1].split(":")[0];
+                    defaultval = fullclause.split("##")[1].split(":")[1];
                 } else {
-                    ret = ret.replace(clause, defaultval);
+                    name = fullclause.split("##")[1].split(":")[0];
+                    defaultval = fullclause.split("##")[1].split(":")[1];
                 }
             } else {
+                if (fullclause.contains(":")) {
+                    name = fullclause.split(":")[0];
+                    defaultval = fullclause.split(":")[1];
+                } else {
+                    name = fullclause;
+                }
+            }
+            
+            if (isID) {
                 //If a value is found, use it
                 //Otherwise, get the default ID for the speficied variable
                 if (!getSetting(name).equals("null")) {
@@ -207,11 +225,28 @@ public class Variables {
                         ret = ret.replace(clause, defaultval);
                     }
                 }
+            } else if (isList) {
+                //Replace variable with its respective value
+                ret = "";
+                List<String> values = getSettingList(name);
+                for (String value : values) {
+                    for (int i = 0; i < Integer.parseInt(defaultval); i++) {
+                        ret += " ";
+                    }
+                    ret += parseLineString(value) + "\n";
+                }
+            } else {
+                //Replace variable with its respective or provided default value
+                if (!getSetting(name).equals("null")) {
+                    ret = ret.replace(clause, getSetting(name));
+                } else {
+                    ret = ret.replace(clause, defaultval);
+                }
             }
         }
 
         //Recursively parse leftover variables (Is this unnecessary?)
-        if (ret.contains("${")) {
+        if (ret.contains("${") && !ret.contains("\n")) {
             ret = parseString(ret);
         }
 
@@ -287,18 +322,28 @@ public class Variables {
                             break;
                         }
                     }
+                } else if (functionString.split(":")[0].equalsIgnoreCase("ifexists")) {
+                    //'ifexists' statement
+                    if (getSetting(functionString.split(":")[1]).equals("null")) {
+                        isSkipping = true;
+                    }
+                } else if (functionString.split(":")[0].equalsIgnoreCase("ifnotexists")) {
+                    //'ifnotexists' statement
+                    if (!getSetting(functionString.split(":")[1]).equals("null")) {
+                        isSkipping = true;
+                    }
                 }
             } else {
                 //Append the line if not skipping
                 if (!isSkipping) {
-                    ret += parseString(line) + "\n\r";
+                    ret += parseString(line) + "\n";
                 }
             }
 
         }
         
-        //Remove trailing '\n\r'
-        ret = ret.substring(0, ret.length() - 2);
+        //Remove trailing '\n'
+        ret = ret.substring(0, ret.length() - 1);
         
         return ret;
     }

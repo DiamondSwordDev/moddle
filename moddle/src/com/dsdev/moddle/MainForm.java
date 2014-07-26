@@ -84,6 +84,11 @@ public class MainForm extends javax.swing.JFrame {
         consoleDialog = new javax.swing.JDialog();
         jScrollPane3 = new javax.swing.JScrollPane();
         consoleDialogLogPane = new javax.swing.JTextPane();
+        updateDialog = new javax.swing.JDialog();
+        updateDialogCaptionLabel = new javax.swing.JLabel();
+        updateDialogNoButton = new javax.swing.JButton();
+        updateDialogImageLabel = new javax.swing.JLabel();
+        updateDialogYesButton = new javax.swing.JButton();
         MainTabPane = new javax.swing.JTabbedPane();
         ModpackPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -104,7 +109,6 @@ public class MainForm extends javax.swing.JFrame {
         MinecraftSizeLabel = new javax.swing.JLabel();
         MinecraftSizeXField = new javax.swing.JTextField();
         MinecraftSizeYField = new javax.swing.JTextField();
-        MaximizeMinecraftCheckbox = new javax.swing.JCheckBox();
         AdditionalVariablesLabel = new javax.swing.JLabel();
         AdditionalVariablesWarningLabel = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -402,6 +406,71 @@ public class MainForm extends javax.swing.JFrame {
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
 
+        updateDialog.setMinimumSize(new java.awt.Dimension(505, 143));
+        updateDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        updateDialog.setResizable(false);
+        updateDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                updateDialogWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                updateDialogWindowLostFocus(evt);
+            }
+        });
+        updateDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                updateDialogWindowOpened(evt);
+            }
+        });
+
+        updateDialogNoButton.setText("No");
+        updateDialogNoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateDialogNoButtonActionPerformed(evt);
+            }
+        });
+
+        updateDialogYesButton.setText("Yes");
+        updateDialogYesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateDialogYesButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout updateDialogLayout = new javax.swing.GroupLayout(updateDialog.getContentPane());
+        updateDialog.getContentPane().setLayout(updateDialogLayout);
+        updateDialogLayout.setHorizontalGroup(
+            updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(updateDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(updateDialogLayout.createSequentialGroup()
+                        .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, updateDialogLayout.createSequentialGroup()
+                        .addGap(0, 315, Short.MAX_VALUE)
+                        .addComponent(updateDialogYesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(updateDialogNoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        updateDialogLayout.setVerticalGroup(
+            updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(updateDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, updateDialogLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateDialogNoButton)
+                    .addComponent(updateDialogYesButton))
+                .addContainerGap(35, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Moddle Launcher");
         setMinimumSize(new java.awt.Dimension(900, 501));
@@ -474,6 +543,11 @@ public class MainForm extends javax.swing.JFrame {
         ReopenLauncherCheckbox.setText("Re-open launcher when Minecraft closes");
 
         ShowConsoleCheckbox.setText("Show the Moddle console");
+        ShowConsoleCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShowConsoleCheckboxActionPerformed(evt);
+            }
+        });
 
         MemoryLabel.setText("Minimum Memory (Mb):");
 
@@ -488,8 +562,6 @@ public class MainForm extends javax.swing.JFrame {
         MinecraftSizeXField.setText("default");
 
         MinecraftSizeYField.setText("default");
-
-        MaximizeMinecraftCheckbox.setText("Maximize the Minecraft window");
 
         AdditionalVariablesLabel.setText("Additional Launcher Variables:");
 
@@ -521,8 +593,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PrefsUserLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(SettingsPanelLayout.createSequentialGroup()
-                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(MaximizeMinecraftCheckbox)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ShowConsoleCheckbox)
                             .addComponent(ReopenLauncherCheckbox)
                             .addGroup(SettingsPanelLayout.createSequentialGroup()
@@ -532,7 +603,7 @@ public class MainForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(MemoryField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(JavaPathField)))
+                                    .addComponent(JavaPathField, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(SettingsPanelLayout.createSequentialGroup()
                                 .addComponent(MinecraftSizeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -576,14 +647,12 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(MinecraftSizeLabel)
                             .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(MaximizeMinecraftCheckbox)
-                        .addGap(18, 18, 18)
                         .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(SettingsPanelLayout.createSequentialGroup()
                                 .addComponent(AdditionalVariablesLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(AdditionalVariablesWarningLabel)
-                                .addGap(0, 75, Short.MAX_VALUE))
+                                .addGap(0, 116, Short.MAX_VALUE))
                             .addComponent(jScrollPane5)))
                     .addGroup(SettingsPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -721,7 +790,7 @@ public class MainForm extends javax.swing.JFrame {
     private void fetchNews() {
         //Download news
         try {
-            FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/news.zip"), new File("./data/news.zip"));
+            FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/news.zip"), new File("./data/news/news.zip"));
         } catch (IOException ex) {
             Logger.warning("MainForm.formWindowOpened", "Could not fetch news!");
             return;
@@ -729,14 +798,14 @@ public class MainForm extends javax.swing.JFrame {
         
         //Delete old news
         try {
-            FileUtils.deleteDirectory(new File("./data/news"));
+            FileUtils.deleteDirectory(new File("./data/news/news_content"));
         } catch (IOException ex) {
             //Swallow error
         }
 
         //Extract news
         try {
-            Util.decompressZipfile("./data/news.zip", "./data/news");
+            Util.decompressZipfile("./data/news/news.zip", "./data/news/news_content");
         } catch (ZipException ex) {
             Logger.warning("MainForm.formWindowOpened", "Could not extract news archive!");
             return;
@@ -838,7 +907,6 @@ public class MainForm extends javax.swing.JFrame {
         
         MinecraftSizeXField.setText(prefConfig.get("width").toString());
         MinecraftSizeYField.setText(prefConfig.get("height").toString());
-        MaximizeMinecraftCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("maximize").toString()));
         
         AdditionalVariablesPane.setText(prefConfig.get("variables").toString().replace("``n", "\n").replace("``q", "\""));
     }
@@ -856,7 +924,6 @@ public class MainForm extends javax.swing.JFrame {
         
         MinecraftSizeXField.setText("default");
         MinecraftSizeYField.setText("default");
-        MaximizeMinecraftCheckbox.setSelected(false);
         
         AdditionalVariablesPane.setText("");
     }
@@ -877,7 +944,6 @@ public class MainForm extends javax.swing.JFrame {
         
         prefConfig.put("width", MinecraftSizeXField.getText());
         prefConfig.put("height", MinecraftSizeYField.getText());
-        prefConfig.put("maximize", Boolean.toString(MaximizeMinecraftCheckbox.isSelected()));
         
         prefConfig.put("variables", AdditionalVariablesPane.getText().replace("\n", "``n").replace("\"", "``q"));
         
@@ -887,7 +953,7 @@ public class MainForm extends javax.swing.JFrame {
             Logger.error("MainForm.saveUserPrefs", "Unable to save user preferences!", false, ex.getMessage());
         }
         
-        Logger.info("Logger.saveUserPrefs", "Saved user preferences!");
+        Logger.info("MainForm.saveUserPrefs", "Saved user preferences!");
     }
     
     private String getFriendlyName(String accountName) {
@@ -1060,6 +1126,68 @@ public class MainForm extends javax.swing.JFrame {
             }
         };
         System.setErr(new PrintStream(redirectedStdOutput, true));
+    }
+    
+    private void loadUserPrefVariables() {
+        Variables.setSetting("launch.XmxArgument", MemoryField.getText());
+        Variables.setSettingPriority("launch.XmxArgument", "int:largest");
+        
+        if (!JavaPathField.getText().equalsIgnoreCase("default")) {
+            Variables.setSetting("launch.JavaExecutablePath", JavaPathField.getText());
+        }
+        
+        if (!MinecraftSizeXField.getText().equalsIgnoreCase("default")) {
+            Variables.setSetting("launch.UseWidthArgument", MinecraftSizeXField.getText());
+        }
+        
+        if (!MinecraftSizeYField.getText().equalsIgnoreCase("default")) {
+            Variables.setSetting("launch.UseHeightArgument", MinecraftSizeYField.getText());
+        }
+        
+        for (String line : AdditionalVariablesPane.getText().split("\n")) {
+            String settingName = line.split("=")[0];
+            String settingValue = line.substring(settingName.length());
+            Variables.setSetting(settingName, settingValue);
+        }
+    }
+    
+    private void startUpdateCheck() {
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
+            @Override
+            protected void task() {
+                
+                JSONObject currentVersionConfig;
+                try {
+                    currentVersionConfig = Util.readJSONFile("./data/version.json");
+                } catch (IOException ex) {
+                    Logger.warning("MainForm.startUpdateCheck", "Could not determine the current launcher version!");
+                    return;
+                }
+                
+                try {
+                    FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/versions.json"), new File("./data/dl_versions.json"));
+                } catch (IOException ex) {
+                    Logger.warning("MainForm.startUpdateCheck", "Failed to retrieve version index!");
+                    return;
+                }
+                
+                JSONObject versionsConfig;
+                try {
+                    versionsConfig = Util.readJSONFile("./data/dl_versions.json");
+                } catch (IOException ex) {
+                    Logger.warning("MainForm.startUpdateCheck", "Failed to load version index file!");
+                    return;
+                }
+                
+                if (!currentVersionConfig.get("version").toString().equals(versionsConfig.get("latestversion").toString())) {
+                    updateDialogCaptionLabel.setText("<html><body style='width: 300px'>Version " + versionsConfig.get("latestversion").toString() + " is now available for automatic download!  Would you like to update?</body></html>");
+                    updateDialog.setVisible(true);
+                }
+                
+            }
+        };
+        
+        worker.execute();
     }
     
     
@@ -1238,6 +1366,9 @@ public class MainForm extends javax.swing.JFrame {
                 
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to build modpack...");
                 
+                //Load settings from user preferences
+                loadUserPrefVariables();
+                
                 //Build instance
                 if (!Instances.isInstanceComplete(accountname, instancename) || ForceUpdateCheckBox.isSelected()) {
                     Instances.buildInstance(accountname, instancename);
@@ -1246,11 +1377,37 @@ public class MainForm extends javax.swing.JFrame {
                 //Clear settings
                 Variables.clearSettings();
 
+                //Load settings from user preferences
+                loadUserPrefVariables();
+                
+                //Launch process
                 Logger.info("MainForm.PlayButtonActionPerformed", "Preparing to launch modpack...");
-                if (Instances.runInstance(accountname, instancename)) {
-                    //System.exit(0);
+                Process processHandle = Instances.runInstance(accountname, instancename);
+                if (processHandle != null) {
+                    //Hide the launcher
+                    setVisible(false);
                     GlobalDialogs.hideProgressDialog();
+                    
+                    //Exit if neither the console is shown nor the launcher set to reopen
+                    if (!ReopenLauncherCheckbox.isSelected() && !ShowConsoleCheckbox.isSelected()) {
+                        System.exit(0);
+                    }
+                    
+                    //Wait for the process to exit
+                    try {
+                        processHandle.waitFor();
+                    } catch (InterruptedException ex) {
+                        Logger.error("MainForm.PlayButtonActionPerformed", "Something broke while waiting for the Minecraft process!", true, ex.getMessage());
+                    }
+                    
+                    //Reopen if specified or exit
+                    if (ReopenLauncherCheckbox.isSelected()) {
+                        setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
                 } else {
+                    //Hide the progress dialog
                     GlobalDialogs.hideProgressDialog();
                 }
             }
@@ -1295,9 +1452,11 @@ public class MainForm extends javax.swing.JFrame {
         popupDialog.setIconImage(moddleIcon);
         instanceDialog.setIconImage(moddleIcon);
         consoleDialog.setIconImage(moddleIcon);
+        updateDialog.setIconImage(moddleIcon);
         
-        //Load popup dialog image
+        //Load dialog images
         popupDialogImageLabel.setIcon(Resources.getImageResource("alert.png"));
+        updateDialogImageLabel.setIcon(Resources.getImageResource("update.png"));
         
         //Set up custom JList rendering
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
@@ -1322,7 +1481,7 @@ public class MainForm extends javax.swing.JFrame {
         fetchNews();
         
         //Load news content
-        this.loadPaneContentFromDirectory("./data/content/news", newsPane);
+        this.loadPaneContentFromDirectory("./data/news/news_content", newsPane);
         MainTabPane.setSelectedIndex(1);
         
         Logger.info("MainForm.formWindowOpened", "Restoring last login...");
@@ -1354,6 +1513,15 @@ public class MainForm extends javax.swing.JFrame {
             loadUser(null);
             loadUserPrefs(null);
         }
+        
+        //Set console visibility
+        consoleDialog.setVisible(ShowConsoleCheckbox.isSelected());
+        
+        //Bring this form to front
+        this.setVisible(true);
+        
+        //Start update check
+        startUpdateCheck();
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
@@ -1534,6 +1702,46 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_CancelSettingsButtonActionPerformed
 
     
+    private void ShowConsoleCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowConsoleCheckboxActionPerformed
+        //Update console visibility
+        consoleDialog.setVisible(ShowConsoleCheckbox.isSelected());
+        
+        //Bring this form to front
+        this.setVisible(true);
+    }//GEN-LAST:event_ShowConsoleCheckboxActionPerformed
+
+    
+    private void updateDialogNoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateDialogNoButtonActionPerformed
+        updateDialog.setVisible(false);
+    }//GEN-LAST:event_updateDialogNoButtonActionPerformed
+
+    private void updateDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_updateDialogWindowGainedFocus
+        updateDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_updateDialogWindowGainedFocus
+
+    private void updateDialogWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_updateDialogWindowLostFocus
+        updateDialog.getContentPane().setBackground(new Color(225, 225, 225));
+    }//GEN-LAST:event_updateDialogWindowLostFocus
+
+    private void updateDialogWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_updateDialogWindowOpened
+        updateDialog.setLocationRelativeTo(null);
+        updateDialog.getContentPane().setBackground(new Color(152, 174, 196));
+    }//GEN-LAST:event_updateDialogWindowOpened
+
+    private void updateDialogYesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateDialogYesButtonActionPerformed
+        updateDialog.setVisible(false);
+        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "./update/Moddle.jar", "latest" });
+        updater.directory(new File("./update"));
+        try {
+            updater.start();
+        } catch (IOException ex) {
+            GlobalDialogs.showNotification("Failed to start MUpdate!");
+            return;
+        }
+        System.exit(0);
+    }//GEN-LAST:event_updateDialogYesButtonActionPerformed
+
+    
     
     /**
      * @param args the command line arguments
@@ -1581,7 +1789,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel JavaPathLabel;
     private javax.swing.JButton LoginButton;
     private javax.swing.JTabbedPane MainTabPane;
-    private javax.swing.JCheckBox MaximizeMinecraftCheckbox;
     private javax.swing.JTextField MemoryField;
     private javax.swing.JLabel MemoryLabel;
     private javax.swing.JLabel MinecraftSizeLabel;
@@ -1628,5 +1835,10 @@ public class MainForm extends javax.swing.JFrame {
     public javax.swing.JDialog progressDialog;
     public javax.swing.JProgressBar progressDialogStatusBar;
     private javax.swing.JLabel progressDialogStatusLabel;
+    private javax.swing.JDialog updateDialog;
+    private javax.swing.JLabel updateDialogCaptionLabel;
+    private javax.swing.JLabel updateDialogImageLabel;
+    private javax.swing.JButton updateDialogNoButton;
+    private javax.swing.JButton updateDialogYesButton;
     // End of variables declaration//GEN-END:variables
 }

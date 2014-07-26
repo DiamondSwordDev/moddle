@@ -151,7 +151,7 @@ public class Instances {
         setInstanceComplete(account, name);
     }
     
-    public static boolean runInstance(String account, String name) {
+    public static Process runInstance(String account, String name) {
         
         //Make progress indeterminate
         GlobalDialogs.setProgressIndeterminate(true);
@@ -166,7 +166,7 @@ public class Instances {
             instanceConfig = Util.readJSONFile(instancePath + "/instance.json");
         } catch (IOException ex) {
             Logger.error("Instances.buildInstance", "Failed to read instance.json!", true, ex.getMessage());
-            return false;
+            return null;
         }
         
         //Load pack config
@@ -176,7 +176,7 @@ public class Instances {
             packConfig = Util.readJSONFile("./packs/" + instanceConfig.get("pack").toString() + "/pack.json");
         } catch (IOException ex) {
             Logger.error("Instances.buildInstance", "Failed to read pack.json!", true, ex.getMessage());
-            return false;
+            return null;
         }
         
         //Get entries queued for installation
@@ -366,14 +366,14 @@ public class Instances {
             processHandle = launcher.start();
         } catch (IOException ex) {
             Logger.error("Instances.runInstance", "Failed to launch process!", true, ex.getMessage());
-            return false;
+            return null;
         }
 
         //Redirect output to the console
         inheritIO(processHandle.getInputStream(), System.out);
         inheritIO(processHandle.getErrorStream(), System.err);
         
-        return true;
+        return processHandle;
     }
     
     
@@ -466,6 +466,8 @@ public class Instances {
                     }
                 }
             }
+        } else {
+            Logger.warning("Instances.enqueueCacheEntry", "Cache entry not found!");
         }
     }
 
