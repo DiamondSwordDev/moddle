@@ -21,6 +21,8 @@ public class Updater {
     
     public static void checkForUpdates(boolean verbose) {
         
+        Logger.info("Updater.checkForUpdates", "Starting update check...");
+        
         //Show progress
         if (verbose) {
             GlobalDialogs.showProgressDialog();
@@ -29,6 +31,7 @@ public class Updater {
         }
         
         //Load current version info
+        Logger.info("Updater.checkForUpdates", "Loading current version info...");
         JSONObject currentVersionConfig;
         try {
             currentVersionConfig = Util.readJSONFile("./update/version.json");
@@ -42,6 +45,7 @@ public class Updater {
         }
 
         //Download the versions file
+        Logger.info("Updater.checkForUpdates", "Downloading version index...");
         try {
             FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/versions.json"), new File("./update/dl_versions.json"));
         } catch (IOException ex) {
@@ -54,6 +58,7 @@ public class Updater {
         }
 
         //Load the versions file
+        Logger.info("Updater.checkForUpdates", "Loading version index...");
         JSONObject versionsConfig;
         try {
             versionsConfig = Util.readJSONFile("./update/dl_versions.json");
@@ -68,24 +73,24 @@ public class Updater {
 
         //Get the list of version numbers for the current version
         List<Integer> currentVersionBreakout = new ArrayList();
-        for (String versionNumber : currentVersionConfig.get("version").toString().split(".")) {
+        for (String versionNumber : currentVersionConfig.get("version").toString().split("\\.")) {
             currentVersionBreakout.add(Integer.parseInt(versionNumber));
         }
         
         //Get the list of version numbers for the latest version
         List<Integer> remoteVersionBreakout = new ArrayList();
-        for (String versionNumber : versionsConfig.get("latestversion").toString().split(".")) {
+        for (String versionNumber : versionsConfig.get("latestversion").toString().split("\\.")) {
             remoteVersionBreakout.add(Integer.parseInt(versionNumber));
         }
         
         //Compare each version number to determine whether the user is up to date or not
-        boolean isUpToDate = false;
+        boolean isUpToDate = true;
         for (int i = 0; i < currentVersionBreakout.size(); i++) {
             if (remoteVersionBreakout.size() - 1 < i) {
                 break;
             } else {
-                if (currentVersionBreakout.get(i) > remoteVersionBreakout.get(i)) {
-                    isUpToDate = true;
+                if (currentVersionBreakout.get(i) < remoteVersionBreakout.get(i)) {
+                    isUpToDate = false;
                     break;
                 }
             }
@@ -98,10 +103,13 @@ public class Updater {
         
         //Display results
         if (isUpToDate) {
+            Logger.info("Updater.checkForUpdates", "Launcher is up to date!");
             if (verbose) {
                 GlobalDialogs.showNotification("No updates were found.  You are most likely completely up-to-date!");
             }
         } else {
+            
+            Logger.info("Updater.checkForUpdates", "Updates were found!");
             
             //Init message variable
             String message = "";

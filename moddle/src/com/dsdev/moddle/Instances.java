@@ -332,6 +332,18 @@ public class Instances {
             args.add("--tweakClass");
             args.add(Variables.getSetting("launch.TweakClassArgument"));
         }
+        
+        Logger.info("Instances.runInstance", "Parsing UseWidthArgument...");
+        if (Variables.getSettingBool("launch.UseWidthArgument")) {
+            args.add("--width");
+            args.add(Variables.getSetting("launch.WidthArgument"));
+        }
+        
+        Logger.info("Instances.runInstance", "Parsing UseHeightArgument...");
+        if (Variables.getSettingBool("launch.UseHeightArgument")) {
+            args.add("--height");
+            args.add(Variables.getSetting("launch.HeightArgument"));
+        }
 
         Logger.info("Instances.runInstance", "Parsing AdditionalMinecraftArguments...");
         if (!Variables.getSettingList("launch.AdditionalMinecraftLaunchArguments").isEmpty()) {

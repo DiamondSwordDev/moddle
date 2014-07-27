@@ -1187,11 +1187,13 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         if (!MinecraftSizeXField.getText().equalsIgnoreCase("default")) {
-            Variables.setSetting("launch.UseWidthArgument", MinecraftSizeXField.getText());
+            Variables.setSetting("launch.UseWidthArgument", "true");
+            Variables.setSetting("launch.WidthArgument", MinecraftSizeXField.getText());
         }
         
         if (!MinecraftSizeYField.getText().equalsIgnoreCase("default")) {
-            Variables.setSetting("launch.UseHeightArgument", MinecraftSizeYField.getText());
+            Variables.setSetting("launch.UseHeightArgument", "true");
+            Variables.setSetting("launch.HeightArgument", MinecraftSizeYField.getText());
         }
         
         for (String line : AdditionalVariablesPane.getText().split("\n")) {
