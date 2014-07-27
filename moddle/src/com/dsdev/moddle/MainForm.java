@@ -89,6 +89,9 @@ public class MainForm extends javax.swing.JFrame {
         updateDialogNoButton = new javax.swing.JButton();
         updateDialogImageLabel = new javax.swing.JLabel();
         updateDialogYesButton = new javax.swing.JButton();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        updateDialogDescriptionPane = new javax.swing.JTextPane();
+        updateDialogCaptionLabel1 = new javax.swing.JLabel();
         MainTabPane = new javax.swing.JTabbedPane();
         ModpackPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -115,6 +118,9 @@ public class MainForm extends javax.swing.JFrame {
         AdditionalVariablesPane = new javax.swing.JTextPane();
         CancelSettingsButton = new javax.swing.JButton();
         SaveSettingsButton = new javax.swing.JButton();
+        ShowNewsCheckbox = new javax.swing.JCheckBox();
+        CheckForUpdatesButton = new javax.swing.JButton();
+        CheckUpdatesCheckbox = new javax.swing.JCheckBox();
         CurrentUserLabel = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
         InstanceComboBox = new javax.swing.JComboBox();
@@ -406,7 +412,7 @@ public class MainForm extends javax.swing.JFrame {
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
 
-        updateDialog.setMinimumSize(new java.awt.Dimension(505, 143));
+        updateDialog.setMinimumSize(new java.awt.Dimension(505, 355));
         updateDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         updateDialog.setResizable(false);
         updateDialog.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -423,6 +429,8 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        updateDialogCaptionLabel.setText("The following updates are available for automatic installation:");
+
         updateDialogNoButton.setText("No");
         updateDialogNoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -437,6 +445,11 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        updateDialogDescriptionPane.setEditable(false);
+        jScrollPane6.setViewportView(updateDialogDescriptionPane);
+
+        updateDialogCaptionLabel1.setText("Would you like to download and install them now?");
+
         javax.swing.GroupLayout updateDialogLayout = new javax.swing.GroupLayout(updateDialog.getContentPane());
         updateDialog.getContentPane().setLayout(updateDialogLayout);
         updateDialogLayout.setHorizontalGroup(
@@ -444,31 +457,35 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(updateDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(updateDialogLayout.createSequentialGroup()
-                        .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, updateDialogLayout.createSequentialGroup()
-                        .addGap(0, 315, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(updateDialogYesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(updateDialogNoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(updateDialogNoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(updateDialogLayout.createSequentialGroup()
+                        .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(updateDialogCaptionLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE))
                 .addContainerGap())
         );
         updateDialogLayout.setVerticalGroup(
             updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(updateDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, updateDialogLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
+                .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(updateDialogImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(updateDialogCaptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(updateDialogCaptionLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(updateDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateDialogNoButton)
-                    .addComponent(updateDialogYesButton))
-                .addContainerGap(35, Short.MAX_VALUE))
+                    .addComponent(updateDialogYesButton)
+                    .addComponent(updateDialogNoButton))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -584,6 +601,19 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        ShowNewsCheckbox.setSelected(true);
+        ShowNewsCheckbox.setText("Show the news tab on startup");
+
+        CheckForUpdatesButton.setText("Check for Updates");
+        CheckForUpdatesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckForUpdatesButtonActionPerformed(evt);
+            }
+        });
+
+        CheckUpdatesCheckbox.setSelected(true);
+        CheckUpdatesCheckbox.setText("Check for updates on startup");
+
         javax.swing.GroupLayout SettingsPanelLayout = new javax.swing.GroupLayout(SettingsPanel);
         SettingsPanel.setLayout(SettingsPanelLayout);
         SettingsPanelLayout.setHorizontalGroup(
@@ -598,6 +628,24 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(ReopenLauncherCheckbox)
                             .addGroup(SettingsPanelLayout.createSequentialGroup()
                                 .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(AdditionalVariablesLabel)
+                                    .addComponent(AdditionalVariablesWarningLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
+                        .addComponent(SaveSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(CancelSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(SettingsPanelLayout.createSequentialGroup()
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addComponent(CheckUpdatesCheckbox)
+                                .addGap(18, 18, 18)
+                                .addComponent(CheckForUpdatesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(ShowNewsCheckbox)
+                            .addGroup(SettingsPanelLayout.createSequentialGroup()
+                                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(MemoryLabel)
                                     .addComponent(JavaPathLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -609,18 +657,8 @@ public class MainForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(MinecraftSizeXField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(SettingsPanelLayout.createSequentialGroup()
-                                .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(AdditionalVariablesLabel)
-                                    .addComponent(AdditionalVariablesWarningLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
-                        .addComponent(SaveSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CancelSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                                .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         SettingsPanelLayout.setVerticalGroup(
             SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -633,7 +671,13 @@ public class MainForm extends javax.swing.JFrame {
                         .addComponent(ReopenLauncherCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(ShowConsoleCheckbox)
-                        .addGap(23, 23, 23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ShowNewsCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CheckUpdatesCheckbox)
+                            .addComponent(CheckForUpdatesButton))
+                        .addGap(18, 18, 18)
                         .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(MemoryLabel)
                             .addComponent(MemoryField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -646,13 +690,13 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(MinecraftSizeXField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(MinecraftSizeLabel)
                             .addComponent(MinecraftSizeYField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(19, 19, 19)
                         .addGroup(SettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(SettingsPanelLayout.createSequentialGroup()
                                 .addComponent(AdditionalVariablesLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(AdditionalVariablesWarningLabel)
-                                .addGap(0, 116, Short.MAX_VALUE))
+                                .addGap(0, 64, Short.MAX_VALUE))
                             .addComponent(jScrollPane5)))
                     .addGroup(SettingsPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -901,6 +945,8 @@ public class MainForm extends javax.swing.JFrame {
         
         ReopenLauncherCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("reopen").toString()));
         ShowConsoleCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("console").toString()));
+        ShowNewsCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("news").toString()));
+        CheckUpdatesCheckbox.setSelected(Boolean.parseBoolean(prefConfig.get("update").toString()));
         
         MemoryField.setText(prefConfig.get("memory").toString());
         JavaPathField.setText(prefConfig.get("javapath").toString());
@@ -918,6 +964,8 @@ public class MainForm extends javax.swing.JFrame {
         
         ReopenLauncherCheckbox.setSelected(false);
         ShowConsoleCheckbox.setSelected(false);
+        ShowNewsCheckbox.setSelected(true);
+        CheckUpdatesCheckbox.setSelected(true);
         
         MemoryField.setText("1024");
         JavaPathField.setText("default");
@@ -938,6 +986,8 @@ public class MainForm extends javax.swing.JFrame {
         
         prefConfig.put("reopen", Boolean.toString(ReopenLauncherCheckbox.isSelected()));
         prefConfig.put("console", Boolean.toString(ShowConsoleCheckbox.isSelected()));
+        prefConfig.put("news", Boolean.toString(ShowNewsCheckbox.isSelected()));
+        prefConfig.put("update", Boolean.toString(CheckUpdatesCheckbox.isSelected()));
         
         prefConfig.put("memory", MemoryField.getText());
         prefConfig.put("javapath", JavaPathField.getText());
@@ -1156,33 +1206,7 @@ public class MainForm extends javax.swing.JFrame {
             @Override
             protected void task() {
                 
-                JSONObject currentVersionConfig;
-                try {
-                    currentVersionConfig = Util.readJSONFile("./data/version.json");
-                } catch (IOException ex) {
-                    Logger.warning("MainForm.startUpdateCheck", "Could not determine the current launcher version!");
-                    return;
-                }
                 
-                try {
-                    FileUtils.copyURLToFile(new URL("https://sites.google.com/site/moddlerepo/versions.json"), new File("./data/dl_versions.json"));
-                } catch (IOException ex) {
-                    Logger.warning("MainForm.startUpdateCheck", "Failed to retrieve version index!");
-                    return;
-                }
-                
-                JSONObject versionsConfig;
-                try {
-                    versionsConfig = Util.readJSONFile("./data/dl_versions.json");
-                } catch (IOException ex) {
-                    Logger.warning("MainForm.startUpdateCheck", "Failed to load version index file!");
-                    return;
-                }
-                
-                if (!currentVersionConfig.get("version").toString().equals(versionsConfig.get("latestversion").toString())) {
-                    updateDialogCaptionLabel.setText("<html><body style='width: 300px'>Version " + versionsConfig.get("latestversion").toString() + " is now available for automatic download!  Would you like to update?</body></html>");
-                    updateDialog.setVisible(true);
-                }
                 
             }
         };
@@ -1419,30 +1443,9 @@ public class MainForm extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         
-        //Assign global dialog objects
-        GlobalDialogs.popupDialog = popupDialog;
-        GlobalDialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
-        GlobalDialogs.progressDialog = progressDialog;
-        GlobalDialogs.progressDialogStatusBar = progressDialogStatusBar;
-        GlobalDialogs.progressDialogStatusLabel = progressDialogStatusLabel;
-        GlobalDialogs.consoleDialog = consoleDialog;
-        GlobalDialogs.consoleDialogLogPane = consoleDialogLogPane;
-        
-        //Show console
-        GlobalDialogs.showConsole();
-        this.toFront();
-        
-        //Redirect stdout and stderr
-        redirectOutputStreams();
-        
         //Set basic frame properties
         this.getContentPane().setBackground(new Color(152, 174, 196));
         this.setLocationRelativeTo(null);
-        
-        //Start logging
-        Logger.begin();
-        
-        Logger.info("MainForm.formWindowOpened", "Loading Moddle...");
         
         //Load window icons
         Image moddleIcon = Resources.getImageResource("icon_mb.png").getImage();
@@ -1456,7 +1459,7 @@ public class MainForm extends javax.swing.JFrame {
         
         //Load dialog images
         popupDialogImageLabel.setIcon(Resources.getImageResource("alert.png"));
-        updateDialogImageLabel.setIcon(Resources.getImageResource("update.png"));
+        updateDialogImageLabel.setIcon(Resources.getImageResource("alert_small.png"));
         
         //Set up custom JList rendering
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
@@ -1472,21 +1475,27 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
+        //Assign global dialog objects
+        GlobalDialogs.popupDialog = popupDialog;
+        GlobalDialogs.popupDialogCaptionLabel = popupDialogCaptionLabel;
+        GlobalDialogs.progressDialog = progressDialog;
+        GlobalDialogs.progressDialogStatusBar = progressDialogStatusBar;
+        GlobalDialogs.progressDialogStatusLabel = progressDialogStatusLabel;
+        GlobalDialogs.consoleDialog = consoleDialog;
+        GlobalDialogs.consoleDialogLogPane = consoleDialogLogPane;
+        GlobalDialogs.updateDialog = updateDialog;
+        GlobalDialogs.updateDialogDescriptionPane = updateDialogDescriptionPane;
+        
+        //Redirect stdout and begin logging
+        redirectOutputStreams();
+        Logger.begin();
+
         //Load modpacks
+        Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
         loadModpackList();
-        
-        Logger.info("MainForm.formWindowOpened", "Loading news...");
-        
-        //Download news
-        fetchNews();
-        
-        //Load news content
-        this.loadPaneContentFromDirectory("./data/news/news_content", newsPane);
-        MainTabPane.setSelectedIndex(1);
-        
-        Logger.info("MainForm.formWindowOpened", "Restoring last login...");
-        
+
         //Load auth from file
+        Logger.info("MainForm.formWindowOpened", "Restoring last login...");
         Auth.loadFromFile();
         if (Auth.isLoggedIn) {
             if (Auth.performLogin(null, null)) {
@@ -1504,7 +1513,7 @@ public class MainForm extends javax.swing.JFrame {
             disablePlayControls();
         }
         LoginButton.setEnabled(true);
-        
+
         //Load GUI
         if (Auth.isLoggedIn) {
             loadUser(Auth.AccountName);
@@ -1513,15 +1522,27 @@ public class MainForm extends javax.swing.JFrame {
             loadUser(null);
             loadUserPrefs(null);
         }
-        
+
         //Set console visibility
         consoleDialog.setVisible(ShowConsoleCheckbox.isSelected());
-        
-        //Bring this form to front
-        this.setVisible(true);
-        
-        //Start update check
-        startUpdateCheck();
+        toFront();
+
+        //Download and display news
+        Logger.info("MainForm.formWindowOpened", "Loading news...");
+        fetchNews();
+        loadPaneContentFromDirectory("./data/news/news_content", newsPane);
+        if (ShowNewsCheckbox.isSelected()) {
+            MainTabPane.setSelectedIndex(1);
+        }
+
+        //Check for updates
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
+            @Override
+            protected void task() {
+                Updater.checkForUpdates(false);
+            }
+        };
+        worker.execute();
         
         Logger.info("MainForm.formWindowOpened", "Finished loading.");
     }//GEN-LAST:event_formWindowOpened
@@ -1730,16 +1751,26 @@ public class MainForm extends javax.swing.JFrame {
 
     private void updateDialogYesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateDialogYesButtonActionPerformed
         updateDialog.setVisible(false);
-        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "./update/Moddle.jar", "latest" });
-        updater.directory(new File("./update"));
-        try {
-            updater.start();
-        } catch (IOException ex) {
-            GlobalDialogs.showNotification("Failed to start MUpdate!");
-            return;
-        }
-        System.exit(0);
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
+            @Override
+            protected void task() {
+                Updater.doUpdate();
+            }
+        };
+        worker.execute();
     }//GEN-LAST:event_updateDialogYesButtonActionPerformed
+
+    
+    private void CheckForUpdatesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckForUpdatesButtonActionPerformed
+        //Check for updates
+        SimpleSwingWorker worker = new SimpleSwingWorker() {
+            @Override
+            protected void task() {
+                Updater.checkForUpdates(true);
+            }
+        };
+        worker.execute();
+    }//GEN-LAST:event_CheckForUpdatesButtonActionPerformed
 
     
     
@@ -1779,6 +1810,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTextPane AdditionalVariablesPane;
     private javax.swing.JLabel AdditionalVariablesWarningLabel;
     private javax.swing.JButton CancelSettingsButton;
+    private javax.swing.JButton CheckForUpdatesButton;
+    private javax.swing.JCheckBox CheckUpdatesCheckbox;
     private javax.swing.JButton CreateInstanceButton;
     private javax.swing.JLabel CurrentUserLabel;
     private javax.swing.JButton DeleteInstanceButton;
@@ -1804,6 +1837,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton SaveSettingsButton;
     private javax.swing.JPanel SettingsPanel;
     private javax.swing.JCheckBox ShowConsoleCheckbox;
+    private javax.swing.JCheckBox ShowNewsCheckbox;
     private javax.swing.JDialog consoleDialog;
     private javax.swing.JTextPane consoleDialogLogPane;
     private javax.swing.JDialog instanceDialog;
@@ -1820,6 +1854,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JDialog loginDialog;
     private javax.swing.JButton loginDialogCancelButton;
     private javax.swing.JButton loginDialogLoginButton;
@@ -1837,6 +1872,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel progressDialogStatusLabel;
     private javax.swing.JDialog updateDialog;
     private javax.swing.JLabel updateDialogCaptionLabel;
+    private javax.swing.JLabel updateDialogCaptionLabel1;
+    private javax.swing.JTextPane updateDialogDescriptionPane;
     private javax.swing.JLabel updateDialogImageLabel;
     private javax.swing.JButton updateDialogNoButton;
     private javax.swing.JButton updateDialogYesButton;

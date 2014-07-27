@@ -22,9 +22,17 @@ public class GlobalDialogs {
     public static JDialog consoleDialog = null;
     public static JTextPane consoleDialogLogPane = null;
     
+    public static JDialog updateDialog = null;
+    public static JTextPane updateDialogDescriptionPane = null;
+    
     public static void showNotification(String message) {
         popupDialogCaptionLabel.setText("<html><body style='width: 300px'>" + message + "</body></html>");
         popupDialog.setVisible(true);
+    }
+    
+    public static void showUpdateNotification(String message) {
+        updateDialogDescriptionPane.setText(message);
+        updateDialog.setVisible(true);
     }
     
     public static void showProgressDialog() {

@@ -7,9 +7,12 @@
 /moddle/stderr.txt
 /moddle/stdout.txt
 /moddle/users/
-/moddle/news.zip
+/moddle/data/news/
 /moddle/logs/
 /moddle/cache/*/
+/moddle/update/patch/
+/moddle/update/dl_versions.json
+/moddle/update/*.zip
 
 /mupdate/nbproject/private/
 /mupdate/build/

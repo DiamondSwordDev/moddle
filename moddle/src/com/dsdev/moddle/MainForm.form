@@ -404,7 +404,7 @@
     <Container class="javax.swing.JDialog" name="updateDialog">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[505, 143]"/>
+          <Dimension value="[505, 355]"/>
         </Property>
         <Property name="modalityType" type="java.awt.Dialog$ModalityType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="APPLICATION_MODAL"/>
@@ -420,20 +420,22 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="updateDialogImageLabel" min="-2" pref="65" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="updateDialogCaptionLabel" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="jScrollPane6" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="0" pref="315" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="updateDialogYesButton" min="-2" pref="82" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="updateDialogNoButton" min="-2" pref="82" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="updateDialogImageLabel" min="-2" pref="32" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="updateDialogCaptionLabel" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="updateDialogCaptionLabel1" alignment="0" pref="485" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -443,25 +445,29 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                          <Component id="updateDialogCaptionLabel" min="-2" pref="59" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="updateDialogImageLabel" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="updateDialogImageLabel" max="32767" attributes="0"/>
+                      <Component id="updateDialogCaptionLabel" pref="32" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jScrollPane6" min="-2" pref="214" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="updateDialogCaptionLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="updateDialogNoButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="updateDialogYesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="updateDialogNoButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="35" max="32767" attributes="0"/>
+                  <EmptySpace pref="38" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JLabel" name="updateDialogCaptionLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="The following updates are available for automatic installation:"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="updateDialogNoButton">
           <Properties>
@@ -480,6 +486,25 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateDialogYesButtonActionPerformed"/>
           </Events>
+        </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane6">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JTextPane" name="updateDialogDescriptionPane">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JLabel" name="updateDialogCaptionLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Would you like to download and install them now?"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -695,7 +720,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="PrefsUserLabel" alignment="1" max="32767" attributes="0"/>
@@ -703,6 +728,29 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="ShowConsoleCheckbox" min="-2" max="-2" attributes="0"/>
                                   <Component id="ReopenLauncherCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="AdditionalVariablesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="AdditionalVariablesWarningLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jScrollPane5" min="-2" pref="397" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace pref="208" max="32767" attributes="0"/>
+                              <Component id="SaveSettingsButton" min="-2" pref="98" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="CancelSettingsButton" min="-2" pref="74" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="CheckUpdatesCheckbox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="CheckForUpdatesButton" min="-2" pref="137" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="ShowNewsCheckbox" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="MemoryLabel" min="-2" max="-2" attributes="0"/>
@@ -721,20 +769,8 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="MinecraftSizeYField" min="-2" pref="53" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="AdditionalVariablesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="AdditionalVariablesWarningLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jScrollPane5" min="-2" pref="397" max="-2" attributes="0"/>
-                                  </Group>
                               </Group>
-                              <EmptySpace pref="208" max="32767" attributes="0"/>
-                              <Component id="SaveSettingsButton" min="-2" pref="98" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="CancelSettingsButton" min="-2" pref="74" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -751,7 +787,14 @@
                               <Component id="ReopenLauncherCheckbox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="ShowConsoleCheckbox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="ShowNewsCheckbox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="CheckUpdatesCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="CheckForUpdatesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="MemoryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="MemoryField" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -767,13 +810,13 @@
                                   <Component id="MinecraftSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="MinecraftSizeYField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="AdditionalVariablesLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="AdditionalVariablesWarningLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="116" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="64" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane5" max="32767" attributes="0"/>
                               </Group>
@@ -887,6 +930,26 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SaveSettingsButtonActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="ShowNewsCheckbox">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Show the news tab on startup"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="CheckForUpdatesButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Check for Updates"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CheckForUpdatesButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="CheckUpdatesCheckbox">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Check for updates on startup"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
