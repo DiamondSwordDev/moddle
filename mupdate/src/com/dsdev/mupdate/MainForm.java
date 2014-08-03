@@ -10,13 +10,7 @@ import com.dsdev.mupdate.resources.Resources;
 import com.seaglasslookandfeel.SeaGlassLookAndFeel;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -206,9 +200,41 @@ public class MainForm extends javax.swing.JFrame {
                 
                 //Copy updates
                 try {
-                    FileUtils.copyDirectory(new File("./patch"), new File(".."));
+                    FileUtils.copyDirectory(new File("./launcherpatch"), new File(".."));
                 } catch (IOException ex) {
                     showPopupDialog("Failed to apply the updates!");
+                    System.exit(0);
+                    return;
+                }
+                
+                //Load version config
+                JSONObject versionConfig;
+                try {
+                    versionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File("./version.json")));
+                } catch (IOException ex) {
+                    showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
+                    System.exit(0);
+                    return;
+                }
+                
+                //Load new version config
+                JSONObject newVersionConfig;
+                try {
+                    newVersionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File("./nversion.json")));
+                } catch (IOException ex) {
+                    showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
+                    System.exit(0);
+                    return;
+                }
+                
+                //Save new version file
+                try {
+                    versionConfig.put("moddleversion", newVersionConfig.get("moddleversion"));
+                    FileUtils.writeStringToFile(new File("./version.json"), versionConfig.toJSONString());
+                } catch (IOException ex) {
+                    showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
+                    System.exit(0);
+                    return;
                 }
                 
                 //Exit

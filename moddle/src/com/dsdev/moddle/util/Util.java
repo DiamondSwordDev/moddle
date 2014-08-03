@@ -1,12 +1,7 @@
 package com.dsdev.moddle.util;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -33,7 +28,7 @@ public class Util {
         try {
             File f = new File(path);
             return f.getCanonicalPath();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             Logger.error("Util.getFullPath", ex.getMessage(), false, ex.getMessage());
             return path;
         }
@@ -94,6 +89,7 @@ public class Util {
      }
      }
      }*/
+    
     public static void decompressZipfile(String zipFile, String outputDir) throws ZipException {
         ZipFile zip = new ZipFile(zipFile);
         zip.extractAll(outputDir);
@@ -127,4 +123,11 @@ public class Util {
         return true;
     }
 
+    public static void copyFileAndBackupOldCopy(String source, String target) throws IOException {
+        if (new File(target).isFile()) {
+            copyFileAndBackupOldCopy(target, target + ".old");
+        }
+        FileUtils.copyFile(new File(source), new File(target));
+    }
+    
 }

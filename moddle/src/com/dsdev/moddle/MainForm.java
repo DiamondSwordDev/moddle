@@ -424,6 +424,9 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         updateDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                updateDialogWindowClosed(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 updateDialogWindowOpened(evt);
             }
@@ -1203,19 +1206,6 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
     
-    private void startUpdateCheck() {
-        SimpleSwingWorker worker = new SimpleSwingWorker() {
-            @Override
-            protected void task() {
-                
-                
-                
-            }
-        };
-        
-        worker.execute();
-    }
-    
     
     private void loadSelfExtractingData() {
         if (!new File("./data").isDirectory()) {
@@ -1397,7 +1387,10 @@ public class MainForm extends javax.swing.JFrame {
                 
                 //Build instance
                 if (!Instances.isInstanceComplete(accountname, instancename) || ForceUpdateCheckBox.isSelected()) {
-                    Instances.buildInstance(accountname, instancename);
+                    if (!Instances.buildInstance(accountname, instancename)) {
+                        GlobalDialogs.hideProgressDialog();
+                        return;
+                    }
                 }
                 
                 //Clear settings
@@ -1736,6 +1729,7 @@ public class MainForm extends javax.swing.JFrame {
     
     private void updateDialogNoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateDialogNoButtonActionPerformed
         updateDialog.setVisible(false);
+        Updater.DialogResult = 0;
     }//GEN-LAST:event_updateDialogNoButtonActionPerformed
 
     private void updateDialogWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_updateDialogWindowGainedFocus
@@ -1753,13 +1747,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void updateDialogYesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateDialogYesButtonActionPerformed
         updateDialog.setVisible(false);
-        SimpleSwingWorker worker = new SimpleSwingWorker() {
-            @Override
-            protected void task() {
-                Updater.doUpdate();
-            }
-        };
-        worker.execute();
+        Updater.DialogResult = 1;
     }//GEN-LAST:event_updateDialogYesButtonActionPerformed
 
     
@@ -1773,6 +1761,12 @@ public class MainForm extends javax.swing.JFrame {
         };
         worker.execute();
     }//GEN-LAST:event_CheckForUpdatesButtonActionPerformed
+
+    private void updateDialogWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_updateDialogWindowClosed
+        if (Updater.DialogResult == -1) {
+            Updater.DialogResult = 0;
+        }
+    }//GEN-LAST:event_updateDialogWindowClosed
 
     
     

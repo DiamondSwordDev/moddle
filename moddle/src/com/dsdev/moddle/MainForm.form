@@ -414,6 +414,7 @@
       <Events>
         <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowGainedFocus"/>
         <EventHandler event="windowLostFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowLostFocus"/>
+        <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowClosed"/>
         <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="updateDialogWindowOpened"/>
       </Events>
 
