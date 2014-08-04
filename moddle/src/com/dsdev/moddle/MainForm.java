@@ -1480,6 +1480,7 @@ public class MainForm extends javax.swing.JFrame {
         GlobalDialogs.consoleDialogLogPane = consoleDialogLogPane;
         GlobalDialogs.updateDialog = updateDialog;
         GlobalDialogs.updateDialogDescriptionPane = updateDialogDescriptionPane;
+        GlobalDialogs.updateDialogCaptionLabel = updateDialogCaptionLabel;
         
         //Redirect stdout and begin logging
         redirectOutputStreams();

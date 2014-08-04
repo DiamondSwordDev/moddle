@@ -123,11 +123,11 @@ public class Util {
         return true;
     }
 
-    public static void copyFileAndBackupOldCopy(String source, String target) throws IOException {
-        if (new File(target).isFile()) {
-            copyFileAndBackupOldCopy(target, target + ".old");
+    public static void copyFileAndBackupOldCopy(File source, File target) throws IOException {
+        if (target.isFile()) {
+            copyFileAndBackupOldCopy(target, new File(target.getAbsolutePath() + ".old"));
         }
-        FileUtils.copyFile(new File(source), new File(target));
+        FileUtils.copyFile(source, target);
     }
     
 }

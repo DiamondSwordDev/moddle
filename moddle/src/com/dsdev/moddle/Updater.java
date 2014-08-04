@@ -81,12 +81,35 @@ public class Updater {
         }
         
         //Run update for the cache
-        String newCacheVersion = checkForLauncherUpdates(verbose, currentVersionConfig.get("cacheversion").toString(), versionsConfig);
+        String newCacheVersion = checkForCacheUpdates(verbose, currentVersionConfig.get("cacheversion").toString(), versionsConfig);
         
         //Write to version file
         if (newCacheVersion != null) {
+            Logger.info("Updater.checkForUpdates", "Updating version file with cache version " + newCacheVersion);
+            
             //Add value to version config
             currentVersionConfig.put("cacheversion", newCacheVersion);
+            //Write to file
+            try {
+                FileUtils.writeStringToFile(new File("./update/version.json"), currentVersionConfig.toJSONString());
+            } catch (IOException ex) {
+                Logger.warning("Updater.checkForUpdates", "Failed to update 'version.json'!");
+                if (verbose) {
+                    GlobalDialogs.hideProgressDialog();
+                    GlobalDialogs.showNotification("Failed to update current version info! (Things could break!)");
+                }
+            }
+        }
+        
+        //Run update for the bootstrapper
+        String newBootstrapperVersion = checkForBootstrapperUpdates(verbose, currentVersionConfig.get("mupdateversion").toString(), versionsConfig);
+        
+        //Write to version file
+        if (newBootstrapperVersion != null) {
+            Logger.info("Updater.checkForUpdates", "Updating version file with MUpdate version " + newBootstrapperVersion);
+            
+            //Add value to version config
+            currentVersionConfig.put("mupdateversion", newBootstrapperVersion);
             //Write to file
             try {
                 FileUtils.writeStringToFile(new File("./update/version.json"), currentVersionConfig.toJSONString());
@@ -148,7 +171,7 @@ public class Updater {
             }
             
             //Show the update dialog
-            GlobalDialogs.showUpdateNotification(message);
+            GlobalDialogs.showUpdateNotification(message, "MUpdate");
             
             //Wait for the dialog result
             while (DialogResult == -1);
@@ -182,7 +205,9 @@ public class Updater {
         //Clean patch directory
         Logger.info("Updater.doBootstrapperUpdate", "Cleaning patch directory...");
         try {
-            FileUtils.deleteDirectory(new File("./update/mupdatepatch"));
+            if (new File("./update/mupdatepatch").isDirectory()) {
+                FileUtils.deleteDirectory(new File("./update/mupdatepatch"));
+            }
         } catch (IOException ex) {
             Logger.error("Updater.doBootstrapperUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
             GlobalDialogs.hideProgressDialog();
@@ -194,7 +219,7 @@ public class Updater {
         while (!updateQueue.empty()) {
             //Load update from JSON
             String updateName = updateQueue.pop();
-            JSONObject update = getVersionByName(updateName, versionsConfig);
+            JSONObject update = getVersionByName(updateName, "mupdate", versionsConfig);
             
             //Update status
             GlobalDialogs.setProgressCaption("Getting patch '" + updateName + "'...");
@@ -281,7 +306,7 @@ public class Updater {
             }
             
             //Show the update dialog
-            GlobalDialogs.showUpdateNotification(message);
+            GlobalDialogs.showUpdateNotification(message, "cache");
             
             //Wait for the dialog result
             while (DialogResult == -1);
@@ -315,7 +340,9 @@ public class Updater {
         //Clean patch directory
         Logger.info("Updater.doCacheUpdate", "Cleaning patch directory...");
         try {
-            FileUtils.deleteDirectory(new File("./update/cachepatch"));
+            if (new File("./update/cachepatch").isDirectory()) {
+                FileUtils.deleteDirectory(new File("./update/cachepatch"));
+            }
         } catch (IOException ex) {
             Logger.error("Updater.doCacheUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
             GlobalDialogs.hideProgressDialog();
@@ -327,7 +354,7 @@ public class Updater {
         while (!updateQueue.empty()) {
             //Load update from JSON
             String updateName = updateQueue.pop();
-            JSONObject update = getVersionByName(updateName, versionsConfig);
+            JSONObject update = getVersionByName(updateName, "cache", versionsConfig);
             
             //Update status
             GlobalDialogs.setProgressCaption("Getting patch '" + updateName + "'...");
@@ -344,7 +371,7 @@ public class Updater {
             }
 
             //Extract version patch
-            Logger.info("Updater.doUpdate", "Extracting patch '" + updateName + "'...");
+            Logger.info("Updater.doCacheUpdate", "Extracting patch '" + updateName + "'...");
             try {
                 Util.decompressZipfile("./update/cache-" + updateName + "-patch.zip", "./update/cachepatch");
             } catch (ZipException ex) {
@@ -376,7 +403,7 @@ public class Updater {
                 
                 //Copy entry
                 try {
-                    FileUtils.copyFile(f, new File("./cache", f.getName()));
+                    Util.copyFileAndBackupOldCopy(f, new File("./cache", f.getName()));
                 } catch (IOException ex) {
                     Logger.error("Updater.doCacheUpdate", "Failed to copy patch!", false, ex.getMessage());
                     continue;
@@ -429,7 +456,7 @@ public class Updater {
             }
             
             //Show the update dialog
-            GlobalDialogs.showUpdateNotification(message);
+            GlobalDialogs.showUpdateNotification(message, "launcher");
             
             //Wait for the dialog result
             while (DialogResult == -1);
@@ -463,7 +490,9 @@ public class Updater {
         //Clean patch directory
         Logger.info("Updater.doLauncherUpdate", "Cleaning patch directory...");
         try {
-            FileUtils.deleteDirectory(new File("./update/launcherpatch"));
+            if (new File("./update/launcherpatch").isDirectory()) {
+                FileUtils.deleteDirectory(new File("./update/launcherpatch"));
+            }
         } catch (IOException ex) {
             Logger.error("Updater.doLauncherUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
             GlobalDialogs.hideProgressDialog();
@@ -475,7 +504,7 @@ public class Updater {
         while (!updateQueue.empty()) {
             //Load update from JSON
             String updateName = updateQueue.pop();
-            JSONObject update = getVersionByName(updateName, versionsConfig);
+            JSONObject update = getVersionByName(updateName, "moddle", versionsConfig);
             
             //Update status
             GlobalDialogs.setProgressCaption("Getting patch '" + updateName + "'...");
@@ -518,7 +547,7 @@ public class Updater {
         GlobalDialogs.setProgressCaption("Restarting...");
         
         //Start MUpdate
-        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "./update/MUpdate.jar" });
+        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"" + Util.getFullPath("./update/MUpdate.jar") + "\"" });
         updater.directory(new File("./update"));
         try {
             updater.start();
@@ -554,8 +583,8 @@ public class Updater {
         boolean isUpToDate = true;
         int length = Math.max(newVersionBreakout.size(), oldVersionBreakout.size());
         for (int i = 0; i < length; i++) {
-            int newDigit = newVersionBreakout.size() - 1 < i ? newVersionBreakout.get(i) : 0;
-            int oldDigit = oldVersionBreakout.size() - 1 < i ? oldVersionBreakout.get(i) : 0;
+            int newDigit = (i < newVersionBreakout.size()) ? newVersionBreakout.get(i) : 0;
+            int oldDigit = (i < oldVersionBreakout.size()) ? oldVersionBreakout.get(i) : 0;
             if (newDigit > oldDigit) {
                 isUpToDate = false;
                 break;
@@ -565,8 +594,8 @@ public class Updater {
         return isUpToDate;
     }
     
-    public static JSONObject getVersionByName(String name, JSONObject versionsConfig) {
-        for (Object updateObj : (JSONArray)versionsConfig.get("versions")) {
+    public static JSONObject getVersionByName(String name, String type, JSONObject versionsConfig) {
+        for (Object updateObj : (JSONArray)versionsConfig.get(type + "versions")) {
             JSONObject update = (JSONObject)updateObj;
             if (update.get("name").equals(name)) {
                 return update;

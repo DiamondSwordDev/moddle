@@ -229,12 +229,27 @@ public class MainForm extends javax.swing.JFrame {
                 
                 //Save new version file
                 try {
-                    versionConfig.put("moddleversion", newVersionConfig.get("moddleversion"));
+                    versionConfig.put("moddleversion", newVersionConfig.get("version").toString());
                     FileUtils.writeStringToFile(new File("./version.json"), versionConfig.toJSONString());
                 } catch (IOException ex) {
                     showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
                     System.exit(0);
                     return;
+                }
+                
+                //Delete new version config
+                new File("./nversion.json").delete();
+                
+                try {
+                    ProcessBuilder moddle = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"" + new File("../Moddle.jar").getCanonicalPath() + "\"" });
+                    moddle.directory(new File(".."));
+                    moddle.start();
+                } catch (IOException ex) {
+                    try {
+                        ProcessBuilder moddle = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"../Moddle.jar\"" });
+                        moddle.directory(new File(".."));
+                        moddle.start();
+                    } catch (IOException ex2) { showPopupDialog("Failed to start Moddle!"); }
                 }
                 
                 //Exit

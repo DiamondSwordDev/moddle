@@ -24,13 +24,15 @@ public class GlobalDialogs {
     
     public static JDialog updateDialog = null;
     public static JTextPane updateDialogDescriptionPane = null;
+    public static JLabel updateDialogCaptionLabel = null;
     
     public static void showNotification(String message) {
         popupDialogCaptionLabel.setText("<html><body style='width: 300px'>" + message + "</body></html>");
         popupDialog.setVisible(true);
     }
     
-    public static void showUpdateNotification(String message) {
+    public static void showUpdateNotification(String message, String updateType) {
+        updateDialogCaptionLabel.setText("The following " + updateType + " updates are available for automatic installation:");
         updateDialogDescriptionPane.setText(message);
         updateDialog.setVisible(true);
     }
