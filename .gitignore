@@ -1,6 +1,7 @@
 /moddle/nbproject/private/
 /moddle/build/
 /moddle/dist/
+/moddle/store/
 /moddle/data/versions/
 /moddle/data/auth.json
 /moddle/data/lastlogin.json
@@ -17,5 +18,6 @@
 /mupdate/nbproject/private/
 /mupdate/build/
 /mupdate/dist/
+/mupdate/store/
 /mupdate/versions.json
 /mupdate/*.zip
