@@ -40,7 +40,7 @@ public class Auth {
                 FileUtils.writeStringToFile(new File("./data/auth.json"), authConfig.toJSONString());
             }
         } catch (IOException ex) {
-            Logger.error("Auth.loadFromFile", "Failed to load file 'auth.json'!", false, ex.getMessage());
+            Logger.error("Auth.loadFromFile", "Failed to load file 'auth.json'!", false, ex);
         }
     }
     
@@ -52,7 +52,7 @@ public class Auth {
             authConfig.put("loggedin", Boolean.toString(isLoggedIn));
             FileUtils.writeStringToFile(new File("./data/auth.json"), authConfig.toJSONString());
         } catch (IOException ex) {
-            Logger.error("AuthCache.saveToFile", "Failed to save auth data to file 'auth.json'!", false, ex.getMessage());
+            Logger.error("AuthCache.saveToFile", "Failed to save auth data to file 'auth.json'!", false, ex);
         }
     }
     

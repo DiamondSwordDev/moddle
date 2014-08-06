@@ -44,7 +44,7 @@ public class AssetBuilder {
      */
     public static void buildAssets(String directory) throws IOException {
         if (!(directory.endsWith("/")||directory.endsWith("\\"))) {
-            Logger.warning("Assets", "A slash was not added at the end of the asset output directory. Attempting to fix...");
+            //Logger.warning("Assets", "A slash was not added at the end of the asset output directory. Attempting to fix...");
             directory = directory + "/";
         }
         

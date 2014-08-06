@@ -31,7 +31,7 @@ public class Util {
             File f = new File(path);
             return f.getCanonicalPath();
         } catch (IOException ex) {
-            Logger.error("Util.getFullPath", ex.getMessage(), false, ex.getMessage());
+            Logger.error("Util.getFullPath", ex.getMessage(), false, ex);
             return path;
         }
     }

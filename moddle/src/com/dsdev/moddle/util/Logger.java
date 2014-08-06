@@ -1,7 +1,8 @@
 package com.dsdev.moddle.util;
 import com.dsdev.moddle.GlobalDialogs;
-
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.io.FileUtils;
@@ -27,7 +28,7 @@ public class Logger {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle][" + method + "][ERROR] - " + message);
     }
 
-    public static void error(String method, String message, boolean isFatal, String exMessage) {
+    /*public static void error(String method, String message, boolean isFatal, String exMessage) {
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: " + method);
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Message: " + message);
@@ -37,6 +38,23 @@ public class Logger {
             safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
         }
         safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Exception: " + exMessage);
+    }*/
+    
+    public static void error(String method, String message, boolean isFatal, Exception ex) {
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] +=======================+  ERROR  +=======================+");
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Error occured in method: " + method);
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Message: " + message);
+        if (isFatal) {
+            safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  Yes.");
+        } else {
+            safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Is fatal:  No.");
+        }
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+        safelyLog("[" + getCurrentTimeStamp() + "][Moddle] |  Stack Trace: (Below)");
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        safelyLog(sw.toString());
     }
 
     private static void safelyLog(String line) {

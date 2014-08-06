@@ -57,7 +57,7 @@ public class Instances {
         try {
             instanceConfig = Util.readJSONFile(instancePath + "/instance.json");
         } catch (IOException ex) {
-            Logger.error("Instances.buildInstance", "Failed to read instance.json!", true, ex.getMessage());
+            Logger.error("Instances.buildInstance", "Failed to read instance.json!", true, ex);
             GlobalDialogs.showNotification("Failed to load instance!");
             return false;
         }
@@ -68,7 +68,7 @@ public class Instances {
         try {
             packConfig = Util.readJSONFile("./packs/" + instanceConfig.get("pack").toString() + "/pack.json");
         } catch (IOException ex) {
-            Logger.error("Instances.buildInstance", "Failed to read pack.json!", true, ex.getMessage());
+            Logger.error("Instances.buildInstance", "Failed to read pack.json!", true, ex);
             GlobalDialogs.showNotification("Failed to load modpack!");
             return false;
         }
@@ -129,7 +129,7 @@ public class Instances {
             try {
                 FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/" + mcVersion + "/" + mcVersion + ".jar"), new File("./data/versions/" + mcVersion + ".jar"));
             } catch (IOException ex) {
-                Logger.error("Modpack.build", "Failed to download Minecraft jarfile!", true, ex.getMessage());
+                Logger.error("Modpack.build", "Failed to download Minecraft jarfile!", true, ex);
                 GlobalDialogs.showNotification("Failed to get required Minecraft version!");
                 return false;
             }
@@ -141,7 +141,7 @@ public class Instances {
         try {
             FileUtils.copyFile(new File("./data/versions/" + mcVersion + ".jar"), new File(instancePath + "/.minecraft/versions/" + mcVersion + "/" + mcVersion + ".jar"));
         } catch (IOException ex) {
-            Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex.getMessage());
+            Logger.error("Modpack.build", "Failed to copy Minecraft jarfile!", true, ex);
             GlobalDialogs.showNotification("Failed to install Minecraft jarfile!");
             return false;
         }
@@ -153,7 +153,7 @@ public class Instances {
         try {
             FileUtils.copyDirectory(new File("./data/assets/legacy"), new File(instancePath + "/.minecraft/assets"));
         } catch (IOException ex) {
-            Logger.error("Modpack.build", "Failed to copy Minecraft assets!", false, ex.getMessage());
+            Logger.error("Modpack.build", "Failed to copy Minecraft assets!", false, ex);
         }
         
         //Update progress
@@ -182,7 +182,7 @@ public class Instances {
         try {
             instanceConfig = Util.readJSONFile(instancePath + "/instance.json");
         } catch (IOException ex) {
-            Logger.error("Instances.buildInstance", "Failed to read instance.json!", true, ex.getMessage());
+            Logger.error("Instances.buildInstance", "Failed to read instance.json!", true, ex);
             GlobalDialogs.showNotification("Failed to load instance! (Second Pass)");
             return null;
         }
@@ -193,7 +193,7 @@ public class Instances {
         try {
             packConfig = Util.readJSONFile("./packs/" + instanceConfig.get("pack").toString() + "/pack.json");
         } catch (IOException ex) {
-            Logger.error("Instances.buildInstance", "Failed to read pack.json!", true, ex.getMessage());
+            Logger.error("Instances.buildInstance", "Failed to read pack.json!", true, ex);
             GlobalDialogs.showNotification("Failed to load modpack! (Second Pass)");
             return null;
         }
@@ -396,7 +396,7 @@ public class Instances {
         try {
             processHandle = launcher.start();
         } catch (IOException ex) {
-            Logger.error("Instances.runInstance", "Failed to launch process!", true, ex.getMessage());
+            Logger.error("Instances.runInstance", "Failed to launch process!", true, ex);
             GlobalDialogs.showNotification("Failed to launch Minecraft!");
             return null;
         }
@@ -609,7 +609,7 @@ public class Instances {
                         FileUtils.copyURLToFile(new URL((String) file.get("url")), new File(entryPath + "/" + (String) file.get("name")));
                     }
                 } catch (IOException ex) {
-                    Logger.error("Instances.installCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex.getMessage());
+                    Logger.error("Instances.installCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex);
                 }
                 
                 //Perform specified action for file
@@ -631,7 +631,7 @@ public class Instances {
                         copyTextFileWithVariables(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
                     }
                 } catch (Exception ex) {
-                    Logger.error("Instances.installCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex.getClass().getSimpleName() + ": " + ex.getMessage());
+                    Logger.error("Instances.installCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex);
                 }
             }
         }
@@ -662,7 +662,7 @@ public class Instances {
             return ret;
 
         } catch (Exception ex) {
-            Logger.error("PackBuilder.getLibraryJarfiles", ex.getMessage(), false, ex.getMessage());
+            Logger.error("PackBuilder.getLibraryJarfiles", ex.getMessage(), false, ex);
             return null;
         }
     }

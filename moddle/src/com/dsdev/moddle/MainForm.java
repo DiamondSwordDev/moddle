@@ -1003,7 +1003,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             FileUtils.writeStringToFile(new File("./users/" + friendlyAccountName + "/prefs.json"), prefConfig.toJSONString());
         } catch (IOException ex) {
-            Logger.error("MainForm.saveUserPrefs", "Unable to save user preferences!", false, ex.getMessage());
+            Logger.error("MainForm.saveUserPrefs", "Unable to save user preferences!", false, ex);
         }
         
         Logger.info("MainForm.saveUserPrefs", "Saved user preferences!");
@@ -1090,7 +1090,7 @@ public class MainForm extends javax.swing.JFrame {
 
             }
         } catch (Exception ex) {
-            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex.getMessage());
+            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex);
         }
 
         pane.setCaretPosition(0);
@@ -1102,7 +1102,7 @@ public class MainForm extends javax.swing.JFrame {
             pane.setText("");
             pane.insertIcon(Resources.getImageResource(imageName));
         } catch (Exception ex) {
-            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex.getMessage());
+            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex);
         }
         pane.setCaretPosition(0);
     }
@@ -1221,7 +1221,7 @@ public class MainForm extends javax.swing.JFrame {
             try {
                 Resources.copyFileResource("ids.json", "./data/ids.json");
             } catch (IOException ex) {
-                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'ids.json' from resource!", false, ex.getMessage());
+                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'ids.json' from resource!", false, ex);
             }
         }
         
@@ -1234,7 +1234,7 @@ public class MainForm extends javax.swing.JFrame {
             try {
                 Resources.copyFileResource("version.json", "./update/version.json");
             } catch (IOException ex) {
-                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'version.json' from resource!", false, ex.getMessage());
+                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'version.json' from resource!", false, ex);
             }
         }
     }
@@ -1245,7 +1245,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             IOUtils.copy(this.getClass().getResourceAsStream(name + ".zip"), new FileOutputStream("./" + name + ".zip"));
         } catch (IOException ex) {
-            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy the archive file!", true, ex.getMessage());
+            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy the archive file!", true, ex);
         }
 
         Logger.info("MainForm.loadRequiredFilesIfNecessary", "Extracting '" + name + ".zip'...");
@@ -1253,7 +1253,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             Util.decompressZipfile("./" + name + ".zip", "./" + name);
         } catch (ZipException ex) {
-            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to extract the archive file!", true, ex.getMessage());
+            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to extract the archive file!", true, ex);
         }
 
         Logger.info("MainForm.loadRequiredFilesIfNecessary", "Cleaning up...");
@@ -1363,11 +1363,11 @@ public class MainForm extends javax.swing.JFrame {
                 
                 //Check that critical fields are correctly completed
                 if (CurrentUserLabel.getText().startsWith("-- ")) {
-                    Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, "None");
+                    Logger.error("MainForm.PlayButtonActionPerformed", "No valid login given!", true, new Exception ("Invalid Login!"));
                     return;
                 }
                 if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
-                    Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, "None");
+                    Logger.error("MainForm.PlayButtonActionPerformed", "No instance selected!", true, new Exception ("'<None>' instance was selected!"));
                     return;
                 }
 
@@ -1410,7 +1410,7 @@ public class MainForm extends javax.swing.JFrame {
                     try {
                         processHandle.waitFor();
                     } catch (InterruptedException ex) {
-                        Logger.error("MainForm.PlayButtonActionPerformed", "Something broke while waiting for the Minecraft process!", true, ex.getMessage());
+                        Logger.error("MainForm.PlayButtonActionPerformed", "Something broke while waiting for the Minecraft process!", true, ex);
                     }
                     
                     //Reopen if specified or exit
@@ -1479,7 +1479,7 @@ public class MainForm extends javax.swing.JFrame {
         //Redirect stdout and begin logging
         redirectOutputStreams();
         Logger.begin();
-
+        
         //Load data directory
         Logger.info("MainForm.formWindowOpened", "Loading self-extracting data...");
         loadRequiredFilesIfNecessary();
@@ -1676,7 +1676,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             FileUtils.writeStringToFile(new File("./users/" + getFriendlyName(Auth.AccountName) + "/" + instanceDialogNameBox.getText() + "/instance.json"), instanceConfig.toJSONString());
         } catch (IOException ex) {
-            Logger.error("MainForm.instanceDialogCreateButtonActionPerformed", "Could not create 'instance.json'!", false, ex.getMessage());
+            Logger.error("MainForm.instanceDialogCreateButtonActionPerformed", "Could not create 'instance.json'!", false, ex);
             return;
         }
         loadUser(Auth.AccountName);

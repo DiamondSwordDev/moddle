@@ -21,7 +21,7 @@ public class IDHelper {
             try {
                 IDConfig = Util.readJSONFile("./data/ids.json");
             } catch (IOException ex) {
-                Logger.error("IDHelper.loadIDs", "Failed to load 'ids.json'!", false, ex.getMessage());
+                Logger.error("IDHelper.loadIDs", "Failed to load 'ids.json'!", false, ex);
                 return null;
             }
         }
@@ -67,7 +67,7 @@ public class IDHelper {
         try {
             file = Util.readJSONFile("./" + filename);
         } catch (IOException ex) {
-            Logger.error("IDHelper.getIDFromFile", "Failed to load external ID file!", false, ex.getMessage());
+            Logger.error("IDHelper.getIDFromFile", "Failed to load external ID file!", false, ex);
             return null;
         }
 

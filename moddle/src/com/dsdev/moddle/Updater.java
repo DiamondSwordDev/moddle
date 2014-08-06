@@ -176,7 +176,7 @@ public class Updater {
                 try {
                     AssetBuilder.buildAssets("./data/assets");
                 } catch (IOException ex) {
-                    Logger.error("Updater.checkForAssetUpdates", "Failed to update assets!", false, ex.getMessage());
+                    Logger.error("Updater.checkForAssetUpdates", "Failed to update assets!", false, ex);
                 }
                 
                 //Hide progress
@@ -264,7 +264,7 @@ public class Updater {
                 FileUtils.deleteDirectory(new File("./update/mupdatepatch"));
             }
         } catch (IOException ex) {
-            Logger.error("Updater.doBootstrapperUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
+            Logger.error("Updater.doBootstrapperUpdate", "Failed to clean the patch directory!", false, ex);
             GlobalDialogs.hideProgressDialog();
             GlobalDialogs.showNotification("Failed to clean the patch directory!");
             return false;
@@ -284,7 +284,7 @@ public class Updater {
             try {
                 FileUtils.copyURLToFile(new URL(update.get("patch").toString()), new File("./update/mupdate-" + updateName + "-patch.zip"));
             } catch (IOException ex) {
-                Logger.error("Updater.doBootstrapperUpdate", "Failed to download patch!", false, ex.getMessage());
+                Logger.error("Updater.doBootstrapperUpdate", "Failed to download patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to download patch '" + updateName + "'!");
                 return false;
@@ -295,7 +295,7 @@ public class Updater {
             try {
                 Util.decompressZipfile("./update/mupdate-" + updateName + "-patch.zip", "./update/mupdatepatch");
             } catch (ZipException ex) {
-                Logger.error("Updater.doBootstrapperUpdate", "Failed to extract patch!", false, ex.getMessage());
+                Logger.error("Updater.doBootstrapperUpdate", "Failed to extract patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to extract patch '" + updateName + "'!");
                 return false;
@@ -310,7 +310,7 @@ public class Updater {
         try {
             FileUtils.copyDirectory(new File("./update/mupdatepatch"), new File("./update"));
         } catch (IOException ex) {
-            Logger.error("Updater.doBootstrapperUpdate", "Failed to apply patch!", false, ex.getMessage());
+            Logger.error("Updater.doBootstrapperUpdate", "Failed to apply patch!", false, ex);
             GlobalDialogs.hideProgressDialog();
             GlobalDialogs.showNotification("Failed to apply MUpdate patch!");
             return false;
@@ -399,7 +399,7 @@ public class Updater {
                 FileUtils.deleteDirectory(new File("./update/cachepatch"));
             }
         } catch (IOException ex) {
-            Logger.error("Updater.doCacheUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
+            Logger.error("Updater.doCacheUpdate", "Failed to clean the patch directory!", false, ex);
             GlobalDialogs.hideProgressDialog();
             GlobalDialogs.showNotification("Failed to clean the patch directory!");
             return false;
@@ -419,7 +419,7 @@ public class Updater {
             try {
                 FileUtils.copyURLToFile(new URL(update.get("patch").toString()), new File("./update/cache-" + updateName + "-patch.zip"));
             } catch (IOException ex) {
-                Logger.error("Updater.doCacheUpdate", "Failed to download patch!", false, ex.getMessage());
+                Logger.error("Updater.doCacheUpdate", "Failed to download patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to download patch '" + updateName + "'!");
                 return false;
@@ -430,7 +430,7 @@ public class Updater {
             try {
                 Util.decompressZipfile("./update/cache-" + updateName + "-patch.zip", "./update/cachepatch");
             } catch (ZipException ex) {
-                Logger.error("Updater.doCacheUpdate", "Failed to extract patch!", false, ex.getMessage());
+                Logger.error("Updater.doCacheUpdate", "Failed to extract patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to extract patch '" + updateName + "'!");
                 return false;
@@ -452,7 +452,7 @@ public class Updater {
                     try {
                         FileUtils.deleteDirectory(new File("./cache", f.getName().replace(".zip", "")));
                     } catch (IOException ex) {
-                        Logger.error("Updater.doCacheUpdate", "Failed to delete existing extracted entry!", false, ex.getMessage());
+                        Logger.error("Updater.doCacheUpdate", "Failed to delete existing extracted entry!", false, ex);
                     }
                 }
                 
@@ -460,7 +460,7 @@ public class Updater {
                 try {
                     Util.copyFileAndBackUpOldCopy(f, new File("./cache", f.getName()));
                 } catch (IOException ex) {
-                    Logger.error("Updater.doCacheUpdate", "Failed to copy patch!", false, ex.getMessage());
+                    Logger.error("Updater.doCacheUpdate", "Failed to copy patch!", false, ex);
                     continue;
                 }
             }
@@ -549,7 +549,7 @@ public class Updater {
                 FileUtils.deleteDirectory(new File("./update/launcherpatch"));
             }
         } catch (IOException ex) {
-            Logger.error("Updater.doLauncherUpdate", "Failed to clean the patch directory!", false, ex.getMessage());
+            Logger.error("Updater.doLauncherUpdate", "Failed to clean the patch directory!", false, ex);
             GlobalDialogs.hideProgressDialog();
             GlobalDialogs.showNotification("Failed to clean the patch directory!");
             return false;
@@ -569,7 +569,7 @@ public class Updater {
             try {
                 FileUtils.copyURLToFile(new URL(update.get("patch").toString()), new File("./update/moddle-" + updateName + "-patch.zip"));
             } catch (IOException ex) {
-                Logger.error("Updater.doLauncherUpdate", "Failed to download patch!", false, ex.getMessage());
+                Logger.error("Updater.doLauncherUpdate", "Failed to download patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to download patch '" + updateName + "'!");
                 return false;
@@ -580,7 +580,7 @@ public class Updater {
             try {
                 Util.decompressZipfile("./update/moddle-" + updateName + "-patch.zip", "./update/launcherpatch");
             } catch (ZipException ex) {
-                Logger.error("Updater.doLauncherUpdate", "Failed to extract patch!", false, ex.getMessage());
+                Logger.error("Updater.doLauncherUpdate", "Failed to extract patch!", false, ex);
                 GlobalDialogs.hideProgressDialog();
                 GlobalDialogs.showNotification("Failed to extract patch '" + updateName + "'!");
                 return false;
@@ -596,7 +596,7 @@ public class Updater {
         try {
             updater.start();
         } catch (Exception ex) {
-            Logger.error("Updater.doLauncherUpdate", "Failed to start MUpdate!", false, ex.getMessage());
+            Logger.error("Updater.doLauncherUpdate", "Failed to start MUpdate!", false, ex);
             GlobalDialogs.hideProgressDialog();
             GlobalDialogs.showNotification("Could not start MUpdate!");
             return false;
