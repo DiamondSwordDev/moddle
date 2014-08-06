@@ -1,6 +1,7 @@
 
 package com.dsdev.moddle.resources;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import org.apache.commons.io.IOUtils;
@@ -18,6 +19,10 @@ public class Resources {
     
     public static ImageIcon getImageResource(String name) {
         return new ImageIcon(Resources.class.getResource(name));
+    }
+    
+    public static void copyFileResource(String name, String target) throws IOException {
+        IOUtils.copy(Resources.class.getResourceAsStream(name), new FileOutputStream(target));
     }
     
     public static String getTextResource(String name) {

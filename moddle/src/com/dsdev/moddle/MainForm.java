@@ -907,7 +907,7 @@ public class MainForm extends javax.swing.JFrame {
         
         if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
             //Display 'no pack selected' content
-            loadPaneContentFromDirectory("./data/content/nopack", ModpackDescriptionPane);
+            loadPaneContentFromResourceImage("nopack.png", ModpackDescriptionPane);
             ModpackList.setSelectedIndex(-1);
         } else {
             //Load pack description content
@@ -918,7 +918,7 @@ public class MainForm extends javax.swing.JFrame {
                 loadPaneContentFromDirectory("./packs/" + instanceConfig.get("pack").toString(), ModpackDescriptionPane);
             } catch (IOException ex) {
                 //Load 'no description' content if content loading fails
-                loadPaneContentFromDirectory("./data/content/nodesc", ModpackDescriptionPane);
+                loadPaneContentFromResourceImage("nodesc.png", ModpackDescriptionPane);
             }
         }
     }
@@ -1035,9 +1035,7 @@ public class MainForm extends javax.swing.JFrame {
     private void loadPaneContentFromDirectory(String contentLocation, JTextPane pane) {
         
         if (!new File(contentLocation + "/description.txt").exists()) {
-            //This line was a really bad idea...
-            contentLocation = "./data/content/nodesc";
-            //Wait... how in the name of Notch did I just assign to a parameter variable?!?
+            loadPaneContentFromResourceImage("nodesc.png", pane);
         }
         
         try {
@@ -1097,6 +1095,16 @@ public class MainForm extends javax.swing.JFrame {
 
         pane.setCaretPosition(0);
         
+    }
+    
+    private void loadPaneContentFromResourceImage(String imageName, JTextPane pane) {
+        try {
+            pane.setText("");
+            pane.insertIcon(Resources.getImageResource(imageName));
+        } catch (Exception ex) {
+            Logger.error("MainForm.loadModpackPaneContent", "Failed to load content!", false, ex.getMessage());
+        }
+        pane.setCaretPosition(0);
     }
     
     private void redirectOutputStreams() {
@@ -1207,66 +1215,52 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     
-    private void loadSelfExtractingData() {
-        if (!new File("./data").isDirectory()) {
-            
-            Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
-            
+    private void loadRequiredFilesIfNecessary() {
+        if (!new File("./data/ids.json").isFile()) {
+            Util.createDirectoryIfNeeded("./data");
             try {
-                IOUtils.copy(this.getClass().getResourceAsStream("data.zip"), new FileOutputStream("./data.zip"));
+                Resources.copyFileResource("ids.json", "./data/ids.json");
             } catch (IOException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to copy the data archive file!", true, ex.getMessage());
+                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'ids.json' from resource!", false, ex.getMessage());
             }
-
-            Logger.info("MainForm.loadDataFromResource", "Extracting 'data.zip'...");
-
+        }
+        
+        if (!new File("./packs").isDirectory()) {
+            loadDirectoryFromResource("packs");
+        }
+        
+        if (!new File("./update/version.json").isFile()) {
+            Util.createDirectoryIfNeeded("./update");
             try {
-                Util.decompressZipfile("./data.zip", "./");
-            } catch (ZipException ex) {
-                Logger.error("MainForm.loadDataFromResource", "Failed to extract the data archive file!", true, ex.getMessage());
+                Resources.copyFileResource("version.json", "./update/version.json");
+            } catch (IOException ex) {
+                Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy 'version.json' from resource!", false, ex.getMessage());
             }
         }
     }
     
-    private void loadDataFromResource() {
-        
-        Logger.info("MainForm.loadDataFromResource", "Initializing...");
-        Logger.setProgress(0);
-        progressDialog.setVisible(true);
-        progressDialog.setLocationRelativeTo(null);
-        
-        SwingWorker worker = new SwingWorker() {
+    private void loadDirectoryFromResource(String name) {
+        Logger.info("MainForm.loadRequiredFilesIfNecessary", "Copying '" + name + ".zip'...");
 
-            @Override
-            protected void done() {
-                progressDialog.setVisible(false);
-            }
+        try {
+            IOUtils.copy(this.getClass().getResourceAsStream(name + ".zip"), new FileOutputStream("./" + name + ".zip"));
+        } catch (IOException ex) {
+            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to copy the archive file!", true, ex.getMessage());
+        }
 
-            @Override
-            protected void process(List chunks) {
-                
-            }
+        Logger.info("MainForm.loadRequiredFilesIfNecessary", "Extracting '" + name + ".zip'...");
 
-            @Override
-            protected Object doInBackground() {
-                
-                Logger.info("MainForm.loadDataFromResource", "Copying 'data.zip'...");
-                Logger.setProgress(20);
-                
-                
-                
-                Logger.info("MainForm.loadDataFromResource", "Done!");
-                Logger.setProgress(100);
-                
-                progressDialog.setVisible(false);
-                return null;
-            }
-        };
+        try {
+            Util.decompressZipfile("./" + name + ".zip", "./" + name);
+        } catch (ZipException ex) {
+            Logger.error("MainForm.loadRequiredFilesIfNecessary", "Failed to extract the archive file!", true, ex.getMessage());
+        }
 
-        worker.execute();
-        
+        Logger.info("MainForm.loadRequiredFilesIfNecessary", "Cleaning up...");
+
+        FileUtils.deleteQuietly(new File("./" + name + ".zip"));
     }
-
+    
     
     private void ModpackListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ModpackListValueChanged
         if (ModpackList.getSelectedValue() != null) {
@@ -1279,7 +1273,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             if (InstanceComboBox.getSelectedItem().toString().equals("<None>")) {
                 //Display 'no pack selected' content
-                loadPaneContentFromDirectory("./data/content/nopack", ModpackDescriptionPane);
+                loadPaneContentFromResourceImage("nopack.png", ModpackDescriptionPane);
                 ModpackList.setSelectedIndex(-1);
             } else {
                 //Load pack description content
@@ -1290,7 +1284,7 @@ public class MainForm extends javax.swing.JFrame {
                     loadPaneContentFromDirectory("./packs/" + instanceConfig.get("pack").toString(), ModpackDescriptionPane);
                 } catch (IOException ex) {
                     //Load 'no description' content if content loading fails
-                    loadPaneContentFromDirectory("./data/content/nodesc", ModpackDescriptionPane);
+                    loadPaneContentFromResourceImage("nodesc.png", ModpackDescriptionPane);
                 }
             }
         } catch (Exception ex) { }
@@ -1486,6 +1480,10 @@ public class MainForm extends javax.swing.JFrame {
         redirectOutputStreams();
         Logger.begin();
 
+        //Load data directory
+        Logger.info("MainForm.formWindowOpened", "Loading self-extracting data...");
+        loadRequiredFilesIfNecessary();
+        
         //Load modpacks
         Logger.info("MainForm.formWindowOpened", "Loading modpacks...");
         loadModpackList();

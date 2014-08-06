@@ -403,7 +403,7 @@ public class Updater {
                 
                 //Copy entry
                 try {
-                    Util.copyFileAndBackupOldCopy(f, new File("./cache", f.getName()));
+                    Util.copyFileAndBackUpOldCopy(f, new File("./cache", f.getName()));
                 } catch (IOException ex) {
                     Logger.error("Updater.doCacheUpdate", "Failed to copy patch!", false, ex.getMessage());
                     continue;
@@ -532,22 +532,11 @@ public class Updater {
             }
         }
         
-        //Clean patch directory
-        Logger.info("Updater.doLauncherUpdate", "Writing new version file...");
-        try {
-            FileUtils.writeStringToFile(new File("./update/nversion.json"), "{\"version\":\"" + versionsConfig.get("latestmoddle").toString() + "\"}");
-        } catch (IOException ex) {
-            Logger.error("Updater.doLauncherUpdate", "Failed to write to 'nversion.json'!", false, ex.getMessage());
-            GlobalDialogs.hideProgressDialog();
-            GlobalDialogs.showNotification("Failed to write to new version file!");
-            return false;
-        }
-        
         //Update status
         GlobalDialogs.setProgressCaption("Restarting...");
         
         //Start MUpdate
-        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"" + Util.getFullPath("./update/MUpdate.jar") + "\"" });
+        ProcessBuilder updater = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"" + Util.getFullPath("./update/MUpdate.jar") + "\"", "--version=" + versionsConfig.get("latestmoddle").toString() });
         updater.directory(new File("./update"));
         try {
             updater.start();

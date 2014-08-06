@@ -37,6 +37,12 @@ public class GlobalDialogs {
         updateDialog.setVisible(true);
     }
     
+    public static void showFirstUpdateNotification(String message) {
+        updateDialogCaptionLabel.setText("It looks like this is your first run.  The following items are queued to install:");
+        updateDialogDescriptionPane.setText(message);
+        updateDialog.setVisible(true);
+    }
+    
     public static void showProgressDialog() {
         progressDialogStatusLabel.setText("Initializing...");
         progressDialogStatusBar.setValue(0);

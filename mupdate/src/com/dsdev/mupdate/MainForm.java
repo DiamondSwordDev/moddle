@@ -185,6 +185,34 @@ public class MainForm extends javax.swing.JFrame {
         return returnValue;
     }
     
+    
+    private void copyDirectoryAndBackUpOldFiles(File source, File target) {
+        for (File f : source.listFiles()) {
+            if (f.isFile()) {
+                try {
+                    copyFileAndBackUpOldCopy(f, new File(target, f.getName()));
+                } catch (IOException ex) {
+                    System.out.println("Failed to copy file '" + f.getName() + "'.");
+                    ex.printStackTrace(System.out);
+                }
+            } else if (f.isDirectory()) {
+                copyDirectoryAndBackUpOldFiles(f, new File(target, f.getName()));
+            }
+        }
+    }
+    
+    private void copyFileAndBackUpOldCopy(File source, File target) throws IOException {
+        if (target.isFile()) {
+            if (!target.getName().endsWith(".jar")) {
+                String[] extensions = target.getName().split(".");
+                String extension = "." + extensions[extensions.length-1];
+                copyFileAndBackUpOldCopy(target, new File(target.getParentFile(), target.getName().replace(extension, ".old" + extension)));
+            }
+        }
+        FileUtils.copyFile(source, target);
+    }
+    
+    
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         //Set window properties
         this.setLocationRelativeTo(null);
@@ -199,13 +227,7 @@ public class MainForm extends javax.swing.JFrame {
             protected void task() {
                 
                 //Copy updates
-                try {
-                    FileUtils.copyDirectory(new File("./launcherpatch"), new File(".."));
-                } catch (IOException ex) {
-                    showPopupDialog("Failed to apply the updates!");
-                    System.exit(0);
-                    return;
-                }
+                copyDirectoryAndBackUpOldFiles(new File("./launcherpatch"), new File(".."));
                 
                 //Load version config
                 JSONObject versionConfig;
@@ -217,19 +239,18 @@ public class MainForm extends javax.swing.JFrame {
                     return;
                 }
                 
-                //Load new version config
-                JSONObject newVersionConfig;
-                try {
-                    newVersionConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File("./nversion.json")));
-                } catch (IOException ex) {
-                    showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
-                    System.exit(0);
-                    return;
+                //Get new version from arguments
+                String newVersion = "0";
+                for (String arg : Arguments) {
+                    if (arg.startsWith("--version=")) {
+                        newVersion = arg.substring(10);
+                        break;
+                    }
                 }
                 
                 //Save new version file
                 try {
-                    versionConfig.put("moddleversion", newVersionConfig.get("version").toString());
+                    versionConfig.put("moddleversion", newVersion);
                     FileUtils.writeStringToFile(new File("./version.json"), versionConfig.toJSONString());
                 } catch (IOException ex) {
                     showPopupDialog("Warning:  The version file could not be updated!  This may cause problems.");
@@ -237,9 +258,7 @@ public class MainForm extends javax.swing.JFrame {
                     return;
                 }
                 
-                //Delete new version config
-                new File("./nversion.json").delete();
-                
+                //Start Moddle
                 try {
                     ProcessBuilder moddle = new ProcessBuilder(new String[] { "javaw.exe", "-jar", "\"" + new File("../Moddle.jar").getCanonicalPath() + "\"" });
                     moddle.directory(new File(".."));
@@ -282,6 +301,11 @@ public class MainForm extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         Arguments = args;
+        
+        if (args.length < 1) {
+            System.out.println("Not enough arguments.");
+            System.exit(0);
+        }
         
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

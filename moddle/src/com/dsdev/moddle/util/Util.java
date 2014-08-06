@@ -123,11 +123,14 @@ public class Util {
         return true;
     }
 
-    public static void copyFileAndBackupOldCopy(File source, File target) throws IOException {
+    public static void copyFileAndBackUpOldCopy(File source, File target) throws IOException {
         if (target.isFile()) {
-            copyFileAndBackupOldCopy(target, new File(target.getAbsolutePath() + ".old"));
+            if (!target.getName().endsWith(".jar")) {
+                String[] extensions = target.getName().split(".");
+                String extension = "." + extensions[extensions.length-1];
+                copyFileAndBackUpOldCopy(target, new File(target.getParentFile(), target.getName().replace(extension, ".old" + extension)));
+            }
         }
         FileUtils.copyFile(source, target);
     }
-    
 }

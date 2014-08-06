@@ -521,20 +521,6 @@ public class Instances {
     
     private static String getCacheEntryPath(String name, String version, String packCacheLocation) {
         
-        //Check data folder
-        String dataLocation = "./data/" + name + "-" + version;
-        if (new File(dataLocation).isDirectory()) {
-            return dataLocation;
-        } else if (new File(dataLocation + ".zip").isFile()) {
-            try {
-                Util.decompressZipfile(dataLocation + ".zip", dataLocation);
-            } catch (ZipException ex) {
-                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
-                return null;
-            }
-            return dataLocation;
-        }
-        
         //Check pack cache folder
         String packLocation = packCacheLocation + "/" + name + "-" + version;
         if (new File(packLocation).isDirectory()) {

@@ -1,0 +1,7 @@
+{
+    "mode" : "universal",
+    
+    "universal" : [
+        { "name" : "thermalexpansion", "range" : "1000" }
+    ]
+}
