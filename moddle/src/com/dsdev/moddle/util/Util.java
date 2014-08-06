@@ -2,6 +2,8 @@ package com.dsdev.moddle.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -132,5 +134,33 @@ public class Util {
             }
         }
         FileUtils.copyFile(source, target);
+    }
+    
+    public static boolean versionIsEquivalentOrNewer(String oldVersion, String newVersion) {
+        //Get the list of version numbers for the current version
+        List<Integer> newVersionBreakout = new ArrayList();
+        for (String versionNumber : newVersion.split("\\.")) {
+            newVersionBreakout.add(Integer.parseInt(versionNumber));
+        }
+        
+        //Get the list of version numbers for the latest version
+        List<Integer> oldVersionBreakout = new ArrayList();
+        for (String versionNumber : oldVersion.split("\\.")) {
+            oldVersionBreakout.add(Integer.parseInt(versionNumber));
+        }
+        
+        //Compare each version number to determine whether the user is up to date or not
+        boolean isUpToDate = true;
+        int length = Math.max(newVersionBreakout.size(), oldVersionBreakout.size());
+        for (int i = 0; i < length; i++) {
+            int newDigit = (i < newVersionBreakout.size()) ? newVersionBreakout.get(i) : 0;
+            int oldDigit = (i < oldVersionBreakout.size()) ? oldVersionBreakout.get(i) : 0;
+            if (newDigit > oldDigit) {
+                isUpToDate = false;
+                break;
+            }
+        }
+        
+        return isUpToDate;
     }
 }

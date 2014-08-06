@@ -9,6 +9,7 @@
 /moddle/stdout.txt
 /moddle/users/
 /moddle/data/news/
+/moddle/data/assets/
 /moddle/logs/
 /moddle/cache/*/
 /moddle/update/patch/

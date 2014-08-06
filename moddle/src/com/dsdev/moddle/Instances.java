@@ -146,7 +146,18 @@ public class Instances {
             return false;
         }
         
+        //Announce Minecraft asset installation
+        GlobalDialogs.setProgressCaption("Obtaining Minecraft assets...");
+        GlobalDialogs.setProgressIndeterminate(true);
+        
+        try {
+            FileUtils.copyDirectory(new File("./data/assets/legacy"), new File(instancePath + "/.minecraft/assets"));
+        } catch (IOException ex) {
+            Logger.error("Modpack.build", "Failed to copy Minecraft assets!", false, ex.getMessage());
+        }
+        
         //Update progress
+        GlobalDialogs.setProgressIndeterminate(false);
         GlobalDialogs.setProgressCaption("Finishing up...");
         GlobalDialogs.setProgressValue(100);
         

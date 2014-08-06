@@ -3,6 +3,7 @@ package com.dsdev.moddle;
 
 import com.dsdev.moddle.util.Logger;
 import com.dsdev.moddle.util.Util;
+import com.dsdev.moddle.web.AssetBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -125,6 +126,9 @@ public class Updater {
         //Run update for launcher
         checkForLauncherUpdates(verbose, currentVersionConfig.get("moddleversion").toString(), versionsConfig);
         
+        //Check for asset updates
+        checkForAssetUpdates(verbose);
+        
         //Give finish message
         if (verbose) {
             GlobalDialogs.showNotification("Update check is finished!");
@@ -133,9 +137,60 @@ public class Updater {
     }
     
     
+    public static void checkForAssetUpdates(boolean verbose) {
+        
+        boolean assetUpdateRequired = false;
+        try {
+            assetUpdateRequired = AssetBuilder.assetsUpdateRequired("./data/assets");
+        } catch (IOException ex) {
+            Logger.warning("Updater.checkForAssetUpdates", "An error occurred while checking for asset updates.");
+        }
+        
+        if (!assetUpdateRequired) {
+            
+            Logger.info("Updater.checkForAssetUpdates", "Assets are up to date!");
+            
+        } else {
+            
+            Logger.info("Updater.checkForAssetUpdates", "Asset updates were found!");
+            
+            //Init message variable
+            String message = "The Minecraft assets are out of date. It is highly recommended that you update them now to prevent issues when using newer versions of Minecraft.";
+            
+            //Show the update dialog
+            GlobalDialogs.showUpdateNotification(message, "asset");
+            
+            //Wait for the dialog result
+            while (DialogResult == -1);
+            int updateDialogResult = DialogResult;
+            DialogResult = -1;
+            
+            if (updateDialogResult == 1) {
+                
+                //Show progress
+                GlobalDialogs.showProgressDialog();
+                GlobalDialogs.setProgressCaption("Updating assets...");
+                GlobalDialogs.setProgressIndeterminate(true);
+                
+                //Update!
+                try {
+                    AssetBuilder.buildAssets("./data/assets");
+                } catch (IOException ex) {
+                    Logger.error("Updater.checkForAssetUpdates", "Failed to update assets!", false, ex.getMessage());
+                }
+                
+                //Hide progress
+                GlobalDialogs.hideProgressDialog();
+                GlobalDialogs.showNotification("The Minecraft assets have been successfully updated!");
+                
+            }
+        }
+    }
+    
+    
     public static String checkForBootstrapperUpdates(boolean verbose, String currentVersion, JSONObject versionsConfig) {
         
-        if (versionIsUpToDate(currentVersion, versionsConfig.get("latestmupdate").toString())) {
+        if (Util.versionIsEquivalentOrNewer(currentVersion, versionsConfig.get("latestmupdate").toString())) {
             
             //Jump out if the launcher is up to date
             Logger.info("Updater.checkForBootstrapperUpdates", "MUpdate is up to date!");
@@ -270,7 +325,7 @@ public class Updater {
     
     public static String checkForCacheUpdates(boolean verbose, String currentVersion, JSONObject versionsConfig) {
         
-        if (versionIsUpToDate(currentVersion, versionsConfig.get("latestcache").toString())) {
+        if (Util.versionIsEquivalentOrNewer(currentVersion, versionsConfig.get("latestcache").toString())) {
             
             //Jump out if the launcher is up to date
             Logger.info("Updater.checkForCacheUpdates", "Cache is up to date!");
@@ -420,7 +475,7 @@ public class Updater {
     
     public static String checkForLauncherUpdates(boolean verbose, String currentVersion, JSONObject versionsConfig) {
         
-        if (versionIsUpToDate(currentVersion, versionsConfig.get("latestmoddle").toString())) {
+        if (Util.versionIsEquivalentOrNewer(currentVersion, versionsConfig.get("latestmoddle").toString())) {
             
             //Jump out if the launcher is up to date
             Logger.info("Updater.checkForLauncherUpdates", "Launcher is up to date!");
@@ -554,34 +609,6 @@ public class Updater {
         return true;
     }
     
-    
-    public static boolean versionIsUpToDate(String oldVersion, String newVersion) {
-        //Get the list of version numbers for the current version
-        List<Integer> newVersionBreakout = new ArrayList();
-        for (String versionNumber : newVersion.split("\\.")) {
-            newVersionBreakout.add(Integer.parseInt(versionNumber));
-        }
-        
-        //Get the list of version numbers for the latest version
-        List<Integer> oldVersionBreakout = new ArrayList();
-        for (String versionNumber : oldVersion.split("\\.")) {
-            oldVersionBreakout.add(Integer.parseInt(versionNumber));
-        }
-        
-        //Compare each version number to determine whether the user is up to date or not
-        boolean isUpToDate = true;
-        int length = Math.max(newVersionBreakout.size(), oldVersionBreakout.size());
-        for (int i = 0; i < length; i++) {
-            int newDigit = (i < newVersionBreakout.size()) ? newVersionBreakout.get(i) : 0;
-            int oldDigit = (i < oldVersionBreakout.size()) ? oldVersionBreakout.get(i) : 0;
-            if (newDigit > oldDigit) {
-                isUpToDate = false;
-                break;
-            }
-        }
-        
-        return isUpToDate;
-    }
     
     public static JSONObject getVersionByName(String name, String type, JSONObject versionsConfig) {
         for (Object updateObj : (JSONArray)versionsConfig.get(type + "versions")) {
