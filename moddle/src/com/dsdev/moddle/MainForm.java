@@ -101,6 +101,8 @@ public class MainForm extends javax.swing.JFrame {
         NewsPanel = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         newsPane = new javax.swing.JTextPane();
+        NewsBannerLabel = new javax.swing.JLabel();
+        FollowUsLabel = new javax.swing.JLabel();
         SettingsPanel = new javax.swing.JPanel();
         PrefsUserLabel = new javax.swing.JLabel();
         ReopenLauncherCheckbox = new javax.swing.JCheckBox();
@@ -534,7 +536,7 @@ public class MainForm extends javax.swing.JFrame {
         );
         ModpackPanelLayout.setVerticalGroup(
             ModpackPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
             .addComponent(jScrollPane2)
         );
 
@@ -544,15 +546,31 @@ public class MainForm extends javax.swing.JFrame {
         newsPane.setBackground(java.awt.SystemColor.control);
         jScrollPane4.setViewportView(newsPane);
 
+        NewsBannerLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        NewsBannerLabel.setText("Moddle News");
+
+        FollowUsLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        FollowUsLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        FollowUsLabel.setText("Follow Us");
+
         javax.swing.GroupLayout NewsPanelLayout = new javax.swing.GroupLayout(NewsPanel);
         NewsPanel.setLayout(NewsPanelLayout);
         NewsPanelLayout.setHorizontalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+            .addGroup(NewsPanelLayout.createSequentialGroup()
+                .addComponent(NewsBannerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 351, Short.MAX_VALUE)
+                .addComponent(FollowUsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane4)
         );
         NewsPanelLayout.setVerticalGroup(
             NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+            .addGroup(NewsPanelLayout.createSequentialGroup()
+                .addGroup(NewsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NewsBannerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(FollowUsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE))
         );
 
         MainTabPane.addTab("News", NewsPanel);
@@ -699,7 +717,7 @@ public class MainForm extends javax.swing.JFrame {
                                 .addComponent(AdditionalVariablesLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(AdditionalVariablesWarningLabel)
-                                .addGap(0, 64, Short.MAX_VALUE))
+                                .addGap(0, 86, Short.MAX_VALUE))
                             .addComponent(jScrollPane5)))
                     .addGroup(SettingsPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1450,6 +1468,12 @@ public class MainForm extends javax.swing.JFrame {
         popupDialogImageLabel.setIcon(Resources.getImageResource("alert.png"));
         updateDialogImageLabel.setIcon(Resources.getImageResource("alert_small.png"));
         
+        //Load news images
+        NewsBannerLabel.setText("");
+        NewsBannerLabel.setIcon(Resources.getImageResource("news.png"));
+        FollowUsLabel.setText("");
+        FollowUsLabel.setIcon(Resources.getImageResource("followus.png"));
+        
         //Set up custom JList rendering
         ModpackList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
@@ -1810,6 +1834,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton CreateInstanceButton;
     private javax.swing.JLabel CurrentUserLabel;
     private javax.swing.JButton DeleteInstanceButton;
+    private javax.swing.JLabel FollowUsLabel;
     private javax.swing.JCheckBox ForceUpdateCheckBox;
     private javax.swing.JComboBox InstanceComboBox;
     private javax.swing.JLabel InstanceLabel;
@@ -1825,6 +1850,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JTextPane ModpackDescriptionPane;
     private javax.swing.JList ModpackList;
     private javax.swing.JPanel ModpackPanel;
+    private javax.swing.JLabel NewsBannerLabel;
     private javax.swing.JPanel NewsPanel;
     private javax.swing.JButton PlayButton;
     private javax.swing.JLabel PrefsUserLabel;
