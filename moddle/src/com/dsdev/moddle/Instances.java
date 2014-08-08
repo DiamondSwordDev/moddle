@@ -536,6 +536,14 @@ public class Instances {
         String packLocation = packCacheLocation + "/" + name + "-" + version;
         if (new File(packLocation).isDirectory()) {
             return packLocation;
+        } else if (new File(packLocation + ".tar.gz").isFile()) {
+            try {
+                Util.decompressTarGzFile(packLocation + ".tar.gz", packLocation);
+            } catch (IOException ex) {
+                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
+                return null;
+            }
+            return packLocation;
         } else if (new File(packLocation + ".zip").isFile()) {
             try {
                 Util.decompressZipfile(packLocation + ".zip", packLocation);
@@ -549,6 +557,14 @@ public class Instances {
         //Check cache folder
         String cacheLocation = "./cache/" + name + "-" + version;
         if (new File(cacheLocation).isDirectory()) {
+            return cacheLocation;
+        } else if (new File(cacheLocation + ".tar.gz").isFile()) {
+            try {
+                Util.decompressTarGzFile(cacheLocation + ".tar.gz", cacheLocation);
+            } catch (IOException ex) {
+                Logger.warning("Instances.getCacheEntryPath", "Could not unzip cache entry!");
+                return null;
+            }
             return cacheLocation;
         } else if (new File(cacheLocation + ".zip").isFile()) {
             try {
