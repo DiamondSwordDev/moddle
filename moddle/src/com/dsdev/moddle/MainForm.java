@@ -24,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
@@ -34,6 +33,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
 
 /**
  * The main GUI

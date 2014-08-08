@@ -600,38 +600,43 @@ public class Instances {
             }
             
             //Process files
-            for (Object obj : (JSONArray)entryConfig.get("files")) {
-                JSONObject file = (JSONObject) obj;
-                
-                //Attempt to download file if it does not exist
-                try {
-                    if (!new File(entryPath + "/" + (String) file.get("name")).exists()) {
-                        FileUtils.copyURLToFile(new URL((String) file.get("url")), new File(entryPath + "/" + (String) file.get("name")));
-                    }
-                } catch (IOException ex) {
-                    Logger.error("Instances.installCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex);
-                }
-                
-                //Perform specified action for file
-                try {
-                    if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
-                        //'extract-zip':  decompress the file into a folder
-                        Util.decompressZipfile(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
-                    } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
-                        //'copy-file':  Copy the file and delete existing copy if necessary
-                        if (new File(targetDir + (String) file.get("target")).isFile()) {
-                            new File(targetDir + (String) file.get("target")).delete();
+            if (entryConfig.get("files") != null) {
+                for (Object obj : (JSONArray)entryConfig.get("files")) {
+                    JSONObject file = (JSONObject) obj;
+
+                    //Attempt to download file if it does not exist
+                    try {
+                        if (!new File(entryPath + "/" + (String) file.get("name")).exists()) {
+                            FileUtils.copyURLToFile(new URL((String) file.get("url")), new File(entryPath + "/" + (String) file.get("name")));
                         }
-                        FileUtils.copyFile(new File(entryPath + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
-                    } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
-                        //'copy-config':  Copy the file via the config parser
-                        if (new File(targetDir + (String) file.get("target")).isFile()) {
-                            new File(targetDir + (String) file.get("target")).delete();
-                        }
-                        copyTextFileWithVariables(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                    } catch (IOException ex) {
+                        Logger.error("Instances.installCacheEntry", "Failed to obtain file '" + (String) file.get("name") + "'!", false, ex);
                     }
-                } catch (Exception ex) {
-                    Logger.error("Instances.installCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex);
+
+                    //Perform specified action for file
+                    try {
+                        if (((String) file.get("action")).equalsIgnoreCase("extract-zip")) {
+                            //'extract-zip':  decompress the file into a folder
+                            Util.decompressZipfile(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                        } else if (((String) file.get("action")).equalsIgnoreCase("extract-tgz")) {
+                            //'extract-tgz':  decompress the file into a folder
+                            Util.decompressTarGzFile(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                        } else if (((String) file.get("action")).equalsIgnoreCase("copy-file")) {
+                            //'copy-file':  Copy the file and delete existing copy if necessary
+                            if (new File(targetDir + (String) file.get("target")).isFile()) {
+                                new File(targetDir + (String) file.get("target")).delete();
+                            }
+                            FileUtils.copyFile(new File(entryPath + "/" + (String) file.get("name")), new File(targetDir + (String) file.get("target")));
+                        } else if (((String) file.get("action")).equalsIgnoreCase("copy-config")) {
+                            //'copy-config':  Copy the file via the config parser
+                            if (new File(targetDir + (String) file.get("target")).isFile()) {
+                                new File(targetDir + (String) file.get("target")).delete();
+                            }
+                            copyTextFileWithVariables(entryPath + "/" + (String) file.get("name"), targetDir + (String) file.get("target"));
+                        }
+                    } catch (Exception ex) {
+                        Logger.error("Instances.installCacheEntry", "Failed to process file '" + (String) file.get("name") + "'!", false, ex);
+                    }
                 }
             }
         }

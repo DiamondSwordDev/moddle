@@ -11,6 +11,10 @@ import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
 
 /**
  * Random utilities for stuff
@@ -110,10 +114,15 @@ public class Util {
             }
         }
     }
-
+    
     public static void removeFileFromZipfile(String zipFile, String fileName) throws ZipException {
         ZipFile zip = new ZipFile(zipFile);
         zip.removeFile(fileName);
+    }
+    
+    public static void decompressTarGzFile(String tarballFile, String outputDir) throws IOException {
+        Archiver ark = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
+        ark.extract(new File(tarballFile), new File(outputDir));
     }
 
     public static boolean isNumeric(String str) {
