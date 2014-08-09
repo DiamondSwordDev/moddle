@@ -150,6 +150,7 @@ public class Instances {
         GlobalDialogs.setProgressCaption("Obtaining Minecraft assets...");
         GlobalDialogs.setProgressIndeterminate(true);
         
+        Logger.info("Instances.buildInstance", "Copying Minecraft assets...");
         try {
             FileUtils.copyDirectory(new File("./data/assets/legacy"), new File(instancePath + "/.minecraft/assets"));
         } catch (IOException ex) {
@@ -444,7 +445,7 @@ public class Instances {
         
         //Queue Minecraft
         Logger.info("Instances.getInstallationQueue", "Enqueueing Minecraft...");
-        enqueueCacheEntry("minecraft", packConfig.get("minecraftversion").toString(), "./packs/" + packConfig.get("name").toString() + "/cache", packConfig.get("minecraftversion").toString(), installationQueue);
+        enqueueCacheEntry("minecraftskeleton", packConfig.get("minecraftversion").toString(), "./packs/" + packConfig.get("name").toString() + "/cache", packConfig.get("minecraftversion").toString(), installationQueue);
         
         //Add pack entries to installation queue
         for (Object obj : entriesArray) {
