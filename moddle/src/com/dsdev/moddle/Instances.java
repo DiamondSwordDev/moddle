@@ -224,7 +224,7 @@ public class Instances {
         //<editor-fold defaultstate="collapsed" desc="Java Core Arguments">
         Logger.info("Instances.runInstance", "Parsing JavaExecutablePath...");
         if (!Variables.getSetting("launch.JavaExecutablePath").equals("null")) {
-            args.add(Variables.getSetting("launch.JavaExecutablePath"));
+            args.add("\"" + Util.getFullPath(Variables.getSetting("launch.JavaExecutablePath")) + "\"");
         } else {
             args.add("javaw.exe");
         }
@@ -241,7 +241,7 @@ public class Instances {
 
         Logger.info("Instances.runInstance", "Parsing DJavaLibPathArgument...");
         if (Variables.getSettingBool("launch.UseDJavaLibPathArgument")) {
-            args.add("-Djava.library.path=\"" + Util.getFullPath(Variables.getSetting("launch.DJavaLibPathArgument")) + "\"");
+            args.add("\"-Djava.library.path=" + Util.getFullPath(Variables.getSetting("launch.DJavaLibPathArgument")) + "\"");
         }
 
         Logger.info("Instances.runInstance", "Parsing ClassPathArgument...");
@@ -295,13 +295,13 @@ public class Instances {
         Logger.info("Instances.runInstance", "Parsing UseGameDirArgument...");
         if (Variables.getSettingBool("launch.UseGameDirArgument")) {
             args.add("--gameDir");
-            args.add(Variables.getSetting("launch.GameDirArgument"));
+            args.add("\"" + Variables.getSetting("launch.GameDirArgument") + "\"");
         }
 
         Logger.info("Instances.runInstance", "Parsing UseAssetDirArgument...");
         if (Variables.getSettingBool("launch.UseAssetDirArgument")) {
             args.add("--assetDir");
-            args.add(Variables.getSetting("launch.AssetDirArgument"));
+            args.add("\"" + Util.getFullPath(Variables.getSetting("launch.AssetDirArgument")) + "\"");
         }
 
         Logger.info("Instances.runInstance", "Parsing UseVersionArgument...");
@@ -374,10 +374,14 @@ public class Instances {
 
         //</editor-fold>
 
+        //Log args
+        Logger.info("Instances.runInstance", "Time for an arg dump!");
+        
         //Put args in an array (wha... what is this... this... boilerplate code?!?)
         String[] argArray = new String[args.toArray().length];
         for (int i = 0; i < argArray.length; i++) {
             argArray[i] = args.get(i);
+            Logger.info("Instances.runInstance", args.get(i));
         }
 
         //Make the ProcessBuilder

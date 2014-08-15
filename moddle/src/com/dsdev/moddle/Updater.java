@@ -441,7 +441,7 @@ public class Updater {
         //Apply patch
         Logger.info("Updater.doCacheUpdate", "Applying patch directory...");
         for (File f : new File("./update/cachepatch").listFiles()) {
-            if (f.isFile() && f.getName().contains(".zip")) {
+            if (f.isFile()) {
                 
                 Logger.info("Updater.doCacheUpdate", "Applying entry '" + f.getName().replace(".zip", ""));
                 

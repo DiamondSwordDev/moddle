@@ -8,14 +8,10 @@ It contains the following mods:
   by the Forge Development Team
   http://www.minecraftforge.net/
 
-- BuildCraft 4 (NQY)
+- BuildCraft 4
   by the BuildCraft Team
   http://www.mod-buildcraft.com/
 
 - CoFHCore, ThermalExpansion 3, and Redstone Arsenal
   by Team CoFH
-  http://www.minecraftforum.net/topic/1773528-164-team-cofh-mods-thermal-expansion-300b7a/
-
-
-
-*NQY - Not Quite Yet
+  http://www.teamcofh.net/
