@@ -1207,6 +1207,7 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     private void loadUserPrefVariables() {
+        Variables.setSetting("launch.UseXmxArgument", "true");
         Variables.setSetting("launch.XmxArgument", MemoryField.getText());
         Variables.setSettingPriority("launch.XmxArgument", "int:largest");
         
@@ -1318,6 +1319,7 @@ public class MainForm extends javax.swing.JFrame {
             Auth.saveToFile();
             
             loadUser(null);
+            loadUserPrefs(null);
             
             LoginButton.setText("Log In");
             CurrentUserLabel.setText("-- Not Logged In --");
@@ -1703,6 +1705,7 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         loadUser(Auth.AccountName);
+        loadUserPrefs(Auth.AccountName);
         instanceDialog.setVisible(false);
         Logger.info("MainForm.instanceDialogCreateButtonActionPerformed", "Created new instance '" + instanceDialogNameBox.getText() + "'.");
     }//GEN-LAST:event_instanceDialogCreateButtonActionPerformed
