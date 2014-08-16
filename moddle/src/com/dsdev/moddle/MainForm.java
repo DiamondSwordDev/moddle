@@ -954,8 +954,9 @@ public class MainForm extends javax.swing.JFrame {
         try {
             prefConfig = Util.readJSONFile("./users/" + friendlyAccountName + "/prefs.json");
         } catch (IOException ex) {
-            Logger.warning("MainForm.loadUserPrefs", "Could not load preferences file!");
+            Logger.warning("MainForm.loadUserPrefs", "Could not load preferences file!  Loading null prefs...");
             loadNullUserPrefs();
+            PrefsUserLabel.setText(Auth.Username);
             return;
         }
         
